@@ -1,0 +1,14 @@
+{
+    "firstName": "",
+    "lastName" : "",
+    "email":"",
+    "address":"",
+    "role":"",
+    "isAdmin":false,
+    "phone":"",
+    "orderIds":[],
+    "encoded": "",
+    "keypair": {},
+    "asset_id": ""
+
+}
