@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/5f2b92a6-2b95-41be-b38c-8e7e5f3bdec8/microsoft.web/sites/subscriptions/5f2b92a6-2b95-41be-b38c-8e7e5f3bdec8/resourceGroups/deliverless_group/providers/Microsoft.Web/sites/deliverless",
+    "appService.deploySubpath": "."
+}
