@@ -26,9 +26,9 @@ jobs:
           npm install
           npm run build --if-present
           npm run test --if-present
-          
+      
       - name: Zip artifact for deployment
-        run: zip release.zip ./* -qr
+        run: zip release.zip ./build/* -qr
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
@@ -48,12 +48,12 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: node-app
-          
+
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
           app-name: 'deliverless'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_0D71CEAE419D4A649953A3C945D83F08 }}
-          package: release.zip
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_A8A8BFF8BC8F4920881A03B8AACAD978 }}
+          package: .
