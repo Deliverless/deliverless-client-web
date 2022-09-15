@@ -3,6 +3,7 @@ import CartItem from '../components/CartItem';
 import { CartContext } from '../lib/cartContext'
 import { Link } from 'react-router-dom';
 import Button from '@mui/material/Button';
+import PaymentCard from '../components/PaymentCard';
 
 const Cart = () =>{
     const {total, cartItems, itemCount, clearCart, checkout, handleCheckout, increase} = useContext(CartContext);
@@ -50,6 +51,10 @@ const Cart = () =>{
                     
                 </div>
             </div>
+
+            <PaymentCard></PaymentCard>
+
+
         </div>
     );
     
