@@ -9,6 +9,7 @@ import RestaurantDashboard from '../pages/restaurant/RestaurantDashboard'
 import AdminSettings from '../pages/admin/AdminSettings'
 import { HasAddressCookie, RequiredPrivilege, RequiredAuth, Logout } from './middleware'
 import RestaurantHome from '../pages/restaurant/RestaurantHome'
+import ThankYou from '../components/ThankYou'
 
 const routes = [
     { path: "/", element: <HasAddressCookie redirectTo='/landing'><Home /></HasAddressCookie> },
@@ -22,6 +23,7 @@ const routes = [
     { path: "/restaurant/dashboard", element: <RequiredPrivilege privilege="restaurant" redirectTo="/"><RestaurantDashboard /></RequiredPrivilege> },
     { path: "/settings", element: <RequiredPrivilege redirectTo="/login"><AdminSettings /></RequiredPrivilege> },
     { path: "*", element: <NotFound /> },
+    { path: "/thankyou", element: <RequiredAuth redirectTo="/login"><ThankYou></ThankYou></RequiredAuth>}
 ];
 
 const appBarLinks = [
