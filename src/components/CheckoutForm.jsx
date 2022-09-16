@@ -5,7 +5,7 @@ import {
   useElements
 } from "@stripe/react-stripe-js";
 
-export default function CheckoutForm() {
+export default function CheckoutForm(handleCheckout) {
   const stripe = useStripe();
   const elements = useElements();
 
@@ -58,8 +58,8 @@ export default function CheckoutForm() {
       elements,
       confirmParams: {
         // Make sure to change this to your payment completion page
-        return_url: "http://localhost:3000/cart",
-      },
+        return_url: "http://localhost:3000/thankyou",
+      }
     });
 
     // This point will only be reached if there is an immediate error when

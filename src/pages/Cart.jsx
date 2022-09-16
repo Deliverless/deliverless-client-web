@@ -57,7 +57,7 @@ const Cart = () =>{
                 ))
               ) : (
                 <div className="p-3 text-center text-muted">
-                  Your cart is empty
+                  Your cart is empty!
                 </div>
               )}
 
@@ -105,7 +105,7 @@ const Cart = () =>{
         <div className="App">
           {clientSecret && (
             <Elements options={options} stripe={stripePromise}>
-              <CheckoutForm />
+              <CheckoutForm handleCheckout={handleCheckout} />
             </Elements>
           )}
         </div>
