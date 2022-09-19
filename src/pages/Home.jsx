@@ -1,23 +1,22 @@
 import React, { useState, useEffect, useContext } from "react";
 import RestaurantCards from "../components/RestaurantCards";
+import Toggle from '../components/Toggle'
 import { getEthereumPrice, getGasBalance } from "../smartcontracts/web3Helper";
-import { getDirections } from "../lib/mapboxapi";
-import Cookies from "universal-cookie";
 import {
   create,
   retrieveAllRestaurants,
   updateRestaurant,
 } from "../smartcontracts/entities/restaurant";
-import { options } from "../lib/visjs-helper";
-import Graph from "react-graph-vis";
-import { UserContext } from "../lib/userContext";
+import RestaurantExplorer from "../components/RestaurantExplorer";
 
 const Home = () => {
-  const [price, setPrice] = useState(0);
-  const [gas, setGas] = useState(0);
+  let net;
+  const [listView, setListView] = useState(true);
+  // const [price, setPrice] = useState(0);
+  // const [gas, setGas] = useState(0);
   const [restaurants, setRestaurants] = useState([]);
-  const [graphData, setGraphData] = useState({ edges: [], nodes: [] });
-  const { user, setUser } = useContext(UserContext);
+
+
   const rest = {
     name: "Burger King",
     address: {
@@ -310,85 +309,23 @@ const Home = () => {
       });
 
       setRestaurants(parsedRests);
-      
-      let nodes = await Promise.all(parsedRests.map(async (rest) => {
-        let cookies = new Cookies();
-        const cookieAddress = cookies.get("Address");
-        const directions = await getDirections(
-          user.address != null ? user.address : cookieAddress,
-          `${rest.address.number} ${rest.address.street} ${rest.address.city}, ${rest.address.province}`
-        );
-        return {
-          id: rest.asset_id,
-          shape: "circularImage",
-          image: rest.image,
-          label: rest.name,
-          distance:
-            Math.round((directions.routes[0].distance / 1000.0) * 10) / 10,
-          delivery_eta:
-            Math.round((directions.routes[0].duration / 60.0) * 10) / 10,
-        };
-      }));
 
-      setGraphData({
-        // edges: [
-        //   {
-        //     label: "5km",
-        //     to: "id:global:restaurants:a6dd1b1f-5ea7-4be0-bd46-7fc901ee9254",
-        //     from: "id:global:restaurants:d939ce72-474f-4abe-b2cf-dc1f9227662c",
-        //   },
-        // ],
-        edges: calcEdges(nodes),
-        nodes: [
-          ...nodes,
-          {
-            id: "123",
-            shape: "icon",
-           
-            icon: {
-              face: "FontAwesome",
-              code: "\uf007",
-              size: 50,
-              color: "#4F95C8"
-            },
-            shadow: false,
-            label: user.firstName
-          
-          },
-        ],
-      });
     });
   }, []);
-
-  const calcEdges = (nodes) => {
-    let edges = [];
-    nodes.filter((node) => node.id != "123").forEach((node) => {
-      edges.push({
-        label: node.distance + " km",
-        to: node.id,
-        from: "123",
-        length: 100 + node.distance * 10
-      })
-    })
-    console.log(edges)
-    return edges;
-    
-  }
-
-  const events = {
-    select: function (event) {
-      var { nodes, edges } = event;
-    },
-  };
 
   return (
     <div className="main-content">
       <h1 className="center-container">Explore Restaurants</h1>
       <h4 className="center-container">In the Blockchain near you</h4>
-      {restaurants.length > 0 && (
-        <>
-          <RestaurantCards restaurants={restaurants} />{" "}
-        </>
+
+      <Toggle checked={listView} onChange={setListView}/>
+
+      {(listView && restaurants.length > 0) && (
+        <RestaurantCards restaurants={restaurants} />
+      )}
+
+      {!listView && (
+        <RestaurantExplorer restaurants={restaurants}/>
       )}
       
       {/* <p><b>Price:</b> ${price} USD</p> */}
@@ -399,24 +336,7 @@ const Home = () => {
         image: "https://www.designyourway.net/blog/wp-content/uploads/2019/10/s1-3-7.jpg"
       }
       )}>update burger  king photo</button> */}
-      <button
-        onClick={() =>
-          getDirections(
-            "3280 Sharp rd Burlington, ON",
-            "4521 Dundas St Burlington, ON"
-          )
-        }
-      >
-        getDirections
-      </button>
-      <Graph
-        graph={graphData}
-        options={options}
-        events={events}
-        getNetwork={(network) => {
-          //  if you want access to vis.js network api you can set the state in a parent component using this property
-        }}
-      />
+
     </div>
   );
 };
