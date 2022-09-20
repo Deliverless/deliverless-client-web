@@ -4,10 +4,14 @@ import Graph from "react-graph-vis";
 import { getDirections } from "../lib/mapboxapi";
 import Cookies from "universal-cookie";
 import { UserContext } from "../lib/userContext";
+import { Paper } from '@material-ui/core';
+import { useNavigate } from 'react-router-dom'
 
 export default function RestaurantExplorer({restaurants}) {
     const [graphData, setGraphData] = useState({ edges: [], nodes: [] });
     const { user, setUser } = useContext(UserContext);
+    const [network, setNetwork] = useState();
+    const navigate = useNavigate()
     let net;
 
     useEffect(async () => {
@@ -75,23 +79,46 @@ export default function RestaurantExplorer({restaurants}) {
         console.log(edges)
         return edges;
     }
-
     const events = {
-        select: function (event) {
+        selectNode: async function (event) {
           var { nodes, edges } = event;
+          navigate(`/restaurant/home?id=${nodes[0]}`);
+          // console.log("nodes", nodes)
+          // // setGraphData()
+          // setGraphData(current=>{
+          //   let node = current.nodes.find(n=>n.id == nodes[0])
+          //   node.label="test"
+          //   console.log("new data",{
+          //     ...current, 
+          //     nodes: [
+          //       ...current.nodes
+          //     ]
+          //   })
+          //   return {
+          //     ...current, 
+          //     nodes: [
+          //       ...current.nodes
+          //     ]
+          //   }
+          // })
+          
+          // network.redraw();
         },
+
     };
 
     return (
+      <Paper elevation={3} className="mx-auto" style={{width:  "fit-content"}}>
         <Graph
             graph={graphData}
             options={options}
             events={events}
-            getNetwork={(network) => {
-            
-                net = network;
+            getNetwork={(_network) => {
+              net = _network;
+              setNetwork(_network);
                 //  if you want access to vis.js network api you can set the state in a parent component using this property
             }}
         />
+      </Paper>
     )
 }
