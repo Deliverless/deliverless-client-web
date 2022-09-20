@@ -37,7 +37,7 @@ const CartContextProvider = ({ children }) => {
         dispatch({ type: 'CLEAR' })
     }
 
-    const handleCheckout = () => {
+    const handleCheckout = async () => {
         let cookies = new Cookies();
         const cookieAddress = cookies.get("Address")
         const timeElapsed = Date.now();
@@ -59,10 +59,10 @@ const CartContextProvider = ({ children }) => {
             timePlaced: today,
             foods: state.cartItems
         }
-        create(order, user).then(newOrder => {
+        return await create(order, user).then(newOrder => {
             setUser(newOrder.user)
+            dispatch({ type: 'CHECKOUT' })
         });
-        dispatch({ type: 'CHECKOUT' })
     }
 
     const contextValues = {

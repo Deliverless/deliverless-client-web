@@ -6,19 +6,19 @@ const stripe = require("stripe")('sk_test_51LiTBOHlhPKJMrfBnCyVBdvKHPFoO6dQIQ88K
 app.use(express.static("public"));
 app.use(express.json());
 
-const calculateOrderAmount = (items) => {
+const calculateOrderAmount = (total) => {
   // Replace this constant with a calculation of the order's amount
   // Calculate the order total on the server to prevent
   // people from directly manipulating the amount on the client
-  return 100;
+  return total;
 };
 
 app.post("/create-payment-intent", async (req, res) => {
-  const { items } = req.body;
+  const { total } = req.body;
 
   // Create a PaymentIntent with the order amount and currency
   const paymentIntent = await stripe.paymentIntents.create({
-    amount: calculateOrderAmount(items),
+    amount: calculateOrderAmount(total),
     currency: "cad",
     automatic_payment_methods: {
       enabled: true,

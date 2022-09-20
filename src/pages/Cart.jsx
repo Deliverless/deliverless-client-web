@@ -5,38 +5,41 @@ import { Link } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
+import { useNavigate } from 'react-router-dom';
 
 import CheckoutForm from "../components/CheckoutForm";
 import "../StripeForm.css";
 
-const stripePromise = loadStripe("pk_test_51LiTBOHlhPKJMrfBUI52YU8nihPcSYlBkCHy46irESS7ev1J7vBI1rHNId6wM0kpZ5OybUNUwPvnT0GdyZo9xQG500i6jQAWVw");
+//const stripePromise = loadStripe("pk_test_51LiTBOHlhPKJMrfBUI52YU8nihPcSYlBkCHy46irESS7ev1J7vBI1rHNId6wM0kpZ5OybUNUwPvnT0GdyZo9xQG500i6jQAWVw");
 
 const Cart = () =>{
     const {total, cartItems, itemCount, clearCart, checkout, handleCheckout, increase} = useContext(CartContext);
 
 
-    const [clientSecret, setClientSecret] = useState("");
+    // const [clientSecret, setClientSecret] = useState("");
 
 
-    useEffect(() => {
-        // Create PaymentIntent as soon as the page loads
-        fetch("/create-payment-intent", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ items: [{ cartItems }] }),
-        })
-          .then((res) => res.json())
-          .then((data) => setClientSecret(data.clientSecret));
-      }, []);
+    // useEffect(() => {
+    //     // Create PaymentIntent as soon as the page loads
 
-      const appearance = {
-        theme: 'stripe',
-      };
+    //     console.log(typeof(total))
+    //     fetch("/create-payment-intent", {
+    //       method: "POST",
+    //       headers: { "Content-Type": "application/json" },
+    //       body: JSON.stringify({ total: parseFloat(total) * 100 }),
+    //     })
+    //       .then((res) => res.json())
+    //       .then((data) => setClientSecret(data.clientSecret));
+    //   }, []);
 
-      const options = {
-        clientSecret,
-        appearance,
-      };
+    //   const appearance = {
+    //     theme: 'stripe',
+    //   };
+
+    //   const options = {
+    //     clientSecret,
+    //     appearance,
+    //   };
 
     return (
       <div className="container" style={{ maxWidth: "800px" }}>
@@ -49,10 +52,12 @@ const Cart = () =>{
             <div className="col-sm-8 p-3">
               {cartItems.length > 0 ? (
                 cartItems.map((food) => (
+                  
                   <CartItem
                     key={food.id}
                     food={food}
                     options={food.selOptions}
+                    
                   />
                 ))
               ) : (
@@ -83,7 +88,7 @@ const Cart = () =>{
                       <Button
                         type="button"
                         variant="contained"
-                        onClick={handleCheckout}
+                        component={Link} to="/checkout"
                       >
                         CHECKOUT
                       </Button>
@@ -102,13 +107,13 @@ const Cart = () =>{
           </div>
         </div>
 
-        <div className="App">
+        {/* <div className="App">
           {clientSecret && (
             <Elements options={options} stripe={stripePromise}>
               <CheckoutForm handleCheckout={handleCheckout} />
             </Elements>
           )}
-        </div>
+        </div> */}
       </div>
     );
     
