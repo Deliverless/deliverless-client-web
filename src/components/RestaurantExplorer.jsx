@@ -21,7 +21,7 @@ export default function RestaurantExplorer({restaurants}) {
     useEffect(async () => {
         const cookies = new Cookies();
         const cookieAddress = cookies.get("Address");
-        const userAddressObj = user.address != null ? user.address : await getAutoComplete(cookieAddress)?.results[0]
+        const userAddressObj = user.address != null ? user.address : cookieAddress
         let nodes = await Promise.all(restaurants.map(async (rest) => {
             const directions = await getDirections(userAddressObj, rest.address);
             return {

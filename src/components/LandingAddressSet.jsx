@@ -30,7 +30,7 @@ const LandingAddressSet = () => {
 
   function useCookieFunc(){
     let cookies = new Cookies(); 
-    cookies.set("Address", value.formatted)
+    cookies.set("Address", value)
     navigate('/');
   }
 
