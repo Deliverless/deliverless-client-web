@@ -2,12 +2,14 @@ import React, { useState, useEffect, useContext } from "react";
 import RestaurantCards from "../components/RestaurantCards";
 import Toggle from '../components/Toggle'
 import { getEthereumPrice, getGasBalance } from "../smartcontracts/web3Helper";
+import { updateUser } from "../smartcontracts/entities/user"
 import {
   create,
   retrieveAllRestaurants,
   updateRestaurant,
 } from "../smartcontracts/entities/restaurant";
 import RestaurantExplorer from "../components/RestaurantExplorer";
+import RestaurantAutoComplete from "../components/RestaurantAutoComplete";
 
 const Home = () => {
   let net;
@@ -307,7 +309,7 @@ const Home = () => {
         rest.data.asset_id = rest.id;
         return rest.data;
       });
-
+      console.log(parsedRests)
       setRestaurants(parsedRests);
 
     });
@@ -317,7 +319,7 @@ const Home = () => {
     <div className="main-content">
       <h1 className="center-container">Explore Restaurants</h1>
       <h4 className="center-container">In the Blockchain near you</h4>
-
+      <RestaurantAutoComplete />
       <Toggle checked={listView} onChange={setListView}/>
 
       {(listView && restaurants.length > 0) && (
@@ -331,11 +333,20 @@ const Home = () => {
       {/* <p><b>Price:</b> ${price} USD</p> */}
       {/* <p><b>Gas Balance:</b> {gas}</p> */}
       {/* <button onClick={async()=>{setPrice(await getEthereumPrice())}}>Get Current Ethereum USD Price</button> */}
-      {/* <button onClick={()=>updateRestaurant("fc0cac53634320d6c9b22c9e96c68722bd30d203252ea6b3d2660296348053aa", 
-      { 
-        image: "https://www.designyourway.net/blog/wp-content/uploads/2019/10/s1-3-7.jpg"
+      {/* <button onClick={()=>updateRestaurant("id:global:restaurants:d939ce72-474f-4abe-b2cf-dc1f9227662c", 
+      {
+        address: {
+          "city": "Burlington",
+          "country": "CA",
+          "number": 1435,
+          "province": "ON",
+          "street": "Plains Rd E",
+          lat: "43.338031",
+          lon: "-79.818033"
+        },
+    
       }
-      )}>update burger  king photo</button> */}
+      )}>update boyz</button> */}
 
     </div>
   );

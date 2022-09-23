@@ -49,7 +49,7 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
   },
 }));
 
-export default function Toggle({checked, onChange}) {
+export default function Toggle({checked, onChange, label = ""}) {
     return (
       <FormGroup>
         <FormControlLabel
@@ -60,7 +60,7 @@ export default function Toggle({checked, onChange}) {
                 checked={checked}
             />
             }
-          label="Blockchain Restaurant Explorer"
+          label={label}
         />
         </FormGroup>
     );

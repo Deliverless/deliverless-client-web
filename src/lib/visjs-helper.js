@@ -1,4 +1,5 @@
 export const options = {
+    autoResize: true,
     layout: {
         hierarchical: false
     },
@@ -17,7 +18,7 @@ export const options = {
     },
     physics: {
         barnesHut: {
-            theta: 0.5,
+            // theta: 0.5,
             gravitationalConstant: -2000,
             centralGravity: 0.3,
             springLength: 1,
@@ -27,15 +28,17 @@ export const options = {
         },
         maxVelocity: 10,
     },
-    interaction: { keyboard: true },
+    interaction: { keyboard: false, zoomView: false, hover: true },
     manipulation: {
-        enabled: true,
+        enabled: false,
         initiallyActive: true
     },
     nodes: {
+        font: {
+            align: 'left'
+        },
         shadow: true,
         brokenImage: "http://www.opentable.com/img/restimages/334.jpg",
     },
-    height: "500px",
-    width: "900px"
+
 };

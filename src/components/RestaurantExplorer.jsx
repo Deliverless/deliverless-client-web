@@ -1,28 +1,31 @@
-import React, { useEffect, useContext, useState } from 'react'
+import React, { useEffect, useContext, useState, useRef } from 'react'
 import { options } from "../lib/visjs-helper";
-import Graph from "react-graph-vis";
 import { getDirections } from "../lib/mapboxapi";
 import Cookies from "universal-cookie";
 import { UserContext } from "../lib/userContext";
 import { Paper } from '@material-ui/core';
+
+import {Network, Node, Edge} from "react-vis-network";
+import { RestaurantDecorator } from './RestaurantDecorator';
+
 import { useNavigate } from 'react-router-dom'
+import { getAutoComplete } from '../lib/addressapi';
+import RestaurantCard from './RestaurantCard';
 
 export default function RestaurantExplorer({restaurants}) {
-    const [graphData, setGraphData] = useState({ edges: [], nodes: [] });
     const { user, setUser } = useContext(UserContext);
-    const [network, setNetwork] = useState();
     const navigate = useNavigate()
-    let net;
+    let network = useRef(null);
+    const [data, setData] = useState({nodes: [], edges: []});
 
     useEffect(async () => {
+        const cookies = new Cookies();
+        const cookieAddress = cookies.get("Address");
+        const userAddressObj = user.address != null ? user.address : await getAutoComplete(cookieAddress)?.results[0]
         let nodes = await Promise.all(restaurants.map(async (rest) => {
-            let cookies = new Cookies();
-            const cookieAddress = cookies.get("Address");
-            const directions = await getDirections(
-              user.address != null ? user.address : cookieAddress,
-              `${rest.address.number} ${rest.address.street} ${rest.address.city}, ${rest.address.province}`
-            );
+            const directions = await getDirections(userAddressObj, rest.address);
             return {
+              address: rest.address,
               id: rest.asset_id,
               shape: "circularImage",
               image: rest.image,
@@ -34,91 +37,115 @@ export default function RestaurantExplorer({restaurants}) {
             };
           }));
 
-        setGraphData({
-            edges: calcEdges(nodes),
-            nodes: [
-            ...nodes,
-            {
-                id: "123",
-                shape: "icon",
-            
-                icon: {
-                face: "FontAwesome",
-                code: "\uf007",
-                size: 50,
-                color: "#4F95C8"
-                },
-                shadow: false,
-                label: user.firstName
-            
-            },
-            ],
+        setData({
+          nodes: nodes,
+          edges: calcEdges(nodes)
         });
 
-        net.once("stabilized", function () {
-            net.focus("123", {
-            animation: {
-                duration: 2000,
-                easingFunction: "linear",
-                },
-            scale: 1.5,
-            })
-        });
+
     }, []);
+
+    
+    // network?.current?.network?.once("stabilized", function () {
+    //   network.current.network.focus("123", {
+    //   animation: {
+    //       duration: 2000,
+    //       easingFunction: "linear",
+    //       },
+    //   scale: 1.5,
+    //   })
+    // });
+
+    const handleSelectNode = event =>{
+      console.log("event", event)
+  
+      let selectedNode = data.nodes.find(n=>n.id === (event.nodes ? event.nodes[0] : event.node));
+      if(!selectedNode) return;
+      selectedNode.font = { face: "Monospace", align: 'left'}
+      selectedNode.savedLabel = selectedNode.label && selectedNode.label.length > 0 ? selectedNode.label : selectedNode.savedLabel;
+      selectedNode.decorator = (props)=>{ return (RestaurantDecorator(props, selectedNode.savedLabel)) }
+      selectedNode.label=""
+      setData({
+        edges: [...data.edges],
+        nodes: [...data.nodes],
+      });
+    }
+
+    useEffect(()=>{
+      network?.current?.network?.on("selectNode", handleSelectNode)
+      network?.current?.network?.on("hoverNode", handleSelectNode)
+      return ()=>{
+        network?.current?.network?.off("selectNode", handleSelectNode)
+        network?.current?.network?.off("hoverNode", handleSelectNode)
+      }
+    }, [handleSelectNode])
+
+    const handleDeselectNode = event =>{
+      console.log("event unhover", event)
+      let selectedNode = data.nodes.find(n=>n.id === (event.previousSelection?.nodes ? event.previousSelection.nodes[0] : event.node));
+      if(!selectedNode) return;
+      selectedNode.label = selectedNode.savedLabel
+      selectedNode.decorator = (props)=>{ return (<></>) }
+
+      setData({
+        edges: [...data.edges],
+        nodes: [...data.nodes],
+      });
+    }
+
+    useEffect(()=>{
+      network?.current?.network?.on("deselectNode", handleDeselectNode)
+      network?.current?.network?.on("blurNode", handleDeselectNode)
+      return ()=>{
+        network?.current?.network?.off("deselectNode", handleDeselectNode)
+        network?.current?.network?.off("blurNode", handleDeselectNode)
+      }
+    }, [handleDeselectNode])
 
     const calcEdges = (nodes) => {
         let edges = [];
         nodes.filter((node) => node.id != "123").forEach((node) => {
           edges.push({
+            id: ((edges.length ?? 0) + 1).toString(),
             label: node.distance + " km",
             to: node.id,
             from: "123",
             length: 100 + node.distance * 10
           })
         })
-        console.log(edges)
         return edges;
     }
-    const events = {
-        selectNode: async function (event) {
-          var { nodes, edges } = event;
-          navigate(`/restaurant/home?id=${nodes[0]}`);
-          // console.log("nodes", nodes)
-          // // setGraphData()
-          // setGraphData(current=>{
-          //   let node = current.nodes.find(n=>n.id == nodes[0])
-          //   node.label="test"
-          //   console.log("new data",{
-          //     ...current, 
-          //     nodes: [
-          //       ...current.nodes
-          //     ]
-          //   })
-          //   return {
-          //     ...current, 
-          //     nodes: [
-          //       ...current.nodes
-          //     ]
-          //   }
-          // })
-          
-          // network.redraw();
-        },
-
-    };
 
     return (
-      <Paper elevation={3} className="mx-auto" style={{width:  "fit-content"}}>
-        <Graph
-            graph={graphData}
+      <div id="vis-container" style={{
+        maxWidth: "1900px", 
+        maxHeight:"1000px", 
+        margin: "auto", 
+        height: "calc(100vh - 295px)",
+        boxShadow: "1px 1px 10px grey"
+        }}>
+        <Network
+          ref={network}
             options={options}
-            events={events}
-            getNetwork={(_network) => {
-              net = _network;
-              setNetwork(_network);
-                //  if you want access to vis.js network api you can set the state in a parent component using this property
-            }}
-        />
-      </Paper>
+            // getNodes={getNodes}
+          > 
+          <Node id={123} label={user.firstName} shape={"icon"} 
+            icon={{
+              face: "FontAwesome",
+              code: "\uf007",
+              size: 50,
+              color: "#4F95C8"
+              }}
+            shadow={false}
+          />
+
+          {data.nodes?.map((node)=>{
+            return (<Node nodeobj={node} key={node.id} id={node.id} label={node.label} image={node.image} shape={node.shape} decorator={node.decorator} shadow={node.shadow}/>)
+            })}
+          {data.edges?.map((edge)=>{
+            return ( <Edge key={edge.id} label={edge.label} to={edge.to} from={edge.from}/>)
+          })}
+        </Network>
+      </div>
     )
 }
