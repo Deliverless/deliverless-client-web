@@ -2,7 +2,6 @@ import React, {useContext, useEffect, useState} from 'react'
 import CartItem from '../components/CartItem';
 import { CartContext } from '../lib/cartContext'
 import { Link } from 'react-router-dom';
-import Button from '@mui/material/Button';
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import Card from '@mui/material/Card';
@@ -14,6 +13,9 @@ import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
+import Cookies from 'universal-cookie'
+import {Button, TextField}  from '@mui/material';
+import { getAutoComplete } from '../lib/addressapi';
 
 import CheckoutForm from "../components/CheckoutForm";
 import "../StripeForm.css";
@@ -21,52 +23,31 @@ import "../StripeForm.css";
 const stripePromise = loadStripe("pk_test_51LiTBOHlhPKJMrfBUI52YU8nihPcSYlBkCHy46irESS7ev1J7vBI1rHNId6wM0kpZ5OybUNUwPvnT0GdyZo9xQG500i6jQAWVw");
 
 const Checkout = () =>{
+    
     const {total, cartItems, itemCount, clearCart, checkout, handleCheckout, increase} = useContext(CartContext);
-
 
     const [clientSecret, setClientSecret] = useState("");
 
     const steps = ['Verify Address', 'Subtotal + Tip', 'Details & Payment'];
 
   const [activeStep, setActiveStep] = React.useState(0);
-  const [skipped, setSkipped] = React.useState(new Set());
 
-  const isStepOptional = (step) => {
-    return step === 1;
-  };
+  const [errors, setErrors] = React.useState(null);
 
-  const isStepSkipped = (step) => {
-    return skipped.has(step);
-  };
+
+  const cookies = new Cookies();
+  const cookieAddress = cookies.get("Address");
+
+  const [address, setAddress] = useState(cookieAddress)
+
 
   const handleNext = () => {
-    let newSkipped = skipped;
-    if (isStepSkipped(activeStep)) {
-      newSkipped = new Set(newSkipped.values());
-      newSkipped.delete(activeStep);
-    }
-
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    setSkipped(newSkipped);
   };
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  };
-
-  const handleSkip = () => {
-    if (!isStepOptional(activeStep)) {
-      // You probably want to guard against something like this,
-      // it should never occur unless someone's actively trying to break something.
-      throw new Error("You can't skip a step that isn't optional.");
-    }
-
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    setSkipped((prevSkipped) => {
-      const newSkipped = new Set(prevSkipped.values());
-      newSkipped.add(activeStep);
-      return newSkipped;
-    });
+    setErrors(null)
   };
 
   const handleReset = () => {
@@ -74,6 +55,35 @@ const Checkout = () =>{
   };
 
 
+  const handleChange = (e, input) =>{
+		if (input === "housenumber")	setAddress({...address, housenumber: e.currentTarget.value})
+		else if (input === "street") setAddress({...address, street: e.currentTarget.value})
+		else if (input === "city") setAddress({...address, city: e.currentTarget.value})
+		else if (input === "postcode") setAddress({...address, postcode: e.currentTarget.value})
+		else if (input === "state_code") setAddress({...address, state_code: e.currentTarget.value})
+    else if (input === "country_code") setAddress({...address, country_code: e.currentTarget.value})
+	}
+
+  useEffect(() => {
+
+
+
+    if (activeStep === 1){
+
+      getAutoComplete(`${address.housenumber} ${address.street}, 
+    ${address.city}, ${address.state_code} ${address.postcode}, ${address.country_code} `)
+    .then(response => {
+      if(response.results.length > 0){
+        cookies.set("Address", response.results[0])
+      } else {
+        handleReset(0)
+        setErrors("Address does not exist, please try again.")
+      }
+    })
+
+    }
+
+  }, [activeStep])
 
     useEffect(() => {
         // Create PaymentIntent as soon as the page loads
@@ -110,9 +120,7 @@ const Checkout = () =>{
           const stepProps = {};
           const labelProps = {};
           
-          if (isStepSkipped(index)) {
-            stepProps.completed = false;
-          }
+          
           return (
             <Step key={label} {...stepProps}>
               <StepLabel {...labelProps}>{label}</StepLabel>
@@ -132,7 +140,8 @@ const Checkout = () =>{
         </React.Fragment>
       ) : (
         <React.Fragment>
-          <Typography sx={{ mt: 2, mb: 1 }}>Step {activeStep + 1}</Typography>
+
+
           <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
             <Button
               color="inherit"
@@ -148,84 +157,117 @@ const Checkout = () =>{
               {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
             </Button>
           </Box>
+
+          
+
+          {activeStep === 0 &&
+
+            
+            <div className="center-container" style={{textAlign: 'center', flexDirection: 'column'}}>
+            <h1>Confirm Delivery Address</h1>
+
+            {errors && <div className="alert alert-danger">{errors}</div>}
+            
+            <form className="form-group">
+          
+              <TextField onChange={(e) => handleChange(e, "housenumber")} autoFocus required style={{marginBottom: '20px'}} id="outlined-basic" label="Suite/House Number" variant="outlined" value={address.housenumber}  /><br/>	
+              <TextField onChange={(e) => handleChange(e, "street")} required style={{marginBottom: '20px'}} id="outlined-basic" label="Street" variant="outlined" value={address.street}  /><br/>	
+              <TextField onChange={(e) => handleChange(e, "city")} required style={{marginBottom: '20px'}} id="outlined-basic" label="City" variant="outlined" value={address.city}  /><br/>	
+              <TextField onChange={(e) => handleChange(e, "postcode")} required style={{marginBottom: '20px'}} id="outlined-basic" label="Postal Code" variant="outlined" value={address.postcode}  /><br/>	
+              <TextField onChange={(e) => handleChange(e, "state_code")} required style={{marginBottom: '20px'}} id="outlined-basic" label="Province" variant="outlined" value={address.state_code}  /><br/>
+              <TextField onChange={(e) => handleChange(e, "country_code")} required style={{marginBottom: '20px'}} id="outlined-basic" label="Country" variant="outlined" value={address.country_code}  /><br/>
+      
+      
+            </form>
+          </div>
+          }
+
+          {activeStep === 1 &&
+                  <h2>
+                    Subtotal + Tip
+                  </h2>
+
+          
+          } 
+
+          {activeStep === 2 &&
+
+          <div className="row no-gutters justify-content-center">
+          <div className="col-sm-8 p-3">
+            {cartItems.length > 0 ? (
+              cartItems.map((food) => (
+
+            <Card sx={{ maxWidth: 345 }}>
+                  <CardActionArea>
+                    <CardMedia
+                      component="img"
+                      height="100"
+                      image={food.photoUrl}
+                      alt={food.food}
+                    />
+                    <CardContent>
+                      <Typography gutterBottom variant="h5" component="div">
+                        {food.title}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {
+                        food.selOptions.map(opt =>(opt + ", "))
+                        }
+                      </Typography>
+                    </CardContent>
+                  </CardActionArea>
+                </Card>
+
+              ))
+            ) : (
+              <div className="p-3 text-center text-muted">
+                Your cart is empty!
+              </div>
+            )}
+
+            
+          </div>
+
+          {cartItems.length > 0 && (
+            <div className="col-sm-4 p-3">
+              <div className="card card-body">
+                <p className="mb-1">Total Items</p>
+                <h4 className=" mb-3 txt-right">{itemCount}</h4>
+                <p className="mb-1">Total Payment</p>
+                <h3 className="m-0 txt-right">{total}</h3>
+                <hr className="my-4" />
+                <div className="text-center">
+                  <p>
+                  </p>
+                  <Button
+                    type="button"
+                    variant="outlined"
+                    onClick={clearCart}
+                  >
+                    CLEAR
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+          <div className="App">
+              {clientSecret && (
+                <Elements options={options} stripe={stripePromise}>
+                  <CheckoutForm handleCheckout={handleCheckout} />
+                </Elements>
+              )}
+              </div>
+          </div>
+
+                }
+
         </React.Fragment>
       )}
     </Box>
 
 
-          <div className="row no-gutters justify-content-center">
-            <div className="col-sm-8 p-3">
-              {cartItems.length > 0 ? (
-                cartItems.map((food) => (
-
-              <Card sx={{ maxWidth: 345 }}>
-                    <CardActionArea>
-                      <CardMedia
-                        component="img"
-                        height="100"
-                        image={food.photoUrl}
-                        alt={food.food}
-                      />
-                      <CardContent>
-                        <Typography gutterBottom variant="h5" component="div">
-                          {food.title}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          {
-                          food.selOptions.map(opt =>(opt + ", "))
-                          }
-                        </Typography>
-                      </CardContent>
-                    </CardActionArea>
-                  </Card>
-
-
-                  // <CartItem
-                  //   key={food.id}
-                  //   food={food}
-                  //   options={food.selOptions}
-                  // />
-                ))
-              ) : (
-                <div className="p-3 text-center text-muted">
-                  Your cart is empty!
-                </div>
-              )}
-
-              
-            </div>
-            {cartItems.length > 0 && (
-              <div className="col-sm-4 p-3">
-                <div className="card card-body">
-                  <p className="mb-1">Total Items</p>
-                  <h4 className=" mb-3 txt-right">{itemCount}</h4>
-                  <p className="mb-1">Total Payment</p>
-                  <h3 className="m-0 txt-right">{total}</h3>
-                  <hr className="my-4" />
-                  <div className="text-center">
-                    <p>
-                    </p>
-                    <Button
-                      type="button"
-                      variant="outlined"
-                      onClick={clearCart}
-                    >
-                      CLEAR
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
         </div>
 
-        <div className="App">
-          {clientSecret && (
-            <Elements options={options} stripe={stripePromise}>
-              <CheckoutForm handleCheckout={handleCheckout} />
-            </Elements>
-          )}
-        </div>
       </div>
     );
     

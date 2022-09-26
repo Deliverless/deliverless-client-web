@@ -5,6 +5,7 @@ import Box from '@mui/material/Box';
 import { textAlign } from '@mui/system';
 import Button from '@mui/material/Button';
 import {ReactComponent as Checkmark} from '../check.svg'
+import { Link } from 'react-router-dom';
 
 function ThankYou() {
 
@@ -33,7 +34,7 @@ useEffect(() => {
   }}>
       Your order has been successfully placed, a driver is being located.
     </Typography>
-    <Button variant="contained" sx={{ marginTop: 10,}}>RETURN TO HOME</Button>
+    <Button variant="contained" component={Link} to="/" sx={{ marginTop: 10,}}>RETURN TO HOME</Button>
     </div>
     );
   }
