@@ -42,7 +42,7 @@ export default function RestaurantAutoComplete() {
             id="combo-box-demo"
             options={options}
             sx={{ width: 300 }}
-            renderInput={(params) => <TextField {...params} label="What the fuck do u want to eat" />}
+            renderInput={(params) => <TextField {...params} label="Where do you want to eat?" />}
           />
         </Box>
       </FormControl>
