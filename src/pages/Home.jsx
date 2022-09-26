@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import RestaurantCards from "../components/RestaurantCards";
 import Toggle from '../components/Toggle'
 import { retrieveAllRestaurants } from "../smartcontracts/entities/restaurant";
@@ -15,18 +15,21 @@ const Home = () => {
         rest.data.asset_id = rest.id;
         return rest.data;
       });
-      console.log(parsedRests);
+      console.log(parsedRests)
       setRestaurants(parsedRests);
+
     });
   }, []);
 
   return (
     <div className="main-content">
       <h1 className="center-container">Explore Restaurants</h1>
-      {restaurants.length > 0 && (
-        <>
-          <RestaurantCards restaurants={restaurants} />{" "}
-        </>
+      <h4 className="center-container">In the Blockchain near you</h4>
+      <RestaurantAutoComplete />
+      <Toggle checked={listView} onChange={setListView}/>
+
+      {(listView && restaurants.length > 0) && (
+        <RestaurantCards restaurants={restaurants} />
       )}
 
       {!listView && (
