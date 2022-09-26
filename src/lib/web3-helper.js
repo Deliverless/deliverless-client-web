@@ -28,55 +28,65 @@ const contractBigchaindb = new web3.eth.Contract(abi.abiBigchaindb, address);
 
 
 // creates new object in the database
-const createNewObject = async (modelName, metadataJson) => {
+export const createNewObject = async (modelName, metadataJson) => {
     // call(send) function within smart contract
     const receipt = await contractBigchaindb.methods.requestNewObject(modelName, JSON.stringify(metadataJson), "").send({ from: account.address, gas: 3000000 });
     // requestId from Chainlink
     const requestId = getRequestId(receipt); console.log('requestId', requestId);
     // return response from Chainlink
-    const response = await requestResponse(requestId); console.log('response', response);
+    const response = await requestResponse(requestId);
+    console.log('response', response);
+    return response;
 }
 
 // TODO: fix data limit
 // grab all objects in the database is not working because of size of the data (in-progress)
-const getObjectById = async (modelName, assetId) => {
+export const getObjectById = async (modelName, assetId) => {
     // call(send) function within smart contract
     const receipt = await contractBigchaindb.methods.requestGetObject(modelName, assetId, "").send({ from: account.address, gas: 3000000 });
     // requestId from Chainlink
     const requestId = getRequestId(receipt); console.log('requestId', requestId);
     // return response from Chainlink
-    const response = await requestResponse(requestId); console.log('response', response);
+    const response = await requestResponse(requestId);
+    console.log('response', response);
+    return response;
 }
 
 // TODO: fix data limit
 // find object(s) in the database by metadata (limited to 1 for now)
-const findObjectByMetadata = async (modelName, metadataJson) => {
+export const findObjectByMetadata = async (modelName, metadataJson) => {
     // call(send) function within smart contract
     const receipt = await contractBigchaindb.methods.requestFindObject(modelName, JSON.stringify(metadataJson), 1, "").send({ from: account.address, gas: 3000000 });
     // requestId from Chainlink
     const requestId = getRequestId(receipt); console.log('requestId', requestId);
     // return response from Chainlink
-    const response = await requestResponse(requestId); console.log('response', response);
+    const response = await requestResponse(requestId);
+    console.log('response', response);
+    return response;
 }
 
 // append metadata to object(asset) in the database
-const updateObject = async (modelName, assetId, metadataJson) => {
+export const updateObject = async (modelName, assetId, metadataJson) => {
     // call(send) function within smart contract
     const receipt = await contractBigchaindb.methods.requestAppendObject(modelName, assetId, JSON.stringify(metadataJson), "").send({ from: account.address, gas: 3000000 });
     // requestId from Chainlink
     const requestId = getRequestId(receipt); console.log('requestId', requestId);
     // return response from Chainlink
-    const response = await requestResponse(requestId); console.log('response', response);
+    const response = await requestResponse(requestId);
+    console.log('response', response);
+    return response;
 }
 
 // burn object from the database
-const deleteObject = async (modelName, assetId) => {
+export const deleteObject = async (modelName, assetId) => {
     // call(send) function within smart contract
     const receipt = await contractBigchaindb.methods.requestBurnObject(modelName, assetId).send({ from: account.address, gas: 3000000 });
     // requestId from Chainlink
     const requestId = getRequestId(receipt); console.log('requestId', requestId);
     // return response from Chainlink
-    const response = await requestResponse(requestId); console.log('response', response);
+    const response = await requestResponse(requestId);
+    console.log('response', response);
+    return response;
 }
 
 // Helper Functions
@@ -119,7 +129,7 @@ const requestResponse = async (requestId) => {
         const parsedResponse = JSON.parse(extractText);
         return parsedResponse;
     } else {
-        { }
+        return null;
     }
 }
 
@@ -140,7 +150,7 @@ const metadataObject = {
 }
 
 
-createNewObject('user', metadataObject);
+// createNewObject('user', metadataObject);
 // getObjectById('user', 'id:global:user:c1552c51-bccc-4ff7-ac60-a4b7cd78e40e');
 // findObjectByMetadata('user', metadataObject);
 // updateObject('user', 'id:global:user:835249bc-14d3-4210-a10f-5abacdd9b4d6', metadataObject);
