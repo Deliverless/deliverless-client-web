@@ -105,7 +105,7 @@ const ResponsiveAppBar = () => {
 
   const filteredPages = appBarLinks.filter((l)=>{
     if(Object.keys(user).length === 0) return !l.isAuth //unauthenticated
-    return (l.role === undefined && l.isAuth) || (l.role === user?.role || (user?.isAdmin && l.role === 'admin'))  //load authenticated pages, add pages that match user role, if admin add admin privilege pages, 
+    return (l.role === undefined && l.isAuth) || (l.role === user?.role || l.role === 'admin')  //load authenticated pages, add pages that match user role, if admin add admin privilege pages, 
   })
 
   return (

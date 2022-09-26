@@ -1,16 +1,24 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import RestaurantCards from "../components/RestaurantCards";
+import Toggle from '../components/Toggle'
 import { getEthereumPrice, getGasBalance } from "../smartcontracts/web3Helper";
+import { updateUser } from "../smartcontracts/entities/user"
 import {
   create,
   retrieveAllRestaurants,
-  updateRestaurant 
+  updateRestaurant,
 } from "../smartcontracts/entities/restaurant";
+import RestaurantExplorer from "../components/RestaurantExplorer";
+import RestaurantAutoComplete from "../components/RestaurantAutoComplete";
 
 const Home = () => {
-  const [price, setPrice] = useState(0);
-  const [gas, setGas] = useState(0);
+  let net;
+  const [listView, setListView] = useState(true);
+  // const [price, setPrice] = useState(0);
+  // const [gas, setGas] = useState(0);
   const [restaurants, setRestaurants] = useState([]);
+
+
   const rest = {
     name: "Burger King",
     address: {
@@ -291,33 +299,55 @@ const Home = () => {
     rating: "4.5",
     reviews: [],
     image:
-      "https://images.squarespace-cdn.com/content/v1/578ce85a29687f705d94f1a2/1533268082201-46YNRM7B1AM67XM8MMKM/OrderHereSign.jpg?format=1500w",
+      "https://www.designyourway.net/blog/wp-content/uploads/2019/10/s1-3-7.jpg",
   };
 
   useEffect(async () => {
     // setGas(await getGasBalance())
-    retrieveAllRestaurants().then((rests) => {
-      console.log(rests);
+    retrieveAllRestaurants().then(async (rests) => {
       let parsedRests = rests.map((rest) => {
         rest.data.asset_id = rest.id;
         return rest.data;
       });
-      console.log(parsedRests);
+      console.log(parsedRests)
       setRestaurants(parsedRests);
+
     });
   }, []);
 
   return (
     <div className="main-content">
       <h1 className="center-container">Explore Restaurants</h1>
-      {restaurants.length > 0 && (
-        <>
-          <RestaurantCards restaurants={restaurants} />{" "}
-        </>
+      <h4 className="center-container">In the Blockchain near you</h4>
+      <RestaurantAutoComplete />
+      <Toggle checked={listView} onChange={setListView}/>
+
+      {(listView && restaurants.length > 0) && (
+        <RestaurantCards restaurants={restaurants} />
       )}
+
+      {!listView && (
+        <RestaurantExplorer restaurants={restaurants}/>
+      )}
+      
       {/* <p><b>Price:</b> ${price} USD</p> */}
       {/* <p><b>Gas Balance:</b> {gas}</p> */}
       {/* <button onClick={async()=>{setPrice(await getEthereumPrice())}}>Get Current Ethereum USD Price</button> */}
+      {/* <button onClick={()=>updateRestaurant("id:global:restaurants:d939ce72-474f-4abe-b2cf-dc1f9227662c", 
+      {
+        address: {
+          "city": "Burlington",
+          "country": "CA",
+          "number": 1435,
+          "province": "ON",
+          "street": "Plains Rd E",
+          lat: "43.338031",
+          lon: "-79.818033"
+        },
+    
+      }
+      )}>update boyz</button> */}
+
     </div>
   );
 };

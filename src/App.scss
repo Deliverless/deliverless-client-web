@@ -74,3 +74,61 @@ $green: #f0f8ec;
 h1 {
 	padding: 20px;
 }
+
+#vis-container{
+	// border: 1px solid red;
+	width: calc(100vw - 200px); 
+	box-shadow: 1px 1px 10px grey;
+}
+
+.fade-in {
+	animation: fadein 1s;
+    -moz-animation: fadein 1s;
+    /* Firefox */
+    -webkit-animation: fadein 1s;
+    /* Safari and Chrome */
+    -o-animation: fadein 1s;
+    /* Opera */
+}
+
+@media only screen and (max-width: 600px) {
+	#vis-container{
+		width: 100%;
+	}
+}
+
+@keyframes fadein {
+    from {
+        opacity:0;
+    }
+    to {
+        opacity:1;
+    }
+}
+@-moz-keyframes fadein {
+    /* Firefox */
+    from {
+        opacity:0;
+    }
+    to {
+        opacity:1;
+    }
+}
+@-webkit-keyframes fadein {
+    /* Safari and Chrome */
+    from {
+        opacity:0;
+    }
+    to {
+        opacity:1;
+    }
+}
+@-o-keyframes fadein {
+    /* Opera */
+    from {
+        opacity:0;
+    }
+    to {
+        opacity: 1;
+    }
+}
