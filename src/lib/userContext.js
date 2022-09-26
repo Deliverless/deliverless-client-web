@@ -9,7 +9,7 @@ const initialState = { user: storage, ...setUser(storage) };
 
 export const useAuthorized = (privilege) => {
     const user = useContext(UserContext)?.user
-    return user?.role === privilege || user?.isAdmin;
+    return user?.role === privilege || user?.role == "admin";
 }
 
 export const useLogin = async ({ username, password }) => {
