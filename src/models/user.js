@@ -3,6 +3,12 @@ import sha256 from 'sha256'
 import userSchema from '../metadata_schemas/User.json'
 import Orm from 'bigchaindb-orm'
 
+export default class User {
+    constructor() {
+
+    }
+}
+
 function bigchainORMClient(modelName, schema) {
     const bdbOrm = new Orm("http://24.150.93.243:9984/api/v1/")
     bdbOrm.define(modelName, schema)
@@ -46,7 +52,6 @@ export const updateEncoded = async (email, password, newEncoded) => {
     const asset = await login(email, password)
     console.log("OLD ENCODED", asset[0].data.encoded)
     console.log("to be encoded", newEncoded)
-
 
     await asset[0].append({
         toPublicKey: asset[0].data.key_pair.publicKey,

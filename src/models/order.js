@@ -1,6 +1,12 @@
 import orderSchema from '../metadata_schemas/Order.json'
 import Orm from 'bigchaindb-orm'
 
+export default class Order {
+    constructor() {
+
+    }
+}
+
 function bigchainORMClient(modelName, schema) {
     const bdbOrm = new Orm("http://24.150.93.243:9984/api/v1/")
     bdbOrm.define(modelName, schema)
