@@ -4,13 +4,16 @@ import Toggle from '../components/Toggle'
 import { findObjectByMetadata } from "../lib/web3-helper";
 import RestaurantExplorer from "../components/RestaurantExplorer";
 import RestaurantAutoComplete from "../components/RestaurantAutoComplete";
+import { getObjectById } from "../lib/web3-helper";
 
 const Home = () => {
   const [listView, setListView] = useState(true);
   const [restaurants, setRestaurants] = useState([]);
 
   useEffect(async () => {
-    // findObjectByMetadata("restaurants", {}).then(async (rests) => {
+   console.log("restaurants FETCHED", await getObjectById("restaurants", ""))
+    
+    // .then(async (rests) => {
     //   let parsedRests = rests.map((rest) => {
     //     rest.data.asset_id = rest.id;
     //     return rest.data;

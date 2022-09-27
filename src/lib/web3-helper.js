@@ -22,7 +22,6 @@ const getWeb3Client = async () => {
     // get the balance of the account 
     const balance = await web3.eth.getBalance(account.address);
     console.log('account loaded successfuly and balance is:', balance);
-    // bigchaindb address '../contracts/bigchaindb.json'
     const address = process.env.REACT_APP_CONTRACTS_BIGCHAINDB_ADDRESS
     // initialize the contract
     const contractBigchaindb = new web3.eth.Contract(abi.abiBigchaindb, address);
@@ -44,7 +43,6 @@ export const createNewObject = async (modelName, metadataJson) => {
     const requestId = getRequestId(receipt); console.log('requestId', requestId);
     // return response from Chainlink
     const response = await requestResponse(requestId);
-    console.log('response', response);
     return response;
 }
 
@@ -57,8 +55,7 @@ export const getObjectById = async (modelName, assetId) => {
     // requestId from Chainlink
     const requestId = getRequestId(receipt); console.log('requestId', requestId);
     // return response from Chainlink
-    const response = await requestResponse(requestId);
-    console.log('response', response);
+    const response = await requestResponse(requestId, client);
     return response;
 }
 
@@ -71,8 +68,7 @@ export const findObjectByMetadata = async (modelName, metadataJson) => {
     // requestId from Chainlink
     const requestId = getRequestId(receipt); console.log('requestId', requestId);
     // return response from Chainlink
-    const response = await requestResponse(requestId);
-    console.log('response', response);
+    const response = await requestResponse(requestId, client);
     return response;
 }
 
@@ -84,8 +80,7 @@ export const updateObject = async (modelName, assetId, metadataJson) => {
     // requestId from Chainlink
     const requestId = getRequestId(receipt); console.log('requestId', requestId);
     // return response from Chainlink
-    const response = await requestResponse(requestId);
-    console.log('response', response);
+    const response = await requestResponse(requestId, client);
     return response;
 }
 
@@ -97,8 +92,7 @@ export const deleteObject = async (modelName, assetId) => {
     // requestId from Chainlink
     const requestId = getRequestId(receipt); console.log('requestId', requestId);
     // return response from Chainlink
-    const response = await requestResponse(requestId);
-    console.log('response', response);
+    const response = await requestResponse(requestId, client);
     return response;
 }
 
@@ -116,7 +110,7 @@ const requestResponse = async (requestId) => {
         setTimeout(async () => {
             for (let i = 0; i < 60 / 0.3; i++) {
                 const results = await operatorContract.getPastEvents(
-                    'DeliverlessRequest',
+                    'DeliverlessResponse',
                     {
                         fromBlock: 0,
                         filter: { requestId: String(requestId) }
@@ -141,6 +135,7 @@ const requestResponse = async (requestId) => {
         const data = Buffer.from(event.returnValues.data.slice(2), 'hex').toString('ascii');
         const extractText = data.match(/{.*}/g);
         const parsedResponse = JSON.parse(extractText);
+        parsedResponse.data = JSON.parse(parsedResponse.data);
         return parsedResponse;
     } else {
         return null;
@@ -165,7 +160,7 @@ const metadataObject = {
 
 
 // createNewObject('user', metadataObject);
-// getObjectById('user', 'id:global:user:c1552c51-bccc-4ff7-ac60-a4b7cd78e40e');
+// getObjectById('user', 'id:global:user:8459dad6-f04d-4d63-97e4-61d1c0c4ca73');
 // findObjectByMetadata('user', metadataObject);
 // updateObject('user', 'id:global:user:835249bc-14d3-4210-a10f-5abacdd9b4d6', metadataObject);
 // deleteObject('user', 'id:global:user:c1552c51-bccc-4ff7-ac60-a4b7cd78e40e');
