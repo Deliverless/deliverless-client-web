@@ -1,7 +1,7 @@
 import React from 'react'
 import {Button, TextField}  from '@mui/material';
 import http from '../lib/api';
-import { create } from '../smartcontracts/entities/user'
+// import { create } from '../smartcontracts/entities/user'
 
 const SignUp = () => {
 
@@ -30,14 +30,14 @@ const SignUp = () => {
 			email: email,
 			password: password
 		}
-		create(signUpObj).then((newUser)=>{
-			setFName("");
-			setLName("");
-			setPhone("");
-			setEmail("");
-			setPassword("");
-			setMsg('Success');
-		});
+		// create(signUpObj).then((newUser)=>{
+		// 	setFName("");
+		// 	setLName("");
+		// 	setPhone("");
+		// 	setEmail("");
+		// 	setPassword("");
+		// 	setMsg('Success');
+		// });
 
 	}
 

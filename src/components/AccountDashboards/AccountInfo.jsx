@@ -1,6 +1,6 @@
 import React, { useContext, useEffect} from 'react'
 import { TextField, Button } from '@mui/material';
-import { updateUser } from '../../smartcontracts/entities/user'
+// import { updateUser } from '../../smartcontracts/entities/user'
 import { UserContext, useAuthorized } from '../../lib/userContext'
 
 const AccountInfo = ({firstName, lastName, email, address, encoded}) => {
@@ -73,12 +73,12 @@ const AccountInfo = ({firstName, lastName, email, address, encoded}) => {
 		console.table(newData)
 		console.log("encoded",encoded)
 		if(Object.keys(newData).length > 0){
-			updateUser(encoded,{...newData}).then((updatedAsset)=>{
-				setMsg('Success')
-				setUser(updatedAsset.data)
-				setDefaultValues({firstname:updatedAsset.data.firstName, lastname:updatedAsset.data.lastName, email:updatedAsset.data.email, address:updatedAsset.data.address})
-				setChangeFlags({firstName:false, lastName:false, email:false, address:false})
-			});
+			// updateUser(encoded,{...newData}).then((updatedAsset)=>{
+			// 	setMsg('Success')
+			// 	setUser(updatedAsset.data)
+			// 	setDefaultValues({firstname:updatedAsset.data.firstName, lastname:updatedAsset.data.lastName, email:updatedAsset.data.email, address:updatedAsset.data.address})
+			// 	setChangeFlags({firstName:false, lastName:false, email:false, address:false})
+			// });
 		}
 		
 			

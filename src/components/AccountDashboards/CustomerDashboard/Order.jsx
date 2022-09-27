@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {Button}  from '@mui/material';
-import { retrieve } from '../../../smartcontracts/entities/restaurant'
+// import { retrieve } from '../../../smartcontracts/entities/restaurant'
 
 
 const Order = ({key, image, itemCount, foods, total,tax, restaurantID, timePlaced, status}) => {
@@ -12,10 +12,10 @@ const Order = ({key, image, itemCount, foods, total,tax, restaurantID, timePlace
 	}, [])
 
 	const getRestaurant = async ()=> {
-		const restaurant = await retrieve(restaurantID);
-		console.log("restaurantID",restaurantID)
-		setOrderRestaurant(restaurant[0].data)
-		setRestaurantImg(restaurant[0].data.image)
+		// const restaurant = await retrieve(restaurantID);
+		// console.log("restaurantID",restaurantID)
+		// setOrderRestaurant(restaurant[0].data)
+		// setRestaurantImg(restaurant[0].data.image)
 		
 	}
 
