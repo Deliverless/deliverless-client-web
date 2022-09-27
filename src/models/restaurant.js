@@ -6,8 +6,14 @@ import { useContext } from 'react'
 import { UserContext } from '../../lib/userContext'
 
 export default class Restaurant {
-    constructor() {
-
+    constructor(name, addressId, hours, itemIds, rating, reviewIds, image) {
+        this.name = name;
+        this.addressId = addressId;
+        this.hours = hours;
+        this.itemIds = itemIds;
+        this.rating = rating;
+        this.reviewIds = reviewIds;
+        this.image = image;
     }
 }
 

@@ -2,8 +2,22 @@ import orderSchema from '../metadata_schemas/Order.json'
 import Orm from 'bigchaindb-orm'
 
 export default class Order {
-    constructor() {
-
+    constructor(userId, driverId, restaurantId, transactionId, addressId, isPickup,
+        status, discount, tax, driverFee, subtotal, total, timestamp, items) {
+        this.userId = userId;
+        this.driverId = driverId;
+        this.restaurantId = restaurantId;
+        this.transactionId = transactionId;
+        this.addressId = addressId;
+        this.isPickup = isPickup;
+        this.status = status;
+        this.discount = discount;
+        this.tax = tax;
+        this.driverFee = driverFee;
+        this.subtotal = subtotal;
+        this.total = total;
+        this.timestamp = timestamp;
+        this.items = items;
     }
 }
 

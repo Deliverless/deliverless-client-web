@@ -4,8 +4,16 @@ import userSchema from '../metadata_schemas/User.json'
 import Orm from 'bigchaindb-orm'
 
 export default class User {
-    constructor() {
-
+    constructor(role, firstName, lastName, birthday, email, addressIds, phone, encoded, images) {
+        this.role = role;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.birthday = birthday;
+        this.email = email;
+        this.addressIds = addressIds;
+        this.phone = phone;
+        this.encoded = encoded;
+        this.images = images;
     }
 }
 
