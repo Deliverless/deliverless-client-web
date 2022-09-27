@@ -16,6 +16,15 @@ import StepLabel from '@mui/material/StepLabel';
 import Cookies from 'universal-cookie'
 import {Button, TextField}  from '@mui/material';
 import { getAutoComplete } from '../lib/addressapi';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import Divider from '@mui/material/Divider';
+import ListItemText from '@mui/material/ListItemText';
+import ListItemAvatar from '@mui/material/ListItemAvatar';
+import Avatar from '@mui/material/Avatar';
+import ToggleButton from '@mui/material/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
 
 import CheckoutForm from "../components/CheckoutForm";
 import "../StripeForm.css";
@@ -30,9 +39,15 @@ const Checkout = () =>{
 
     const steps = ['Verify Address', 'Subtotal + Tip', 'Details & Payment'];
 
-  const [activeStep, setActiveStep] = React.useState(0);
+  const [activeStep, setActiveStep] = useState(0);
 
-  const [errors, setErrors] = React.useState(null);
+  const [errors, setErrors] = useState(null);
+
+  const[paymentTotal, setPaymentTotal] = useState(0);
+
+  const[tip, setTip] = useState(0.15);
+
+  const[tipAmt, setTipAmt] = useState(0);
 
 
   const cookies = new Cookies();
@@ -52,6 +67,12 @@ const Checkout = () =>{
 
   const handleReset = () => {
     setActiveStep(0);
+  };
+
+  const handleTip = (event, newTip) => {
+    if (newTip !== null){
+    setTip(newTip);
+  }
   };
 
 
@@ -114,12 +135,11 @@ const Checkout = () =>{
             <h1>Checkout</h1>
           </div>
 
-          <Box sx={{ width: '100%' }}>
+          <Box sx={{ width: "100%" }}>
       <Stepper activeStep={activeStep}>
         {steps.map((label, index) => {
           const stepProps = {};
           const labelProps = {};
-          
           
           return (
             <Step key={label} {...stepProps}>
@@ -133,16 +153,14 @@ const Checkout = () =>{
           <Typography sx={{ mt: 2, mb: 1 }}>
             All steps completed - you&apos;re finished
           </Typography>
-          <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-            <Box sx={{ flex: '1 1 auto' }} />
+                <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
+                  <Box sx={{ flex: "1 1 auto" }} />
             <Button onClick={handleReset}>Reset</Button>
           </Box>
         </React.Fragment>
       ) : (
         <React.Fragment>
-
-
-          <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+                <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
             <Button
               color="inherit"
               disabled={activeStep === 0}
@@ -151,94 +169,322 @@ const Checkout = () =>{
             >
               Back
             </Button>
-            <Box sx={{ flex: '1 1 auto' }} />
+                  <Box sx={{ flex: "1 1 auto" }} />
 
             <Button onClick={handleNext}>
-              {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                    {activeStep === steps.length - 1 ? "Finish" : "Next"}
             </Button>
           </Box>
 
-          
-
-          {activeStep === 0 &&
-
-            
-            <div className="center-container" style={{textAlign: 'center', flexDirection: 'column'}}>
+                {activeStep === 0 && (
+                  <div
+                    className="center-container"
+                    style={{ textAlign: "center", flexDirection: "column" }}
+                  >
             <h1>Confirm Delivery Address</h1>
 
-            {errors && <div className="alert alert-danger">{errors}</div>}
+                    {errors && (
+                      <div className="alert alert-danger">{errors}</div>
+                    )}
             
             <form className="form-group">
+                      <TextField
+                        onChange={(e) => handleChange(e, "housenumber")}
+                        autoFocus
+                        required
+                        style={{ marginBottom: "20px" }}
+                        id="outlined-basic"
+                        label="Suite/House Number"
+                        variant="outlined"
+                        value={address.housenumber}
+                      />
+                      <br />
+                      <TextField
+                        onChange={(e) => handleChange(e, "street")}
+                        required
+                        style={{ marginBottom: "20px" }}
+                        id="outlined-basic"
+                        label="Street"
+                        variant="outlined"
+                        value={address.street}
+                      />
+                      <br />
+                      <TextField
+                        onChange={(e) => handleChange(e, "city")}
+                        required
+                        style={{ marginBottom: "20px" }}
+                        id="outlined-basic"
+                        label="City"
+                        variant="outlined"
+                        value={address.city}
+                      />
+                      <br />
+                      <TextField
+                        onChange={(e) => handleChange(e, "postcode")}
+                        required
+                        style={{ marginBottom: "20px" }}
+                        id="outlined-basic"
+                        label="Postal Code"
+                        variant="outlined"
+                        value={address.postcode}
+                      />
+                      <br />
+                      <TextField
+                        onChange={(e) => handleChange(e, "state_code")}
+                        required
+                        style={{ marginBottom: "20px" }}
+                        id="outlined-basic"
+                        label="Province"
+                        variant="outlined"
+                        value={address.state_code}
+                      />
+                      <br />
+                      <TextField
+                        onChange={(e) => handleChange(e, "country_code")}
+                        required
+                        style={{ marginBottom: "20px" }}
+                        id="outlined-basic"
+                        label="Country"
+                        variant="outlined"
+                        value={address.country_code}
+                      />
+                      <br />
+                    </form>
+                  </div>
+                )}
           
-              <TextField onChange={(e) => handleChange(e, "housenumber")} autoFocus required style={{marginBottom: '20px'}} id="outlined-basic" label="Suite/House Number" variant="outlined" value={address.housenumber}  /><br/>	
-              <TextField onChange={(e) => handleChange(e, "street")} required style={{marginBottom: '20px'}} id="outlined-basic" label="Street" variant="outlined" value={address.street}  /><br/>	
-              <TextField onChange={(e) => handleChange(e, "city")} required style={{marginBottom: '20px'}} id="outlined-basic" label="City" variant="outlined" value={address.city}  /><br/>	
-              <TextField onChange={(e) => handleChange(e, "postcode")} required style={{marginBottom: '20px'}} id="outlined-basic" label="Postal Code" variant="outlined" value={address.postcode}  /><br/>	
-              <TextField onChange={(e) => handleChange(e, "state_code")} required style={{marginBottom: '20px'}} id="outlined-basic" label="Province" variant="outlined" value={address.state_code}  /><br/>
-              <TextField onChange={(e) => handleChange(e, "country_code")} required style={{marginBottom: '20px'}} id="outlined-basic" label="Country" variant="outlined" value={address.country_code}  /><br/>
-      
-      
-            </form>
-          </div>
-          }
+                {activeStep === 1 && (
+                  <div className="row no-gutters justify-content-center">
+                    <div className="col-sm-6 p-3" style={{overflow: 'scroll', height: '400px'}}>
+                      {cartItems.length > 0 ? (
+                        cartItems.map((food) => (
+                          <Card sx={{ maxWidth: 345 }}>
+                            <List
+                              sx={{
+                                width: "100%",
+                                maxWidth: 360,
+                                bgcolor: "background.paper",
+                              }}
+                            >
+                              <ListItem alignItems="flex-start">
+                                <ListItemAvatar>
+                                  <Avatar alt={food.food} src={food.photoUrl} />
+                                </ListItemAvatar>
+                                <ListItemText
+                                  primary={food.title}
+                                  secondary={
+                                    <React.Fragment>
+                                      <Typography
+                                        sx={{ display: "inline" }}
+                                        component="span"
+                                        variant="body2"
+                                        color="text.primary"
+                                      >
+                                        {food.selOptions.map(
+                                          (opt) => opt + ", "
+                                        )}
+                                      </Typography>
+                                      <Typography
+                                        sx={{ display: "block" }}
+                                        component="span"
+                                        variant="body2"
+                                        color="text.secondary"
+                                      >
+                                        {`$` + food.price}
+                                      </Typography>
+                                      <Typography
+                                        sx={{ display: "block" }}
+                                        component="span"
+                                        variant="body2"
+                                        color="text.secondary"
+                                      >
+                                        {`Qty: ` + food.quantity}
+                                      </Typography>
+                                    </React.Fragment>
+                                  }
+                                />
+                              </ListItem>
+                              <Divider variant="inset" component="li" />
+                            </List>
+                          </Card>
+                        ))
+                      ) : (
+                        <div className="p-3 text-center text-muted">
+                          Your cart is empty!
+                        </div>
+                      )}
+                    </div>
 
-          {activeStep === 1 &&
-                  <h2>
-                    Subtotal + Tip
-                  </h2>
+                    {cartItems.length > 0 && (
+                      <div className="col-sm-4 col-lg-5 p-2" style={{minHeight: "400px", height: "100%"}}>
+                        <div className="card card-body" style={{minHeight: "400px", height: "100%"}}>
+                          <p className="mb-1 w-100">Total Items:<div className=" m-0 float-right">{itemCount}</div></p>
+                          <p className="mb-1">Subtotal: <div className="m-0 float-right">${total}</div></p>
+                          <p className="mb-1">Tax: <div className="m-0 float-right">$
+                            {Math.round((total * 0.13 + Number.EPSILON) * 100) /
+                              100}
+                          </div></p>
+                          <p className="mb-1">Tip: <div className="m-0 float-right">${Math.round((total * tip + Number.EPSILON) * 100) /
+                              100}</div></p>
+                          <hr className="my-4" />
+                          <ToggleButtonGroup
+                            value={tip}
+                            exclusive
+                            onChange={handleTip}
+                            sx={{display: "flex",
+                            justifyContent: "center",}}
+                          >
+                            <ToggleButton
+                              value={0.15}
+      
+                            >
+                              %15
+                            </ToggleButton>
+                            <ToggleButton value={0.18} >
+                              %18
+                            </ToggleButton>
+                            <ToggleButton
+                              value={0.20}
+
+                            >
+                              %20
+                            </ToggleButton>
+                            <ToggleButton
+                              value={0.30}
 
           
-          } 
+                            >
+                              %30
+                            </ToggleButton>
+                          </ToggleButtonGroup>
 
-          {activeStep === 2 &&
+                          <div className="text-center">
+                            <hr className="my-4" />
+                            <p></p>
+                            <Button
+                              type="button"
+                              variant="outlined"
+                              onClick={clearCart}
+                            >
+                              CLEAR
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
 
+                {activeStep === 2 && (
           <div className="row no-gutters justify-content-center">
-          <div className="col-sm-8 p-3">
+          <div className="col-sm-6 p-3" style={{overflow: 'scroll', height: '400px'}}>
             {cartItems.length > 0 ? (
               cartItems.map((food) => (
-
             <Card sx={{ maxWidth: 345 }}>
-                  <CardActionArea>
-                    <CardMedia
-                      component="img"
-                      height="100"
-                      image={food.photoUrl}
-                      alt={food.food}
-                    />
-                    <CardContent>
-                      <Typography gutterBottom variant="h5" component="div">
-                        {food.title}
+                          <List
+                            sx={{
+                              width: "100%",
+                              maxWidth: 360,
+                              bgcolor: "background.paper",
+                            }}
+                          >
+                            <ListItem alignItems="flex-start">
+                              <ListItemAvatar>
+                                <Avatar alt={food.food} src={food.photoUrl} />
+                              </ListItemAvatar>
+                              <ListItemText
+                                primary={food.title}
+                                secondary={
+                                  <React.Fragment>
+                                    <Typography
+                                      sx={{ display: "inline" }}
+                                      component="span"
+                                      variant="body2"
+                                      color="text.primary"
+                                    >
+                                      {food.selOptions.map(
+                                        (opt) => opt + ", "
+                                      )}
+                                    </Typography>
+                                    <Typography
+                                      sx={{ display: "block" }}
+                                      component="span"
+                                      variant="body2"
+                                      color="text.secondary"
+                                    >
+                                      {`$` + food.price}
+                                    </Typography>
+                                    <Typography
+                                      sx={{ display: "block" }}
+                                      component="span"
+                                      variant="body2"
+                                      color="text.secondary"
+                                    >
+                                      {`Qty: ` + food.quantity}
                       </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {
-                        food.selOptions.map(opt =>(opt + ", "))
+                                  </React.Fragment>
                         }
-                      </Typography>
-                    </CardContent>
-                  </CardActionArea>
+                              />
+                            </ListItem>
+                            <Divider variant="inset" component="li" />
+                          </List>
                 </Card>
-
               ))
             ) : (
               <div className="p-3 text-center text-muted">
                 Your cart is empty!
               </div>
             )}
-
-            
           </div>
 
           {cartItems.length > 0 && (
-            <div className="col-sm-4 p-3">
-              <div className="card card-body">
-                <p className="mb-1">Total Items</p>
-                <h4 className=" mb-3 txt-right">{itemCount}</h4>
-                <p className="mb-1">Total Payment</p>
-                <h3 className="m-0 txt-right">{total}</h3>
-                <hr className="my-4" />
+                    <div className="col-sm-4 col-lg-5 p-2" style={{minHeight: "400px", height: "100%"}}>
+              <div className="card card-body" style={{minHeight: "400px", height: "100%"}}>
+                        <div className="d-flex">
+                        <LocationOnIcon sx={{marginRight: '5px'}}></LocationOnIcon><div className="m-0 float-right">{address.housenumber} {address.street}, {address.city} {address.state_code}</div>
+                        </div>
+                        <hr className="my-4" />
+                        <p className="mb-1 w-100">Total Items:<div className=" m-0 float-right">{itemCount}</div></p>
+                        <p className="mb-1">Subtotal: <div className="m-0 float-right">${total}</div></p>
+                        <p className="mb-1">Tax: <div className="m-0 float-right">$
+                          {Math.round((total * 0.13 + Number.EPSILON) * 100) /
+                            100}
+                        </div></p>
+                        <p className="mb-1">Tip: <div className="m-0 float-right">${Math.round((total * tip + Number.EPSILON) * 100) /
+                            100}</div></p>
+                
+                        <ToggleButtonGroup
+                          value={tip}
+                          exclusive
+                          onChange={handleTip}
+                          sx={{display: 'none'}}
+                        >
+                          <ToggleButton
+                            value={0.15}
+                            
+                          >
+                            %15
+                          </ToggleButton>
+                          <ToggleButton value={0.18}>
+                            %18
+                          </ToggleButton>
+                          <ToggleButton
+                            value={0.20}
+                            
+                          >
+                            %20
+                          </ToggleButton>
+                          <ToggleButton
+                            value={0.30}
+                            
+                          
+                          >
+                            %30
+                          </ToggleButton>
+                        </ToggleButtonGroup>
                 <div className="text-center">
-                  <p>
-                  </p>
+                          <hr className="my-4" />
+                          <p></p>
                   <Button
                     type="button"
                     variant="outlined"
@@ -257,17 +503,12 @@ const Checkout = () =>{
                 </Elements>
               )}
               </div>
-          </div>
-
-                }
-
+              </div>
+                )}
         </React.Fragment>
       )}
     </Box>
-
-
         </div>
-
       </div>
     );
     
