@@ -25,6 +25,7 @@ const RestaurantCard = ({ restauId, name, image, address}) => {
 						height="140"
 						image={image}
 						alt={imgAlt} />
+						
 					<CardContent>
 						<Typography gutterBottom variant="h5" component="div">
 							{name}
@@ -37,5 +38,6 @@ const RestaurantCard = ({ restauId, name, image, address}) => {
 			</Card>
 		);
 	}
+	
 	
 export default RestaurantCard;
