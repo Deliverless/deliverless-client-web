@@ -1,6 +1,5 @@
 import axios from 'axios'
 import sha256 from 'sha256'
-import userSchema from '../metadata_schemas/User.json'
 import Orm from 'bigchaindb-orm'
 
 export default class User {
@@ -16,6 +15,8 @@ export default class User {
         this.images = images;
     }
 }
+
+const userSchema = new User("", "", "", "", "", "", "", "", "" )
 
 function bigchainORMClient(modelName, schema) {
     const bdbOrm = new Orm("http://24.150.93.243:9984/api/v1/")
