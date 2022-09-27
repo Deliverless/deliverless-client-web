@@ -1,7 +1,7 @@
 import React, { useContext, Component, useState, useEffect } from 'react';
 import Order from './Order';
 import DBRequest from '../../../lib/api';
-import { retrieve } from '../../../smartcontracts/entities/order'
+// import { retrieve } from '../../../smartcontracts/entities/order'
 import { UserContext } from '../../../lib/userContext';
 import LinearProgress from '@mui/material/LinearProgress';
 
@@ -22,9 +22,9 @@ const MyOrders = ({id}) => {
 		console.log(user.orderIds)
 		let orderData = [];
 		for(let i=0; i < user.orderIds?.length; i++){
-			let order = await retrieve(user.orderIds[i])
-			order[0].data.asset_id = user.orderIds[i]
-			orderData.push(order[0].data)
+			// let order = await retrieve(user.orderIds[i])
+			// order[0].data.asset_id = user.orderIds[i]
+			// orderData.push(order[0].data)
 			
 		}
 		setOrders(orderData.flat());

@@ -1,5 +1,6 @@
 import axios from "axios";
-import { getAutoComplete } from "./addressapi";
+// import * as dotenv from 'dotenv'
+// dotenv.config()
 
 var url = 'https://api.mapbox.com/directions/v5/mapbox/driving-traffic'
 
@@ -11,7 +12,7 @@ var url = 'https://api.mapbox.com/directions/v5/mapbox/driving-traffic'
  */
 export const getDirections = async ({ lat: lat1, lon: lon1 }, { lat: lat2, lon: lon2 }) => {
 
-    return (await axios.get(`${url}/${lon1},${lat1};${lon2},${lat2}/?geometries=geojson&access_token=pk.eyJ1IjoiZ2l0Z2Vlc2UiLCJhIjoiY2w4N2pidjdvMHUxODNwbHQzOWRrNG0yeSJ9.mv0b8GIhqCSaY1GrkUCE9Q`)
+    return (await axios.get(`${url}/${lon1},${lat1};${lon2},${lat2}/?geometries=geojson&access_token=${process.env.REACT_APP_MAPBOX_APIKEY}`)
         .catch(function (error) {
             console.log(error);
         })

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import RestaurantCards from "../components/RestaurantCards";
 import Toggle from '../components/Toggle'
-import { retrieveAllRestaurants } from "../smartcontracts/entities/restaurant";
+import { findObjectByMetadata } from "../lib/web3-helper";
 import RestaurantExplorer from "../components/RestaurantExplorer";
 import RestaurantAutoComplete from "../components/RestaurantAutoComplete";
 
@@ -10,15 +10,15 @@ const Home = () => {
   const [restaurants, setRestaurants] = useState([]);
 
   useEffect(async () => {
-    retrieveAllRestaurants().then(async (rests) => {
-      let parsedRests = rests.map((rest) => {
-        rest.data.asset_id = rest.id;
-        return rest.data;
-      });
-      console.log(parsedRests)
-      setRestaurants(parsedRests);
+    // findObjectByMetadata("restaurants", {}).then(async (rests) => {
+    //   let parsedRests = rests.map((rest) => {
+    //     rest.data.asset_id = rest.id;
+    //     return rest.data;
+    //   });
+    //   console.log(parsedRests)
+    //   setRestaurants(parsedRests);
 
-    });
+    // });
   }, []);
 
   return (
