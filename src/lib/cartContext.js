@@ -1,6 +1,6 @@
 import React, { useContext, createContext, useReducer } from 'react';
 import { CartReducer, sumItems } from './cartReducer';
-// import { create } from '../smartcontracts/entities/order'
+import { createOrder } from '../models/order';
 import { UserContext } from './userContext';
 import Cookies from 'universal-cookie'
 
@@ -60,9 +60,7 @@ const CartContextProvider = ({ children }) => {
             foods: state.cartItems
         }
 
-        // create(order, user).then(newOrder => {
-        //     setUser(newOrder.user)
-        // });
+        createOrder(order, user);
         dispatch({ type: 'CHECKOUT' })
     }
 

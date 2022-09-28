@@ -12,18 +12,6 @@ export const useAuthorized = (privilege) => {
     return user?.role === privilege || user?.role == "admin";
 }
 
-export const useLogin = async ({ username, password }) => {
-    const navigate = useNavigate()
-    const { setUser } = useContext(UserContext)
-    return await api.post("", { username: atob(username), password: atob(password) })
-        .then(({ user }) => {
-            setUser(user)
-            navigate("/")
-        }).catch((err) => {
-            console.log("error: ", err)
-        })
-}
-
 const UserContextProvider = ({ children }) => {
 
     const [state, dispatch] = useReducer(UserReducer, initialState)

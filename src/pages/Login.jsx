@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import { Button, TextField }  from '@mui/material';
 import { UserContext, useAuthorized } from '../lib/userContext'
-// import { login } from '../smartcontracts/entities/user'
+import { login } from '../models/user'
 import { useNavigate } from 'react-router-dom'
 
 const Login = () => {
@@ -21,18 +21,15 @@ const Login = () => {
 
 	const completeLogin = async () => {
 
-		// login(email, password).then(user => {
-		// 	console.log("SAVING THIS USER TO CONTEXT",user)
-		// 	setUser(user[0].data)
-		// 	setErrors(null)
-		// 	navigate('/');
-		// }).catch(error => {
-		// 	setErrors(error.message)
-		// })
-		
-
+		login(email, password).then(user => {
+			console.log("SAVING THIS USER TO CONTEXT",user)
+			setUser(user)
+			setErrors(null)
+			navigate('/');
+		}).catch(error => {
+			setErrors(error.message)
+		})
 	}
-
 
 	const validate = () =>{
 		if(email === "" || password === ""){
