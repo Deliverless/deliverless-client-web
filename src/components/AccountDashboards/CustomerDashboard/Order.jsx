@@ -1,24 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import {Button}  from '@mui/material';
-// import { retrieve } from '../../../smartcontracts/entities/restaurant'
-
+import { getRestaurant } from '../../../models/restaurant'
 
 const Order = ({key, image, itemCount, foods, total,tax, restaurantID, timePlaced, status}) => {
 	const [orderRestaurant, setOrderRestaurant] = useState(null)
 	const [restaurantImg, setRestaurantImg] = useState(null)
 
 	useEffect(() =>{
-		getRestaurant();
+		getRest();
 	}, [])
 
-	const getRestaurant = async ()=> {
-		// const restaurant = await retrieve(restaurantID);
-		// console.log("restaurantID",restaurantID)
-		// setOrderRestaurant(restaurant[0].data)
-		// setRestaurantImg(restaurant[0].data.image)
-		
+	const getRest = async ()=> {
+		const restaurant = await getRestaurant(restaurantID);
+		console.log("restaurantID",restaurantID)
+		setOrderRestaurant(restaurant)
+		setRestaurantImg(restaurant.image)
 	}
-
 
 	const goToRestaurant = () =>{
 		//open restaurant menu using restaurantID prop

@@ -1,7 +1,6 @@
 import React, { useContext, Component, useState, useEffect } from 'react';
 import Order from './Order';
-import DBRequest from '../../../lib/api';
-// import { retrieve } from '../../../smartcontracts/entities/order'
+// import { getCustomerOrders } from '../../../models/order';
 import { UserContext } from '../../../lib/userContext';
 import LinearProgress from '@mui/material/LinearProgress';
 
@@ -19,16 +18,17 @@ const MyOrders = ({id}) => {
 	const getOrders = async ()=> {
 		
 		// get orders with USRID from bigchain db 
-		console.log(user.orderIds)
-		let orderData = [];
-		for(let i=0; i < user.orderIds?.length; i++){
-			// let order = await retrieve(user.orderIds[i])
-			// order[0].data.asset_id = user.orderIds[i]
-			// orderData.push(order[0].data)
+		// console.log(user.orderIds)
+		// let orderData = [];
+		// let orderData = await getCustomerOrders(user.id);
+		// for(let i=0; i < user.orderIds?.length; i++){
+		// 	let order = await getOrder(user.orderIds[i])
+		// 	order[0].data.asset_id = user.orderIds[i]
+		// 	orderData.push(order[0].data)
 			
-		}
-		setOrders(orderData.flat());
-		setLoaded(true);
+		// }
+		// setOrders(orderData.flat());
+		// setLoaded(true);
 	}
 
 	if(!loaded){

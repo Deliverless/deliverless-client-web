@@ -1,6 +1,6 @@
 import React, { useContext, useEffect} from 'react'
 import { TextField, Button } from '@mui/material';
-// import { updateUser } from '../../smartcontracts/entities/user'
+import { updateUser } from '../../models/user'
 import { UserContext, useAuthorized } from '../../lib/userContext'
 
 const AccountInfo = ({firstName, lastName, email, address, encoded}) => {
@@ -15,7 +15,7 @@ const AccountInfo = ({firstName, lastName, email, address, encoded}) => {
 	const [emailAddress, setEmailAddress] = React.useState(email)
 	const [deliveryAddress, setDeliveryAddress] = React.useState(address)
 	const [msg, setMsg] = React.useState("")
-	const { setUser } = useContext(UserContext);
+	const { setUser,user } = useContext(UserContext);
 
 	const handleChange = (e, input) =>{
 		if(input==="firstname"){
@@ -73,12 +73,12 @@ const AccountInfo = ({firstName, lastName, email, address, encoded}) => {
 		console.table(newData)
 		console.log("encoded",encoded)
 		if(Object.keys(newData).length > 0){
-			// updateUser(encoded,{...newData}).then((updatedAsset)=>{
-			// 	setMsg('Success')
-			// 	setUser(updatedAsset.data)
-			// 	setDefaultValues({firstname:updatedAsset.data.firstName, lastname:updatedAsset.data.lastName, email:updatedAsset.data.email, address:updatedAsset.data.address})
-			// 	setChangeFlags({firstName:false, lastName:false, email:false, address:false})
-			// });
+			updateUser(user.id, {...newData}).then((updatedAsset)=>{
+				setMsg('Success')
+				setUser(updatedAsset)
+				setDefaultValues({firstname:updatedAsset.firstName, lastname:updatedAsset.lastName, email:updatedAsset.email, address:updatedAsset.address})
+				setChangeFlags({firstName:false, lastName:false, email:false, address:false})
+			});
 		}
 		
 			

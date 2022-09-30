@@ -18,11 +18,10 @@ const getWeb3Client = async () => {
     // create a new user using web3
     const web3 = new Web3('http://24.150.93.243:8546');
     // get the account with the private key
-    const account = web3.eth.accounts.privateKeyToAccount('0x76a2363754bb83ad1ce289c28974b37a02a82f63f16c82f34ecd5615bb13ffc9');
+    const account = web3.eth.accounts.privateKeyToAccount(process.env.REACT_APP_WALLET_ID);
     // get the balance of the account 
     const balance = await web3.eth.getBalance(account.address);
-    console.log('account loaded successfuly and balance is:', balance);
-    // bigchaindb address '../contracts/bigchaindb.json'
+    console.log('account loaded successfully and balance is:', balance);
     const address = process.env.REACT_APP_CONTRACTS_BIGCHAINDB_ADDRESS
     // initialize the contract
     const contractBigchaindb = new web3.eth.Contract(abi.abiBigchaindb, address);
@@ -44,7 +43,6 @@ export const createNewObject = async (modelName, metadataJson) => {
     const requestId = getRequestId(receipt); console.log('requestId', requestId);
     // return response from Chainlink
     const response = await requestResponse(requestId);
-    console.log('response', response);
     return response;
 }
 
@@ -57,8 +55,7 @@ export const getObjectById = async (modelName, assetId) => {
     // requestId from Chainlink
     const requestId = getRequestId(receipt); console.log('requestId', requestId);
     // return response from Chainlink
-    const response = await requestResponse(requestId);
-    console.log('response', response);
+    const response = await requestResponse(requestId, client);
     return response;
 }
 
@@ -69,10 +66,10 @@ export const findObjectByMetadata = async (modelName, metadataJson) => {
     // call(send) function within smart contract
     const receipt = await client.contractBigchaindb.methods.requestFindObject(modelName, JSON.stringify(metadataJson), 1, "").send({ from: client.account.address, gas: 3000000 });
     // requestId from Chainlink
-    const requestId = getRequestId(receipt); console.log('requestId', requestId);
+    const requestId = getRequestId(receipt);
+    console.log('requestId', requestId);
     // return response from Chainlink
-    const response = await requestResponse(requestId);
-    console.log('response', response);
+    const response = await requestResponse(requestId, client);
     return response;
 }
 
@@ -82,10 +79,10 @@ export const updateObject = async (modelName, assetId, metadataJson) => {
     // call(send) function within smart contract
     const receipt = await client.contractBigchaindb.methods.requestAppendObject(modelName, assetId, JSON.stringify(metadataJson), "").send({ from: client.account.address, gas: 3000000 });
     // requestId from Chainlink
-    const requestId = getRequestId(receipt); console.log('requestId', requestId);
+    const requestId = getRequestId(receipt);
+    console.log('requestId', requestId);
     // return response from Chainlink
-    const response = await requestResponse(requestId);
-    console.log('response', response);
+    const response = await requestResponse(requestId, client);
     return response;
 }
 
@@ -95,10 +92,10 @@ export const deleteObject = async (modelName, assetId) => {
     // call(send) function within smart contract
     const receipt = await client.contractBigchaindb.methods.requestBurnObject(modelName, assetId).send({ from: client.account.address, gas: 3000000 });
     // requestId from Chainlink
-    const requestId = getRequestId(receipt); console.log('requestId', requestId);
+    const requestId = getRequestId(receipt);
+    console.log('requestId', requestId);
     // return response from Chainlink
-    const response = await requestResponse(requestId);
-    console.log('response', response);
+    const response = await requestResponse(requestId, client);
     return response;
 }
 
@@ -116,12 +113,13 @@ const requestResponse = async (requestId) => {
         setTimeout(async () => {
             for (let i = 0; i < 60 / 0.3; i++) {
                 const results = await operatorContract.getPastEvents(
-                    'DeliverlessRequest',
+                    'DeliverlessResponse',
                     {
                         fromBlock: 0,
                         filter: { requestId: String(requestId) }
                     }
                 );
+                console.log("results", results);
                 if (results.length > 0) {
                     resolve(results);
                     break;
@@ -139,8 +137,9 @@ const requestResponse = async (requestId) => {
     if (events.length > 0) {
         const event = events.find(e => e.returnValues.requestId === requestId);
         const data = Buffer.from(event.returnValues.data.slice(2), 'hex').toString('ascii');
-        const extractText = data.match(/{.*}/g);
+        const extractText = data.match(/{"jobRunID":.*}/g);
         const parsedResponse = JSON.parse(extractText);
+        parsedResponse.data = JSON.parse(parsedResponse.data);
         return parsedResponse;
     } else {
         return null;
@@ -165,7 +164,7 @@ const metadataObject = {
 
 
 // createNewObject('user', metadataObject);
-// getObjectById('user', 'id:global:user:c1552c51-bccc-4ff7-ac60-a4b7cd78e40e');
+// getObjectById('user', 'id:global:user:8459dad6-f04d-4d63-97e4-61d1c0c4ca73');
 // findObjectByMetadata('user', metadataObject);
 // updateObject('user', 'id:global:user:835249bc-14d3-4210-a10f-5abacdd9b4d6', metadataObject);
 // deleteObject('user', 'id:global:user:c1552c51-bccc-4ff7-ac60-a4b7cd78e40e');

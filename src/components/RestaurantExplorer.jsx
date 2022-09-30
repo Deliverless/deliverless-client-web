@@ -26,7 +26,7 @@ export default function RestaurantExplorer({restaurants}) {
             const directions = await getDirections(userAddressObj, rest.address);
             return {
               address: rest.address,
-              id: rest.asset_id,
+              id: rest.id,
               shape: "circularImage",
               image: rest.image,
               label: rest.name,
