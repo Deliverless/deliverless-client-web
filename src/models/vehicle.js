@@ -12,3 +12,23 @@ export default class Vehicle {
         this.description = description;
     }
 }
+
+export const getVehicle = async (id) => {
+    return (await getObjectById("Vehicle", id)
+        .catch(err => console.log(err))).data;
+}
+
+export const getVehicles = async () => {
+    return (await getObjectById("Vehicle", "")
+        .catch(err => console.log(err))).data;
+}
+
+export const updateVehicle = async (id, newData) => {
+    return (await updateObject("Vehicle", id, newData)
+        .catch(err => console.log(err))).data;
+}
+
+export const createVehicle = async (item) => {
+    return (await createNewObject("Vehicle", item)
+        .catch(err => console.log(err))).data;
+}

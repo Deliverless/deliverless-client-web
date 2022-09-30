@@ -13,3 +13,23 @@ export default class Address {
         this.lon = lon;
     }
 }
+
+export const getAddress = async (id) => {
+    return (await getObjectById("address", id)
+        .catch(err => console.log(err))).data;
+}
+
+export const getAddresses = async () => {
+    return (await getObjectById("address", "")
+        .catch(err => console.log(err))).data;
+}
+
+export const updateAddress = async (id, newData) => {
+    return (await updateObject("address", id, newData)
+        .catch(err => console.log(err))).data;
+}
+
+export const createAddress = async (item) => {
+    return (await createNewObject("address", item)
+        .catch(err => console.log(err))).data;
+}
