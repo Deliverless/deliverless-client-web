@@ -1,4 +1,4 @@
-import { getObjectById, updateObject, createNewObject } from '../lib/web3-helper'
+import { getObjectById, updateObject, createNewObject, findObjectByMetadata } from '../lib/web3-helper'
 
 export default class Customer {
     constructor(orderIds, userId) {
@@ -12,6 +12,11 @@ export const getCustomer = async (id) => {
         .catch(err => console.log(err))).data;
 }
 
+export const findCustomerByUserId = async (userId) => {
+    return (await findObjectByMetadata("customer", { userId })
+        .catch(err => console.log(err))).data;
+}
+
 export const getCustomers = async () => {
     return (await getObjectById("customer", "")
         .catch(err => console.log(err))).data;
@@ -22,7 +27,7 @@ export const updateCustomer = async (id, newData) => {
         .catch(err => console.log(err))).data;
 }
 
-export const createCustomer = async (cust) => {
-    return (await createNewObject("customer", cust)
+export const signUpCustomer = async (customer) => {
+    return (await createNewObject("customer", customer)
         .catch(err => console.log(err))).data;
 }

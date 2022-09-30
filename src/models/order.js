@@ -25,11 +25,6 @@ export const getOrder = async (id) => {
         .catch(err => console.log(err))).data;
 }
 
-// export const getCustomerOrders = async (id) => {
-//     return (await getObjectById("orders", id)
-//         .catch(err => console.log(err))).data;
-// }
-
 export const getOrders = async () => {
     return (await getObjectById("order", "")
         .catch(err => console.log(err))).data;

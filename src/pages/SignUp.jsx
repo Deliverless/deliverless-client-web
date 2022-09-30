@@ -5,6 +5,7 @@ import sha256 from 'sha256'
 
 // import { create } from '../smartcontracts/entities/user'
 import User, { createUser } from '../models/user';
+import Customer, { signUpCustomer } from '../models/customer'
 
 const SignUp = () => {
 
@@ -26,17 +27,10 @@ const SignUp = () => {
 	}
 
 	const completeSignup = async () => {
-
-		let signUpObj = {
-			firstName: fName,
-			lastName: lName,
-			phone: phone,
-			email: email,
-			password: password
-		}
 		let newUser = new User("customer", fName, lName, birthday, email, [], phone, sha256.x2(email + password), []);
-		createUser(newUser).then((u)=>{
-			console.log("new user", u)
+		createUser(newUser).then(async (user)=>{
+			let newCustomer = new Customer([], user.id)
+			signUpCustomer(newCustomer);
 			setFName("");
 			setLName("");
 			setPhone("");

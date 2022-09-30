@@ -1,4 +1,4 @@
-
+import { getObjectById, updateObject, createNewObject, findObjectByMetadata } from '../lib/web3-helper'
 
 export default class Driver {
     constructor(vehicleId, rating, reviewIds, userId) {
@@ -14,6 +14,11 @@ export const getDriver = async (id) => {
         .catch(err => console.log(err))).data;
 }
 
+export const findDriverByUserId = async (userId) => {
+    return (await findObjectByMetadata("driver", { userId })
+        .catch(err => console.log(err))).data;
+}
+
 export const getDrivers = async () => {
     return (await getObjectById("driver", "")
         .catch(err => console.log(err))).data;
@@ -24,7 +29,7 @@ export const updateDriver = async (id, newData) => {
         .catch(err => console.log(err))).data;
 }
 
-export const createDriver = async (driver) => {
+export const signUpDriver = async (driver) => {
     return (await createNewObject("driver", driver)
         .catch(err => console.log(err))).data;
 }

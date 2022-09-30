@@ -1,4 +1,4 @@
-
+import { getObjectById, updateObject, createNewObject, findObjectByMetadata } from '../lib/web3-helper'
 
 export default class Vehicle {
     constructor(make, model, licensePlate, year, color, numberOfPassengers, image, description) {
