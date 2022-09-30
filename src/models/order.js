@@ -21,7 +21,7 @@ export default class Order {
 }
 
 export const getOrder = async (id) => {
-    return (await getObjectById("orders", id)
+    return (await getObjectById("order", id)
         .catch(err => console.log(err))).data;
 }
 
@@ -31,17 +31,17 @@ export const getOrder = async (id) => {
 // }
 
 export const getOrders = async () => {
-    return (await getObjectById("orders", "")
+    return (await getObjectById("order", "")
         .catch(err => console.log(err))).data;
 }
 
 export const updateOrder = async (id, newData) => {
-    return (await updateObject("orders", id, newData)
+    return (await updateObject("order", id, newData)
         .catch(err => console.log(err))).data;
 }
 
 export const createOrder = async (order, user) => {
-    return (await createNewObject("orders", order)
+    return (await createNewObject("order", order)
         .then((order) => {
             console.log(order)
             let prevOrderIds = user.orderIds != null ? user.orderIds : []

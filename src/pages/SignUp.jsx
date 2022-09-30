@@ -1,8 +1,10 @@
 import React from 'react'
 import {Button, TextField}  from '@mui/material';
-import http from '../lib/api';
+// import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
+import sha256 from 'sha256'
+
 // import { create } from '../smartcontracts/entities/user'
-import { createUser } from '../models/user';
+import User, { createUser } from '../models/user';
 
 const SignUp = () => {
 
@@ -11,6 +13,7 @@ const SignUp = () => {
 	const [lName, setLName] = React.useState("")
 	const [phone, setPhone] = React.useState("")
 	const [email, setEmail] = React.useState("")
+	const [birthday, setBirthday] = React.useState("")
 	const [password, setPassword] = React.useState("")
 	const [errors, setErrors] = React.useState(null)
 	const [msg, setMsg] = React.useState("")
@@ -31,11 +34,14 @@ const SignUp = () => {
 			email: email,
 			password: password
 		}
-		createUser(signUpObj).then((newUser)=>{
+		let newUser = new User("customer", fName, lName, birthday, email, [], phone, sha256.x2(email + password), []);
+		createUser(newUser).then((u)=>{
+			console.log("new user", u)
 			setFName("");
 			setLName("");
 			setPhone("");
 			setEmail("");
+			setBirthday("");
 			setPassword("");
 			setMsg('Success');
 		});
@@ -48,6 +54,7 @@ const SignUp = () => {
 		else if (input === "fName") setFName(e.currentTarget.value)
 		else if (input === "lName") setLName(e.currentTarget.value)
 		else if (input === "phone") setPhone(e.currentTarget.value)
+		else if (input === "birthday") setBirthday(e.currentTarget.value)
 	}
 
 	const validate = () =>{
@@ -72,6 +79,9 @@ const SignUp = () => {
 				<TextField onChange={(e) => handleChange(e, "lName")} required style={{marginBottom: '20px'}} id="outlined-basic" label="Last Name" variant="outlined" value={lName} /><br/>	
 				
 				<TextField onChange={(e) => handleChange(e, "phone")} required style={{marginBottom: '20px'}} id="outlined-basic" label="Phone Number" variant="outlined" value={phone} /><br/>	
+
+				<p><input type="date"  onChange={(e) => handleChange(e, "birthday")} required /></p>
+				{/* <MobileDatePicker onChange={(e)=> handleChange(e, "birthday")} required label="Date of Birth" inputFormat="MM/DD/YYYY" value={birthday} renderInput={(params) => <TextField {...params} />}/> */}
 
 				<TextField onChange={(e) => handleChange(e, "email")} required style={{marginBottom: '20px'}} id="outlined-basic" label="Email" variant="outlined" value={email} /><br/>	
 				<TextField onChange={(e) => handleChange(e, "password")} required style={{marginBottom: '20px'}} id="outlined-basic" label="Password" variant="outlined" value={password} /><br/>

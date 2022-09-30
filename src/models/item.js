@@ -17,3 +17,23 @@ export default class Item {
         this.restaurantId = restaurantId;
     }
 }
+
+export const getItem = async (id) => {
+    return (await getObjectById("item", id)
+        .catch(err => console.log(err))).data;
+}
+
+export const getItems = async () => {
+    return (await getObjectById("item", "")
+        .catch(err => console.log(err))).data;
+}
+
+export const updateItem = async (id, newData) => {
+    return (await updateObject("item", id, newData)
+        .catch(err => console.log(err))).data;
+}
+
+export const createItem = async (item) => {
+    return (await createNewObject("item", item)
+        .catch(err => console.log(err))).data;
+}
