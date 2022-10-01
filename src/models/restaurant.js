@@ -1,8 +1,8 @@
 import { getObjectById, updateObject, createNewObject, findObjectByMetadata } from '../lib/web3-helper'
 export default class Restaurant {
-    constructor(name, addressId, hours, itemIds, rating, reviewIds, image, userId) {
+    constructor(name, address, hours, itemIds, rating, reviewIds, image, userId) {
         this.name = name;
-        this.addressId = addressId;
+        this.address = address;
         this.hours = hours;
         this.itemIds = itemIds;
         this.rating = rating;

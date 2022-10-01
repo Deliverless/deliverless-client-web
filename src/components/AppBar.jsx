@@ -16,10 +16,10 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import { Link } from 'react-router-dom'
-import { useAuthorized, UserContext } from '../lib/userContext'
+import { useAuthorized, UserContext } from '../lib/context/userContext'
 import { appBarLinks } from '../lib/routes'
 import Badge from '@mui/material/Badge';
-import { CartContext } from '../lib/cartContext'
+import { CartContext } from '../lib/context/cartContext'
 
 
 const drawerWidth = 240;

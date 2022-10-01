@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import { Button, TextField }  from '@mui/material';
-import { UserContext, useAuthorized } from '../lib/userContext'
+import { UserContext, useAuthorized } from '../lib/context/userContext'
 import User, { login } from '../models/user'
 import { useNavigate } from 'react-router-dom'
 import { findCustomerByUserId } from '../models/customer';
@@ -23,9 +23,9 @@ const Login = () => {
 	const completeLogin = async () => {
 
 		login(email, password).then(async user => {
-			navigate('/');
 			user.customer = await findCustomerByUserId(user.id)
 			setUser(user)
+			navigate('/');
 			setErrors(null)
 		}).catch(error => {
 			setErrors(error.message)

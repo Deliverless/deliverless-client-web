@@ -7,7 +7,7 @@ import { CardActionArea } from '@mui/material';
 import { foods } from '../lib/foodData';
 import FoodCardModal from './FoodCardModal';
 import Badge from '@mui/material/Badge';
-import { CartContext } from '../lib/cartContext'
+import { CartContext } from '../lib/context/cartContext'
 
 const FoodCard = ({food}) => {
 	const {cartItems} = useContext(CartContext);
