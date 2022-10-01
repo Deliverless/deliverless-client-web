@@ -2,7 +2,7 @@ import React, { useEffect, useContext, useState, useRef } from 'react'
 import { options } from "../lib/visjs-helper";
 import { getDirections } from "../lib/mapboxapi";
 import Cookies from "universal-cookie";
-import { UserContext } from "../lib/userContext";
+import { UserContext } from "../lib/context/userContext";
 import { Paper } from '@material-ui/core';
 
 import {Network, Node, Edge} from "react-vis-network";

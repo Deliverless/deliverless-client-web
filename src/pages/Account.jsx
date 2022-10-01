@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import {UserContext} from '../lib/userContext'
+import {UserContext} from '../lib/context/userContext'
 import CustomerDashboard from '../components/AccountDashboards/CustomerDashboard/CustomerDashboard';
 
 

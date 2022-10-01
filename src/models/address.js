@@ -1,4 +1,4 @@
-
+import { getObjectById, updateObject, createNewObject, findObjectByMetadata } from '../lib/web3-helper'
 
 export default class Address {
     constructor(type, local, region, country, postal, street, unit, lat, lon) {

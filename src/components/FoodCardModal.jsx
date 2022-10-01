@@ -13,7 +13,7 @@ import { useState } from 'react';
 import { CardActionArea } from '@mui/material';
 import { foods } from '../lib/foodData';
 import Divider from '@mui/material/Divider';
-import { CartContext } from '../lib/cartContext'
+import { CartContext } from '../lib/context/cartContext'
 import Checkbox from '@mui/material/Checkbox';
 import { useSearchParams } from "react-router-dom";
 
