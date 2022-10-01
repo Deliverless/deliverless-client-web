@@ -1,14 +1,13 @@
-import orderSchema from '../metadata_schemas/Order.json'
-import Orm from 'bigchaindb-orm'
-
+import { getObjectById, updateObject, createNewObject, findObjectByMetadata } from '../lib/web3-helper'
+import { updateCustomer } from '../models/customer'
 export default class Order {
-    constructor(userId, driverId, restaurantId, transactionId, addressId, isPickup,
-        status, discount, tax, driverFee, subtotal, total, timestamp, items) {
+    constructor(userId, driverId, restaurantId, transactionId, address, isPickup,
+        status, discount, tax, driverFee, subtotal, total, tip, timestamp, items) {
         this.userId = userId;
         this.driverId = driverId;
-        this.restaurantId = restaurantId;
         this.transactionId = transactionId;
-        this.addressId = addressId;
+        this.restaurantId = restaurantId;
+        this.address = address;
         this.isPickup = isPickup;
         this.status = status;
         this.discount = discount;
@@ -16,76 +15,38 @@ export default class Order {
         this.driverFee = driverFee;
         this.subtotal = subtotal;
         this.total = total;
+        this.tip = tip;
         this.timestamp = timestamp;
         this.items = items;
     }
 }
 
-function bigchainORMClient(modelName, schema) {
-    const bdbOrm = new Orm("http://24.150.93.243:9984/api/v1/")
-    bdbOrm.define(modelName, schema)
-    const newKeypair = new bdbOrm.driver.Ed25519Keypair()
-    return { bdbOrm, newKeypair };
+export const getOrder = async (id) => {
+    return (await getObjectById("order", id)
+        .catch(err => console.log(err))).data;
 }
 
-export const retrieve = (id) => {
-    const { bdbOrm } = bigchainORMClient("orders", orderSchema);
-    return bdbOrm.models.orders
-        .retrieve(id)
-
+export const getOrders = async () => {
+    return (await getObjectById("order", "")
+        .catch(err => console.log(err))).data;
 }
+
+// export const getUserOrders = async (userId) => {
+//     return (await getObjectById("order", { userId })
+//         .catch(err => console.log(err))).data;
+// }
 
 export const updateOrder = async (id, newData) => {
-    const updatedOrder = await retrieve(id)
-        .then(async orderAsset => {
-            return await orderAsset.append({
-                toPublicKey: orderAsset.data.key_pair.publicKey,
-                keypair: orderAsset.data.key_pair,
-                data: { ...newData }
-            })
-        })
+    return (await updateObject("order", id, newData)
+        .catch(err => console.log(err))).data;
 }
 
-export const create = async (order, user) => {
-
-    const { bdbOrm, newKeypair } = bigchainORMClient("orders", orderSchema);
-    const { userID, restaurantID, restaurantName, deliveryAddress, discount, tax, driverFee, subtotal, total, status, timePlaced, foods } = order
-
-    return await bdbOrm.models.orders
-        .create({
-            keypair: newKeypair,
-            data: {
-                userID,
-                restaurantID,
-                restaurantName,
-                deliveryAddress,
-                discount,
-                tax,
-                driverFee,
-                subtotal,
-                total,
-                status,
-                timePlaced,
-                foods,
-                key_pair: newKeypair
-            }
-        })
-        .then(async asset => {
-            let prevOrderIds = user.orderIds != null ? user.orderIds : []
-            console.log("user ID", user.asset_id)
-            const updatedUser = await retrieve(user.asset_id)
-                .then(userAsset => {
-                    console.log("USER ASSET", userAsset)
-                    return userAsset[0].append({
-                        toPublicKey: user.key_pair.publicKey,
-                        keypair: user.key_pair,
-                        data: {
-                            orderIds: [...prevOrderIds, asset.id],
-                        }
-                    })
-                })
-            console.log({ asset, user: updatedUser.data })
-            return { asset, user: updatedUser.data }
-        })
-        .then((newOrder) => { console.log("NEW ORDER", newOrder.asset); return newOrder })
+export const createOrder = async (order, customer) => {
+    return (await createNewObject("order", order)
+        .then((order) => {
+            console.log(order)
+            let prevOrderIds = customer.orderIds != null ? customer.orderIds : []
+            updateCustomer(customer.id, { orderIds: [...prevOrderIds, order.id] })
+            return order;
+        }).catch(err => console.log(err))).data;
 }

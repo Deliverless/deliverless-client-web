@@ -1,8 +1,9 @@
 import React, { useContext, createContext, useReducer } from 'react';
 import { CartReducer, sumItems } from './cartReducer';
-// import { create } from '../smartcontracts/entities/order'
+import Order, { createOrder } from '../../models/order';
 import { UserContext } from './userContext';
 import Cookies from 'universal-cookie'
+import { OrderContext } from './orderContext';
 
 export const CartContext = createContext()
 
@@ -12,6 +13,7 @@ const initialState = { cartItems: storage, ...sumItems(storage), checkout: false
 const CartContextProvider = ({ children }) => {
     const { user, setUser } = useContext(UserContext);
     const [state, dispatch] = useReducer(CartReducer, initialState)
+    const { order, clearOrder } = useContext(OrderContext)
 
     const setQuantity = payload => {
         dispatch({ type: 'SET_QUANTITY', payload })
@@ -38,31 +40,13 @@ const CartContextProvider = ({ children }) => {
     }
 
     const handleCheckout = async () => {
-        let cookies = new Cookies();
-        const cookieAddress = cookies.get("Address")
-        const timeElapsed = Date.now();
-        const today = new Date(timeElapsed);
-        today.toDateString();
-
-        console.log('CHECKOUT', state);
-
-        const order = {
-            userID: user.asset_id,
-            restaurantID: state.cartItems[0].restaurantId,
-            restaurantName: "WIP",
-            deliveryAddress: user.address != null ? user.address : cookieAddress,
-            discount: state.discount,
-            tax: state.total * 0.13,
-            driverFee: 5.00,
-            total: state.total * 1.13,
-            status: "Pending",
-            timePlaced: today,
-            foods: state.cartItems
-        }
-
-        // create(order, user).then(newOrder => {
-        //     setUser(newOrder.user)
-        // });
+        createOrder(order, user.customer).then((newOrder) => {
+            let prevOrderIds = user.customer.orderIds != null ? user.customer.orderIds : []
+            let updatedUser = { ...user };
+            updatedUser.customer.orderIds = [...prevOrderIds, newOrder.id]
+            setUser(updatedUser)
+        })
+        clearOrder()
         dispatch({ type: 'CHECKOUT' })
     }
 

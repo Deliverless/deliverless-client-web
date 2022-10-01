@@ -1,23 +1,19 @@
 import React, {useState, useEffect } from 'react';
 import { useSearchParams } from "react-router-dom";
 import FoodCards from '../../components/FoodCards';
-// import { retrieve } from '../../smartcontracts/entities/restaurant'
-
+import { getRestaurant } from '../../models/restaurant'
 const RestaurantHome = () => {
 	const [foods, setFoods] = useState([])
 	const [restaurant, setRestaurant] = useState()
 	const [searchParams, setSearchParams] = useSearchParams();
 
 	useEffect(async() =>{
-		console.log("here")
-		// await retrieve(searchParams.get("id"))
-		// .then(r=>{
-		// 	setRestaurant(r[0].data);
-		// 	// console.log(r.data.foods)
-		// 	console.log(r[0].data.foods)
-		// 	setFoods(r[0].data.foods);
-		// });
-		
+		getRestaurant(searchParams.get("id"))
+		.then(r=>{
+			console.log("r",r)
+			setRestaurant(r);
+			setFoods(r.foods);
+		});
 	}, [])
 	
 	return (

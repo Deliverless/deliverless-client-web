@@ -1,24 +1,25 @@
 import React, { useState, useEffect, useContext } from "react";
 import RestaurantCards from "../components/RestaurantCards";
 import Toggle from '../components/Toggle'
-import { findObjectByMetadata } from "../lib/web3-helper";
 import RestaurantExplorer from "../components/RestaurantExplorer";
 import RestaurantAutoComplete from "../components/RestaurantAutoComplete";
+import { getRestaurants } from "../models/restaurant";
+import { RestContext } from "../lib/context/restContext";
 
 const Home = () => {
   const [listView, setListView] = useState(true);
-  const [restaurants, setRestaurants] = useState([]);
-
+  const { rests, setRests} = useContext(RestContext);
+  let restaurants = rests;
+  console.log("Rests", rests)
+  
   useEffect(async () => {
-    // findObjectByMetadata("restaurants", {}).then(async (rests) => {
-    //   let parsedRests = rests.map((rest) => {
-    //     rest.data.asset_id = rest.id;
-    //     return rest.data;
-    //   });
-    //   console.log(parsedRests)
-    //   setRestaurants(parsedRests);
-
-    // });
+    getRestaurants()
+      .then(async (rests) => {
+        console.log(rests)
+        setRests(rests);
+      }).catch((err)=>{
+        console.log(err)
+      });
   }, []);
 
   return (
@@ -29,11 +30,11 @@ const Home = () => {
       <Toggle checked={listView} onChange={setListView}/>
 
       {(listView && restaurants.length > 0) && (
-        <RestaurantCards restaurants={restaurants} />
+        <RestaurantCards restaurants={rests} />
       )}
 
       {!listView && (
-        <RestaurantExplorer restaurants={restaurants}/>
+        <RestaurantExplorer restaurants={rests}/>
       )}
 
     </div>

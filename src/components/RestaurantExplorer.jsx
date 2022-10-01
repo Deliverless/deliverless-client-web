@@ -2,7 +2,7 @@ import React, { useEffect, useContext, useState, useRef } from 'react'
 import { options } from "../lib/visjs-helper";
 import { getDirections } from "../lib/mapboxapi";
 import Cookies from "universal-cookie";
-import { UserContext } from "../lib/userContext";
+import { UserContext } from "../lib/context/userContext";
 import { Paper } from '@material-ui/core';
 
 import {Network, Node, Edge} from "react-vis-network";
@@ -26,7 +26,7 @@ export default function RestaurantExplorer({restaurants}) {
             const directions = await getDirections(userAddressObj, rest.address);
             return {
               address: rest.address,
-              id: rest.asset_id,
+              id: rest.id,
               shape: "circularImage",
               image: rest.image,
               label: rest.name,

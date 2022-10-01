@@ -22,7 +22,7 @@ class RestaurantCards extends Component {
 						<RestaurantCard 
 						// temporary to make keys unique because I added 2 transactions with the same restau id.
 							key={restau.id + restau.name}
-							restauId={restau.asset_id}
+							restauId={restau.id}
 							name={restau.name}
 							description={restau.description}
 							address={restau.address}

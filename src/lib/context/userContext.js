@@ -1,6 +1,4 @@
 import React, { useContext, createContext, useReducer } from 'react';
-import { useNavigate } from 'react-router-dom'
-import api from './api'
 import { UserReducer, setUser } from './userReducer';
 
 export const UserContext = createContext()
@@ -10,18 +8,6 @@ const initialState = { user: storage, ...setUser(storage) };
 export const useAuthorized = (privilege) => {
     const user = useContext(UserContext)?.user
     return user?.role === privilege || user?.role == "admin";
-}
-
-export const useLogin = async ({ username, password }) => {
-    const navigate = useNavigate()
-    const { setUser } = useContext(UserContext)
-    return await api.post("", { username: atob(username), password: atob(password) })
-        .then(({ user }) => {
-            setUser(user)
-            navigate("/")
-        }).catch((err) => {
-            console.log("error: ", err)
-        })
 }
 
 const UserContextProvider = ({ children }) => {

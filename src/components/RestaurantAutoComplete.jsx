@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback, useRef, useState } from "react";
-// import { retrieveAllRestaurants } from "../smartcontracts/entities/restaurant";
+import { getRestaurants } from '../models/restaurant'
 import Box from "@mui/material/Box";
 import FormControl from "@mui/material/FormControl";
 import TextField from "@mui/material/TextField";
@@ -23,14 +23,13 @@ export default function RestaurantAutoComplete() {
   inputRef.current = inputValue;
 
     useEffect(async ()=>{
-        // await retrieveAllRestaurants().then(async (rests) => {
-        //     let parsedRests = rests.map((rest) => {
-        //       rest.data.asset_id = rest.id;
-        //       return {label: rest.data.name, id: rest.data.asset_id};
-        //     });
-        //     console.log(parsedRests)
-        //     setOptions(parsedRests);
-        // });
+        await getRestaurants().then(async (rests) => {
+          setOptions(rests.map((rest) => (
+            {
+              label: rest.name, 
+              id: rest.id
+            })));
+        });
     }, [])
 
   return (

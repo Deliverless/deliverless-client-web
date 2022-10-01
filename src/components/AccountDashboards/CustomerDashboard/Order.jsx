@@ -1,28 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext} from 'react';
 import {Button}  from '@mui/material';
-// import { retrieve } from '../../../smartcontracts/entities/restaurant'
+import { Link } from '@mui/icons-material';
+import { RestContext } from '../../../lib/context/restContext';
 
-
-const Order = ({key, image, itemCount, foods, total,tax, restaurantID, timePlaced, status}) => {
+const Order = ({ image, itemCount, foods, total,tax, restaurantId, timePlaced, status}) => {
 	const [orderRestaurant, setOrderRestaurant] = useState(null)
-	const [restaurantImg, setRestaurantImg] = useState(null)
+	const [restaurantImg, setRestaurantImg] = useState('https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.shutterstock.com%2Fsearch%2Fpicture-not-found&psig=AOvVaw0h0e6i48nPE1uBmtGdbu2B&ust=1664664455923000&source=images&cd=vfe&ved=0CAsQjRxqFwoTCKDQub7MvfoCFQAAAAAdAAAAABAE')
+	const { rests } = useContext(RestContext);
 
-	useEffect(() =>{
-		getRestaurant();
-	}, [])
+	useEffect(() => {
+		getRest();
+	}, []);
 
-	const getRestaurant = async ()=> {
-		// const restaurant = await retrieve(restaurantID);
-		// console.log("restaurantID",restaurantID)
-		// setOrderRestaurant(restaurant[0].data)
-		// setRestaurantImg(restaurant[0].data.image)
-		
+	const getRest = async ()=> {
+		console.log("rest id", restaurantId)
+		const restaurant = rests.find(r=> r.id == restaurantId)
+		setOrderRestaurant(restaurant)
+		console.log("restaurant", restaurant)
+		setRestaurantImg(restaurant.image)
 	}
 
-
-	const goToRestaurant = () =>{
-		//open restaurant menu using restaurantID prop
-	}
 	return ( 
 		
 		<div className="center-container row">
@@ -49,7 +46,7 @@ const Order = ({key, image, itemCount, foods, total,tax, restaurantID, timePlace
 
 				{/* will use same functionality as RestaurantCard onClick */}
 				<div className="col-md-2">
-					<Button  onClick={goToRestaurant} variant="contained" sx={{height:'56px', backgroundColor:'#2196f3'}}>View Menu</Button>
+					<Button to={`/restaurant/home?id=${orderRestaurant.id}`} variant="contained" sx={{height:'56px', backgroundColor:'#2196f3'}}>View Menu</Button>
 				</div>
 		</>}
 			
