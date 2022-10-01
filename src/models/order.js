@@ -1,12 +1,12 @@
 import { getObjectById, updateObject, createNewObject, findObjectByMetadata } from '../lib/web3-helper'
 import { updateCustomer } from '../models/customer'
 export default class Order {
-    constructor(userId, driverId, restaurant, transactionId, address, isPickup,
+    constructor(userId, driverId, restaurantId, transactionId, address, isPickup,
         status, discount, tax, driverFee, subtotal, total, tip, timestamp, items) {
         this.userId = userId;
         this.driverId = driverId;
         this.transactionId = transactionId;
-        this.restaurant = restaurant;
+        this.restaurantId = restaurantId;
         this.address = address;
         this.isPickup = isPickup;
         this.status = status;
