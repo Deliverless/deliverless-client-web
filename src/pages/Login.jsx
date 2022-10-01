@@ -23,9 +23,10 @@ const Login = () => {
 	const completeLogin = async () => {
 
 		login(email, password).then(async user => {
-			user.customer = await findCustomerByUserId(user.id)
 			setUser(user)
 			navigate('/');
+			user.customer = await findCustomerByUserId(user.id)
+			setUser(user)
 			setErrors(null)
 		}).catch(error => {
 			setErrors(error.message)
