@@ -37,6 +37,7 @@ export const createNewObject = async (modelName, metadataJson) => {
     const requestId = getRequestId(receipt); console.log('requestId', requestId);
     // return response from Chainlink
     const response = await requestResponse(requestId);
+    console.log(response)
     return response;
 }
 

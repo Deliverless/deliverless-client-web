@@ -8,37 +8,47 @@ import Typography from '@mui/material/Typography';
 import { CardActionArea } from '@mui/material';
 import Box from '@mui/material/Box';
 import {login} from '../models/user';
-import { UserContext, useAuthorized } from '../lib/userContext'
+import { UserContext, useAuthorized } from '../lib/context/userContext'
 import {Card, CardActions, CardContent} from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
 import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormGroup from '@mui/material/FormGroup';
+import User, { createUser } from '../models/user';
+import Driver, { signUpDriver } from '../models/driver';
+import Vehicle, { createVehicle } from '../models/vehicle';
+import sha256 from 'sha256'
+
 
 const DriverSignUp = ()=> {
 
-  const steps = ['Login', 'Vehicle Details', 'Policy Agreement'];
+  const steps = ['Driver Details', 'Vehicle Details', 'Policy Agreement'];
 
   const [activeStep, setActiveStep] = useState(0);
 
   const [errors, setErrors] = useState(null);
 
+
+  const [fName, setFName] = React.useState("")
+	const [lName, setLName] = React.useState("")
+	const [phone, setPhone] = React.useState("")
   const [email, setUsername] = React.useState("")
+  const [birthday, setBirthday] = React.useState("")
 	const [password, setPassword] = React.useState("")
-  const { logoutUser, setUser } = React.useContext(UserContext);
 
-  const completeLogin = async () => {
+  const [make, setMake] = React.useState("")
+	const [model, setModel] = React.useState("")
+	const [licPlate, setLicPlate] = React.useState("")
+  const [year, setYear] = React.useState("")
+  const [color, setColor] = React.useState("")
+	const [passengers, setPassengers] = React.useState("")
+  const [carImg, setCarImg] = React.useState("")
+  const [description, setDescription] = React.useState("")
+  const [checked, setChecked] = React.useState(false);
 
-		login(email, password).then(user => {
-			console.log("SAVING THIS USER TO CONTEXT",user)
-			setUser(user[0].data)
-			setErrors(null)
-		}).catch(error => {
-			setErrors(error.message)
-		})
-		
-
-	}
+  const handleChecked = (event) => {
+    setChecked(event.target.checked);
+  };
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -56,7 +66,47 @@ const DriverSignUp = ()=> {
   const handleChange = (e, input) =>{
 		if (input === "email")	setUsername(e.currentTarget.value)
 		else if (input === "password") setPassword(e.currentTarget.value)
+    else if (input === "fName") setFName(e.currentTarget.value)
+		else if (input === "lName") setLName(e.currentTarget.value)
+		else if (input === "phone") setPhone(e.currentTarget.value)
+		else if (input === "birthday") setBirthday(e.currentTarget.value)
 	}
+
+  const handleVehicleChange = (e, input) =>{
+		if (input === "make")	setMake(e.currentTarget.value)
+		else if (input === "model") setModel(e.currentTarget.value)
+    else if (input === "licPlate") setLicPlate(e.currentTarget.value)
+		else if (input === "year") setYear(e.currentTarget.value)
+		else if (input === "color") setColor(e.currentTarget.value)
+		else if (input === "passengers") setPassengers(e.currentTarget.value)
+    else if (input === "carImg") setCarImg(e.currentTarget.value)
+    else if (input === "description") setDescription(e.currentTarget.value)
+	}
+
+
+
+  let newUser = new User("driver", fName, lName, birthday, email, [], phone, sha256.x2(email + password), []);
+  let newVehicle = new Vehicle(make, model, licPlate, year, color, passengers, carImg, description);
+
+  const completeDriverSignup = async () => {
+    const user = await createUser(newUser)
+    console.log(user)
+    const vehicle = await createVehicle(newVehicle)
+    console.log(vehicle)
+    const driver = await signUpDriver(new Driver(vehicle.id, 0, [], user.id))
+    console.log(driver)
+  }
+
+
+  useEffect(() => {
+
+    if (activeStep === steps.length) {
+      completeDriverSignup()
+    }
+
+
+  }, [activeStep])
+
 
     return (
       <div
@@ -78,13 +128,14 @@ const DriverSignUp = ()=> {
           </Stepper>
           {activeStep === steps.length ? (
             <React.Fragment>
-              <Typography sx={{ mt: 2, mb: 1 }}>
-                All steps completed - you&apos;re finished
-              </Typography>
-              <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-                <Box sx={{ flex: "1 1 auto" }} />
-                <Button onClick={handleReset}>Reset</Button>
-              </Box>
+              <div
+                className="center-container"
+                style={{ textAlign: "center", flexDirection: "column" }}
+              >
+                
+                <h2 style={{ marginTop: 50 }}>Driver has been created!</h2>
+                <img loading='lazy' src='/img/truckdriving.gif'></img>
+              </div>
             </React.Fragment>
           ) : (
             <React.Fragment>
@@ -99,9 +150,18 @@ const DriverSignUp = ()=> {
                 </Button>
                 <Box sx={{ flex: "1 1 auto" }} />
 
-                <Button onClick={handleNext}>
-                  {activeStep === steps.length - 1 ? "Finish" : "Next"}
-                </Button>
+                {/* <Button onClick={handleNext} disabled={checked}> */}
+                {activeStep === steps.length - 1 ? (
+                  <Button
+                    onClick={handleNext}
+                    disabled={checked === true ? false : true}
+                  >
+                    Finish
+                  </Button>
+                ) : (
+                  <Button onClick={handleNext}>Next</Button>
+                )}
+                {/* </Button> */}
               </Box>
             </React.Fragment>
           )}
@@ -111,14 +171,56 @@ const DriverSignUp = ()=> {
               className="center-container"
               style={{ textAlign: "center", flexDirection: "column" }}
             >
-              <h2 style={{ marginBottom: "40px" }}>Verify Login</h2>
+              <h2 style={{ marginBottom: "40px" }}>Driver Details</h2>
 
               {errors && <div className="alert alert-danger">{errors}</div>}
 
               <form className="form-group">
                 <TextField
-                  onChange={(e) => handleChange(e, "email")}
+                  onChange={(e) => handleChange(e, "fName")}
                   autoFocus
+                  required
+                  style={{ marginBottom: "20px" }}
+                  id="outlined-basic"
+                  label="First Name"
+                  variant="outlined"
+                  value={fName}
+                />
+                <br />
+
+                <TextField
+                  onChange={(e) => handleChange(e, "lName")}
+                  required
+                  style={{ marginBottom: "20px" }}
+                  id="outlined-basic"
+                  label="Last Name"
+                  variant="outlined"
+                  value={lName}
+                />
+                <br />
+
+                <TextField
+                  onChange={(e) => handleChange(e, "phone")}
+                  required
+                  style={{ marginBottom: "20px" }}
+                  id="outlined-basic"
+                  label="Phone Number"
+                  variant="outlined"
+                  value={phone}
+                />
+                <br />
+
+                <p>
+                  <input
+                    type="date"
+                    onChange={(e) => handleChange(e, "birthday")}
+                    required
+                  />
+                </p>
+                {/* <MobileDatePicker onChange={(e)=> handleChange(e, "birthday")} required label="Date of Birth" inputFormat="MM/DD/YYYY" value={birthday} renderInput={(params) => <TextField {...params} />}/> */}
+
+                <TextField
+                  onChange={(e) => handleChange(e, "email")}
                   required
                   style={{ marginBottom: "20px" }}
                   id="outlined-basic"
@@ -137,13 +239,9 @@ const DriverSignUp = ()=> {
                   value={password}
                 />
                 <br />
+                <br />
                 {errors && <div className="alert alert-danger">{errors}</div>}
-                <Button
-                  variant="contained"
-                  sx={{ height: "56px", backgroundColor: "#2196f3" }}
-                >
-                  Sign In
-                </Button>
+                
               </form>
             </div>
           )}
@@ -159,6 +257,7 @@ const DriverSignUp = ()=> {
 
               <form className="form-group">
                 <TextField
+                  onChange={(e) => handleVehicleChange(e, "make")}
                   autoFocus
                   required
                   style={{ marginBottom: "20px" }}
@@ -168,6 +267,7 @@ const DriverSignUp = ()=> {
                 />
                 <br />
                 <TextField
+                  onChange={(e) => handleVehicleChange(e, "model")}
                   required
                   style={{ marginBottom: "20px" }}
                   id="outlined-basic"
@@ -176,6 +276,7 @@ const DriverSignUp = ()=> {
                 />
                 <br />
                 <TextField
+                  onChange={(e) => handleVehicleChange(e, "licPlate")}
                   required
                   style={{ marginBottom: "20px" }}
                   id="outlined-basic"
@@ -184,6 +285,7 @@ const DriverSignUp = ()=> {
                 />
                 <br />
                 <TextField
+                  onChange={(e) => handleVehicleChange(e, "year")}
                   required
                   style={{ marginBottom: "20px" }}
                   id="outlined-basic"
@@ -192,6 +294,7 @@ const DriverSignUp = ()=> {
                 />
                 <br />
                 <TextField
+                  onChange={(e) => handleVehicleChange(e, "colour")}
                   required
                   style={{ marginBottom: "20px" }}
                   id="outlined-basic"
@@ -200,6 +303,7 @@ const DriverSignUp = ()=> {
                 />
                 <br />
                 <TextField
+                  onChange={(e) => handleVehicleChange(e, "passengers")}
                   required
                   style={{ marginBottom: "20px" }}
                   id="outlined-basic"
@@ -208,6 +312,7 @@ const DriverSignUp = ()=> {
                 />
                 <br />
                 <TextField
+                  onChange={(e) => handleVehicleChange(e, "carImg")}
                   required
                   style={{ marginBottom: "20px" }}
                   id="outlined-basic"
@@ -216,6 +321,7 @@ const DriverSignUp = ()=> {
                 />
                 <br />
                 <TextField
+                  onChange={(e) => handleVehicleChange(e, "description")}
                   required
                   style={{ marginBottom: "20px" }}
                   id="outlined-basic"
@@ -232,7 +338,14 @@ const DriverSignUp = ()=> {
               style={{ textAlign: "center", flexDirection: "column" }}
             >
               <h2 style={{ marginBottom: "40px" }}>Policy Agreement</h2>
-              <Card sx={{ minWidth: 600, overflow: 'scroll', height: 400, marginBottom: 10}}>
+              <Card
+                sx={{
+                  minWidth: 600,
+                  overflow: "scroll",
+                  height: 400,
+                  marginBottom: 10,
+                }}
+              >
                 <CardContent>
                   <Typography
                     sx={{ fontSize: 14 }}
@@ -893,19 +1006,16 @@ const DriverSignUp = ()=> {
                   </Typography>
                 </CardContent>
                 <CardActions>
-                <FormGroup>
-                  <FormControlLabel control={<Checkbox  />} label="I Agree" />
-                </FormGroup>
-                    
+                  <FormGroup>
+                    <FormControlLabel
+                      control={
+                        <Checkbox checked={checked} onChange={handleChecked} />
+                      }
+                      label="I Agree"
+                    />
+                  </FormGroup>
                 </CardActions>
               </Card>
-
-              <Button
-                variant="contained"
-                sx={{ height: "56px", backgroundColor: "#2196f3" }}
-              >
-                Complete
-              </Button>
             </div>
           )}
         </div>
