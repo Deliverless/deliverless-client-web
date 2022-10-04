@@ -20,6 +20,7 @@ import { useAuthorized, UserContext } from '../lib/context/userContext'
 import { appBarLinks } from '../lib/routes'
 import Badge from '@mui/material/Badge';
 import { CartContext } from '../lib/context/cartContext'
+import AddressPickupSelector from './AddressPickupSelector';
 
 
 const drawerWidth = 240;
@@ -136,7 +137,7 @@ const ResponsiveAppBar = () => {
           >
             Deliver Less
           </Typography>
-
+          <AddressPickupSelector/>
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open} sx={{}}>

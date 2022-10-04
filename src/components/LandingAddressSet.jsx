@@ -32,8 +32,9 @@ const LandingAddressSet = () => {
   function useCookieFunc(){
     let cookies = new Cookies(); 
     cookies.set("Address", value)
+    console.log("setting pickup", isPickup)
     cookies.set("isPickup", isPickup)
-    navigate('/');
+    if(value) navigate('/');
   }
 
   const fetchData = useCallback(debounce(() => {
@@ -124,7 +125,7 @@ const LandingAddressSet = () => {
             <Select
               sx={{ backgroundColor:'white', width: 160 }}
               className="form-group mr-2"
-              onChange={(value) => setIsPickup(value)}
+              onChange={(value) => setIsPickup(value.target.value)}
               defaultValue={false}
             >
               <MenuItem selected value={false} >Delivery</MenuItem>
