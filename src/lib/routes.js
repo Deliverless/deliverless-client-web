@@ -11,6 +11,7 @@ import { HasAddressCookie, RequiredPrivilege, RequiredAuth, Logout } from './mid
 import RestaurantHome from '../pages/restaurant/RestaurantHome'
 import ThankYou from '../components/ThankYou'
 import Checkout from '../pages/Checkout'
+import DriverSignUp from '../pages/DriverSignUp'
 
 const routes = [
     { path: "/", element: <HasAddressCookie redirectTo='/landing'><Home /></HasAddressCookie> },
@@ -25,7 +26,8 @@ const routes = [
     { path: "/settings", element: <RequiredPrivilege redirectTo="/login"><AdminSettings /></RequiredPrivilege> },
     { path: "*", element: <NotFound /> },
     { path: "/thankyou", element: <RequiredAuth redirectTo="/login"><ThankYou></ThankYou></RequiredAuth>},
-    { path: "/checkout", element: <RequiredAuth redirectTo="/login"><Checkout></Checkout></RequiredAuth>}
+    { path: "/checkout", element: <RequiredAuth redirectTo="/login"><Checkout></Checkout></RequiredAuth>},
+    { path: "/driver/signup", element: <DriverSignUp/>}
 ];
 
 const appBarLinks = [

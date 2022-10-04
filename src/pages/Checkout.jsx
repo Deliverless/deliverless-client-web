@@ -31,6 +31,7 @@ import "../StripeForm.css";
 import Order from "../models/order";
 import { OrderContext } from "../lib/context/orderContext";
 import { UserContext } from "../lib/context/userContext";
+import { ConstructionOutlined } from "@mui/icons-material";
 
 const stripePromise = loadStripe(
   "pk_test_51LiTBOHlhPKJMrfBUI52YU8nihPcSYlBkCHy46irESS7ev1J7vBI1rHNId6wM0kpZ5OybUNUwPvnT0GdyZo9xQG500i6jQAWVw"
@@ -62,7 +63,8 @@ const Checkout = () => {
 
   const [tip, setTip] = useState(0.15);
 
-  const [tipAmt, setTipAmt] = useState(0);
+
+  const [orderTotal, setOrderTotal] = useState(0);
 
   const cookies = new Cookies();
   const cookieAddress = cookies.get("Address");
@@ -128,7 +130,13 @@ const Checkout = () => {
       const driverFee = 5.0;
       const subtotal = total;
       const tax = subtotal * 0.13;
-      const orderTotal = parseFloat(subtotal) + parseFloat(tax) + parseFloat(driverFee) + parseFloat(tip)
+      const tipAmt = Math.round((total * tip + Number.EPSILON) * 100) / 100
+      setOrderTotal(Math.round(((parseFloat(subtotal) + parseFloat(tax) + parseFloat(driverFee) + parseFloat(tipAmt)) + Number.EPSILON) * 100) / 100)
+      console.log(total)
+      console.log(driverFee)
+      console.log(tax)
+      console.log(tipAmt)
+      console.log(orderTotal)
       const order = new Order(
           user.id,
           "",
@@ -526,6 +534,20 @@ const Checkout = () => {
                             $
                             {Math.round((total * tip + Number.EPSILON) * 100) /
                               100}
+                          </div>
+                        </p>
+                        <p className="mb-1">
+                          Delivery Fee:{" "}
+                          <div className="m-0 float-right">
+                            $
+                            {5.00}
+                          </div>
+                        </p>
+                        <p className="mb-1">
+                          Total:{" "}
+                          <div className="m-0 float-right">
+                            $
+                            {orderTotal}
                           </div>
                         </p>
 
