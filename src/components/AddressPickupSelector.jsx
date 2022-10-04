@@ -13,12 +13,12 @@ export default function AddressPickupSelector() {
     const [anchorEl, setAnchorEl] = React.useState(null);
 
     let cookies = new Cookies(); 
+    let isPickupCookie = cookies.get('isPickup');
+    let addressCookie = cookies.get('Address');
 
-    const isPickupCookie = cookies.get('isPickup')
     console.log("pickup", isPickupCookie)
     const [isPickup, setPickup] = React.useState(isPickupCookie)
 
-    const addressCookie = cookies.get('Address')
     console.log("address", addressCookie)
     const [address, setAddress] = React.useState();
 

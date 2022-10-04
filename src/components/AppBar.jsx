@@ -21,7 +21,7 @@ import { appBarLinks } from '../lib/routes'
 import Badge from '@mui/material/Badge';
 import { CartContext } from '../lib/context/cartContext'
 import AddressPickupSelector from './AddressPickupSelector';
-
+import { useLocation } from 'react-router-dom'
 
 const drawerWidth = 240;
 
@@ -95,7 +95,8 @@ const ResponsiveAppBar = () => {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const { itemCount } = useContext(CartContext);
-
+  const location = useLocation();
+  
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -137,7 +138,7 @@ const ResponsiveAppBar = () => {
           >
             Deliver Less
           </Typography>
-          <AddressPickupSelector/>
+          {location.pathname != "/landing" && <AddressPickupSelector/> }
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open} sx={{}}>
