@@ -23,6 +23,7 @@ const LandingAddressSet = () => {
   const [value, setValue] = useState(null);
   const [inputValue, setInputValue] = useState('');
   const [options, setOptions] = useState([]);
+  const [isPickup, setIsPickup] = useState(false);
   const inputRef = useRef();
   inputRef.current = inputValue;
 
@@ -31,7 +32,9 @@ const LandingAddressSet = () => {
   function useCookieFunc(){
     let cookies = new Cookies(); 
     cookies.set("Address", value)
-    navigate('/');
+    console.log("setting pickup", isPickup)
+    cookies.set("isPickup", isPickup)
+    if(value) navigate('/');
   }
 
   const fetchData = useCallback(debounce(() => {
@@ -120,12 +123,13 @@ const LandingAddressSet = () => {
             />
             <InputLabel></InputLabel>
             <Select
-              defaultValue={10}
               sx={{ backgroundColor:'white', width: 160 }}
               className="form-group mr-2"
+              onChange={(value) => setIsPickup(value.target.value)}
+              defaultValue={false}
             >
-              <MenuItem value={10} >Deliver now</MenuItem>
-              <MenuItem value={20} >Schedule Later</MenuItem>
+              <MenuItem selected value={false} >Delivery</MenuItem>
+              <MenuItem value={true} >Pickup</MenuItem>
             </Select>
             <Button variant="contained" onClick={useCookieFunc} sx={{height:'56px', backgroundColor:'#2196f3'}}>Find Food</Button>
           </Box>

@@ -12,17 +12,19 @@ export const sumItems = cartItems => {
 export const CartReducer = (state, action) => {
     switch (action.type) {
         case "ADD_ITEM":
-            if (!state.cartItems.find(item => item.id === action.payload.id)) {
-                state.cartItems.push({
-                    ...action.payload,
-                    quantity: action.payload.quantity
-                })
-            } else {
-                state.cartItems[state.cartItems.findIndex(item => item.id === action.payload.id)].quantity += action.payload.quantity
-                return {
-                    ...state,
-                    ...sumItems(state.cartItems),
-                    cartItems: [...state.cartItems]
+            if (state.cartItems.length == 0 || state.cartItems.some(i => i.restaurantId == action.payload.restaurantId)) { //item to be added is the same restaurant as other items(if there are any others)
+                if (!state.cartItems.find(item => item.id === action.payload.id)) {
+                    state.cartItems.push({
+                        ...action.payload,
+                        quantity: action.payload.quantity
+                    })
+                } else {
+                    state.cartItems[state.cartItems.findIndex(item => item.id === action.payload.id)].quantity += action.payload.quantity
+                    return {
+                        ...state,
+                        ...sumItems(state.cartItems),
+                        cartItems: [...state.cartItems]
+                    }
                 }
             }
 

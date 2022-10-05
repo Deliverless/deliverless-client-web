@@ -1,6 +1,4 @@
 import React, { useContext, createContext, useReducer } from 'react';
-import { useNavigate } from 'react-router-dom'
-import api from './api'
 import { UserReducer, setUser } from './userReducer';
 
 export const UserContext = createContext()

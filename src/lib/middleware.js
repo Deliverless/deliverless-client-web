@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import { Navigate } from 'react-router-dom'
 import Cookies from 'universal-cookie'
-import { UserContext, useAuthorized } from './userContext'
+import { UserContext, useAuthorized } from './context/userContext'
 
 export const HasAddressCookie = ({ children, redirectTo }) => {
     const cookies = new Cookies();
