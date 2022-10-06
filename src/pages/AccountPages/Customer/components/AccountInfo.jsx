@@ -51,7 +51,7 @@ const AccountInfo = ({firstName, lastName, email, address, encoded}) => {
 			updateUser(user.id, {...newData}).then((updatedAsset)=>{
 				setMsg('Success')
 				setUser(updatedAsset)
-				setDefaultValues({firstname:updatedAsset.firstName, lastname:updatedAsset.lastName, email:updatedAsset.email, address:updatedAsset.address})
+				setDefaultValues({firstName:updatedAsset.firstName, lastName:updatedAsset.lastName, email:updatedAsset.email, address:updatedAsset.address})
 				setChangeFlags({firstName:false, lastName:false, email:false, address:false})
 			});
 		}
