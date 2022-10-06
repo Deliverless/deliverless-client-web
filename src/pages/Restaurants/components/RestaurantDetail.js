@@ -1,19 +1,27 @@
-import React, { useState, useEffect, useContext } from "react";
-import "../styles.scss";
-import Carousel from 'react-bootstrap/Carousel';
-import { useRestaurantsContext } from "./RestaurantsDataContext";
-import { useParams } from "react-router-dom";
-import StarIcon from '@mui/icons-material/Star';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import FavoriteIcon from '@mui/icons-material/Favorite';
+import '../styles.scss';
+
+import React, {
+  useEffect,
+  useState,
+} from 'react';
+
+import {
+  Button,
+  OverlayTrigger,
+  Tooltip,
+} from 'react-bootstrap';
+import { useParams } from 'react-router-dom';
+
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import Restaurant from "../../../models/restaurant";
-import { Skeleton } from "@mui/material";
-import { OverlayTrigger, Tooltip, Button, Modal } from 'react-bootstrap';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import StarIcon from '@mui/icons-material/Star';
+import { Skeleton } from '@mui/material';
+
+import FoodCardModal from '../../../components/FoodCardModal';
+import Restaurant from '../../../models/restaurant';
+import { useRestaurantsContext } from './RestaurantsDataContext';
 import { StoreHoursModal } from './StoreHoursModal';
-import FoodCardModal from "../../../components/FoodCardModal";
-
-
 
 export default function RestaurantDetail({ history }) {
   const [isLoading, setIsLoading] = useState(false);
