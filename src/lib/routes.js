@@ -15,6 +15,7 @@ import DriverSignUp from '../pages/Signup/DriverSignUp'
 import RestaurantSignUp from '../pages/Signup/RestaurantSignUp'
 import DriverDashboard from '../pages/Dashboards/Driver/DriverDashboard'
 import DriverProfile from '../pages/DriverProfile'
+import DriverLogin from '../pages/Login/DriverLogin'
 
 const routes = [
     { path: "/", element: <HasAddressCookie redirectTo='/landing'><Home /></HasAddressCookie> },
@@ -31,6 +32,7 @@ const routes = [
     { path: "/driver/profile", element: <DriverProfile /> },
     { path: "/driver/dashboard", element: <RequiredPrivilege privilege="driver" redirectTo="/"><DriverDashboard /></RequiredPrivilege> },
     { path: "/driver/signup", element: <DriverSignUp /> },
+    { path: "/driver/login", element: <DriverLogin /> },
     { path: "/thankyou", element: <RequiredAuth redirectTo="/login"><ThankYou /></RequiredAuth> },
     { path: "/checkout", element: <RequiredAuth redirectTo="/login"><Checkout /></RequiredAuth> },
     { path: "*", element: <NotFound /> },
@@ -46,7 +48,7 @@ const appBarLinks = [
     { title: 'Logout', icon: 'sign-out', url: "/logout", isAuth: true },
     { title: 'Login', icon: 'sign-in', url: "/login", isAuth: false },
     { title: 'Sign Up', icon: 'user-plus', url: "/signup", isAuth: false },
-    { title: 'Become a Driver', icon: 'car', url: "/driver/signup", isAuth: false },
+    { title: 'Login Driver', icon: 'car', url: "/driver/login", isAuth: false },
     { title: 'Add your Restaurant', icon: 'cutlery', url: "/restaurant/signup", isAuth: false },
     { title: 'Settings', icon: 'cog', url: "/settings", role: 'admin', isAuth: true }
 ];
