@@ -6,53 +6,28 @@ import { UserContext, useAuthorized } from '../../../../lib/context/userContext'
 const AccountInfo = ({firstName, lastName, email, address, encoded}) => {
 
 	const [updateMade, setUpdateMade] = React.useState(false)
-	const [defaultValues, setDefaultValues] = React.useState({firstname:firstName, lastname:lastName, email:email, address:address})
+	const [defaultValues, setDefaultValues] = React.useState({firstName, lastName, email, address})
 	const [changeFlags, setChangeFlags] = React.useState({firstName:false, lastName:false, email:false, address:false});
-
-	const [fields, setFields] = React.useState({firstName:firstName, lastName:lastName, email:email, address:address});
-	const [fName, setFName] = React.useState(firstName)
-	const [lName, setLName] = React.useState(lastName)
-	const [emailAddress, setEmailAddress] = React.useState(email)
-	const [deliveryAddress, setDeliveryAddress] = React.useState(address)
+	const [fields, setFields] = React.useState({firstName, lastName, email, address});
 	const [msg, setMsg] = React.useState("")
 	const { setUser,user } = useContext(UserContext);
 
+	//detect field change comparing default with current value, setting change flag to true if different
 	const handleChange = (e, input) =>{
-		if(input==="firstname"){
-			e.currentTarget.defaultValue = defaultValues[input]
-			setFields({...fields,firstName:e.currentTarget.value})
-			if(e.currentTarget.value != e.currentTarget.defaultValue)
-				setChangeFlags({...changeFlags, firstName: true})
-			else
-				setChangeFlags({...changeFlags, firstName: false})
-			
-		}
-		else if(input==="lastname"){
-			e.currentTarget.defaultValue = defaultValues[input]
-			setFields({...fields,lastName:e.currentTarget.value})
-			if(e.currentTarget.value != e.currentTarget.defaultValue)
-				setChangeFlags({...changeFlags, lastName: true})
-			else
-				setChangeFlags({...changeFlags, lastName: false})
-		}
-		else if(input==="email"){
-			e.currentTarget.defaultValue = defaultValues[input]
-			setFields({...fields,email:e.currentTarget.value})
-			if(e.currentTarget.value != e.currentTarget.defaultValue)
-				setChangeFlags({...changeFlags, email: true})
-			else
-				setChangeFlags({...changeFlags, email: false})
-		}
-		else if(input==="address"){
-			e.currentTarget.defaultValue = defaultValues[input]
-			setFields({...fields,address:e.currentTarget.value})
-			if(e.currentTarget.value != e.currentTarget.defaultValue)
-				setChangeFlags({...changeFlags, address: true})
-			else
-				setChangeFlags({...changeFlags, address: false})
+		e.currentTarget.defaultValue = defaultValues[input]
+		let _fields = {...fields}
+		_fields[input] = e.currentTarget.value
+		setFields(_fields)
+		let flags = {...changeFlags}
+		if(e.currentTarget.value != e.currentTarget.defaultValue){
+			flags[input] = true
+			setChangeFlags(flags)
+		}else{
+			flags[input] = false
+			setChangeFlags(flags)
 		}
 	}
-
+	//responsible for enabling/disabling save button
 	useEffect(async() =>{
 		if(Object.values(changeFlags).every(f=>f==false)){
 			console.log(changeFlags)
@@ -91,8 +66,8 @@ const AccountInfo = ({firstName, lastName, email, address, encoded}) => {
 			<h1>Account Info</h1>
 			<form className="form-group" >
 				{msg && <div className="alert alert-success">{msg}</div>}
-				<TextField className="wide-view" onChange={(e) => handleChange(e, "firstname")} style={{marginBottom: '20px'}} label="First Name" id="outlined-basic" variant="outlined" value={fields["firstName"]}/><br/>	
-				<TextField className="wide-view" onChange={(e) => handleChange(e, "lastname")} style={{marginBottom: '20px'}} label="Last Name" id="outlined-basic" variant="outlined" value={fields["lastName"]}/><br/>	
+				<TextField className="wide-view" onChange={(e) => handleChange(e, "firstName")} style={{marginBottom: '20px'}} label="First Name" id="outlined-basic" variant="outlined" value={fields["firstName"]}/><br/>	
+				<TextField className="wide-view" onChange={(e) => handleChange(e, "lastName")} style={{marginBottom: '20px'}} label="Last Name" id="outlined-basic" variant="outlined" value={fields["lastName"]}/><br/>	
 				<TextField className="wide-view" onChange={(e) => handleChange(e, "email")} style={{marginBottom: '20px'}} label="Email" id="outlined-basic" variant="outlined" value={fields["email"]}/><br/>	
 				{/* /* TODO: field needs address api validation */}
 				<TextField className="wide-view" multiline onChange={(e) => handleChange(e, "address")} style={{marginBottom: '20px'}} label="Address"  id="outlined-basic" variant="outlined" value={fields["address"]}/><br/>	
