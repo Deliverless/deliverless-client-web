@@ -63,7 +63,7 @@ export const CartReducer = (state, action) => {
         case "CHECKOUT":
             return {
                 cartItems: [],
-                checkout: true,
+                checkout: false,
                 ...sumItems([]),
             }
         case "CLEAR":

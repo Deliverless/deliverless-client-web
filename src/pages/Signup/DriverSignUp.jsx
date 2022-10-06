@@ -3,21 +3,19 @@ import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import React from 'react'
 import {Button, TextField}  from '@mui/material';
-import {useContext, useEffect, useState} from 'react'
+import {useEffect, useState} from 'react'
 import Typography from '@mui/material/Typography';
 import { CardActionArea } from '@mui/material';
 import Box from '@mui/material/Box';
-import {login} from '../models/user';
-import { UserContext, useAuthorized } from '../lib/context/userContext'
 import {Card, CardActions, CardContent} from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
 import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormGroup from '@mui/material/FormGroup';
-import User, { createUser } from '../models/user';
-import Driver, { signUpDriver } from '../models/driver';
-import Vehicle, { createVehicle } from '../models/vehicle';
 import sha256 from 'sha256'
+import User, { createUser } from '../../models/user';
+import Driver, { signUpDriver } from '../../models/driver';
+import Vehicle, { createVehicle } from '../../models/vehicle';
 
 
 const DriverSignUp = ()=> {

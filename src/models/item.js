@@ -1,5 +1,5 @@
 import { getRestaurant, updateRestaurant } from "./restaurant";
-import { getObjectById, updateObject, createNewObject, findObjectByMetadata } from '../lib/web3-helper'
+import { getObjectById, updateObject, createNewObject, findObjectsByMetadata } from '../lib/web3-helper'
 
 export default class Item {
     constructor(name, description, size, category, imgs, options, price, quantity, discount, isPickupOnly, isAvailable, restaurantId) {

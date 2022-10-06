@@ -1,11 +1,11 @@
 import React, { useContext, Component, useState, useEffect } from "react";
 import Order from "./Order";
 // import { getCustomerOrders } from '../../../models/order';
-import { UserContext } from "../../../lib/context/userContext";
+import { UserContext } from "../../../../lib/context/userContext";
 import LinearProgress from "@mui/material/LinearProgress";
-import { getOrder, getUserOrders } from "../../../models/order";
-import { getRestaurant } from '../../../models/restaurant'
-import { RestContext } from "../../../lib/context/restContext";
+import { getOrder, getUserOrders } from "../../../../models/order";
+import { getRestaurant } from '../../../../models/restaurant'
+import { RestContext } from "../../../../lib/context/restContext";
 
 const MyOrders = ({ id }) => {
   const [orders, setOrders] = useState([]);

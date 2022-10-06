@@ -4,10 +4,10 @@ import {Button, TextField}  from '@mui/material';
 import sha256 from 'sha256'
 
 // import { create } from '../smartcontracts/entities/user'
-import User, { createUser } from '../models/user';
-import Customer, { signUpCustomer } from '../models/customer'
+import User, { createUser } from '../../models/user';
+import Customer, { signUpCustomer } from '../../models/customer'
 
-const SignUp = () => {
+const CustomerSignUp = () => {
 
 
 	const [fName, setFName] = React.useState("")
@@ -89,4 +89,4 @@ const SignUp = () => {
 	 );
 }
  
-export default SignUp;
+export default CustomerSignUp;

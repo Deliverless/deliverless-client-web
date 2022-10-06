@@ -42,11 +42,15 @@ export const updateOrder = async (id, newData) => {
 }
 
 export const createOrder = async (order, customer) => {
-    return (await createNewObject("order", order)
-        .then((order) => {
-            console.log(order)
+    console.log("given order", order);
+    console.log("customer", customer);
+    let returnobj = await createNewObject("order", order)
+        .then((_order) => {
+            console.log("order", _order)
             let prevOrderIds = customer.orderIds != null ? customer.orderIds : []
-            updateCustomer(customer.id, { orderIds: [...prevOrderIds, order.id] })
-            return order;
-        }).catch(err => console.log(err))).data;
+            updateCustomer(customer.id, { orderIds: [...prevOrderIds, _order.data.id] })
+            return _order.data;
+        }).catch(err => console.log(err));
+    console.log("returning", returnobj);
+    return returnobj
 }

@@ -2,14 +2,14 @@ import React from 'react'
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
-import Home from './RestaurantHome';
-import Feedback from './Feedback';
-import Payment from '../../components/AccountDashboards/CustomerDashboard/UpdatePayment'
-import Menu from './Menu';
-import Hours from './Hours';
-import MyOrders from '../../components/AccountDashboards/CustomerDashboard/MyOrders';
+import Home from '../../restaurant/RestaurantHome';
+import Feedback from '../../restaurant/Feedback';
+import Payment from '../../components/AccountDashboards/Customer/UpdatePayment'
+import Menu from '../../restaurant/Menu';
+import Hours from '../../restaurant/Hours';
+import MyOrders from '../../components/AccountDashboards/Customer/MyOrders';
 
-export default function RestaurantDashboard() {
+export default function RestaurantAccount() {
 	const [tabValue, setTabValue] = React.useState('home');
 	const handleChange = (event, newValue) => {
     setTabValue(newValue);

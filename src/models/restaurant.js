@@ -1,4 +1,4 @@
-import { getObjectById, updateObject, createNewObject, findObjectByMetadata } from '../lib/web3-helper'
+import { getObjectById, updateObject, createNewObject, findObjectsByMetadata } from '../lib/web3-helper'
 export default class Restaurant {
     constructor(name, address, hours, itemIds, rating, reviewIds, image, userId) {
         this.name = name;
@@ -18,7 +18,7 @@ export const getRestaurant = async (id) => {
 }
 
 export const findRestaurantByUserId = async (userId) => {
-    return (await findObjectByMetadata("restaurant", { userId })
+    return (await findObjectsByMetadata("restaurant", { userId })
         .catch(err => console.log(err))).data;
 }
 

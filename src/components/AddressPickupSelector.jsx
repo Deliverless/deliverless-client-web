@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import Popper from '@mui/material/Popper';
 import Fade from '@mui/material/Fade';
 import Cookies from 'universal-cookie'
-import HomeIcon from '@mui/icons-material/Home';
+import LocationOnIcon from "@mui/icons-material/LocationOn";
 import AddressAutoComplete from './AddressAutoComplete';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
@@ -44,7 +44,8 @@ export default function AddressPickupSelector() {
     <>
     { isPickup != null && <>
       <div aria-describedby={id} type="button" onClick={handleClick}  style={{cursor: 'pointer' ,color: 'black', margin: '10px 20px', padding: '10px', borderRadius: '25px', border: '1px solid whitesmoke', background: 'white'}}>
-       <HomeIcon style={{color: 'rgb(51, 51, 51)', marginBottom: '-5px'}}/> <span className="d-none d-md-inline-block"> {`${addressCookie?.housenumber} ${addressCookie?.street}`} | {isPickup == 'true' ? "Pickup" : "Delivery"} </span>
+        
+       <LocationOnIcon style={{color: 'rgb(51, 51, 51)', marginBottom: '-5px'}}/> <span className="d-none d-md-inline-block"> {`${addressCookie?.housenumber} ${addressCookie?.street}`} | {isPickup == 'true' ? "Pickup" : "Delivery"} </span>
       </div>
       <Popper id={id} open={open} anchorEl={anchorEl} transition>
         {({ TransitionProps }) => (

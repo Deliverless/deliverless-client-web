@@ -1,11 +1,11 @@
 import React, { useContext } from 'react'
 import { Button, TextField }  from '@mui/material';
-import { UserContext, useAuthorized } from '../lib/context/userContext'
-import User, { login } from '../models/user'
+import { UserContext, useAuthorized } from '../../lib/context/userContext'
+import User, { login } from '../../models/user'
 import { useNavigate } from 'react-router-dom'
-import { findCustomerByUserId } from '../models/customer';
+import { findCustomerByUserId } from '../../models/customer';
 
-const Login = () => {
+const CustomerLogin = () => {
 
 	const [email, setUsername] = React.useState("")
 	const [password, setPassword] = React.useState("")
@@ -64,4 +64,4 @@ const Login = () => {
 	);
 }
  
-export default Login;
+export default CustomerLogin;

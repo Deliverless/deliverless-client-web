@@ -28,6 +28,7 @@
     "react-router-dom": "^6.2.2",
     "react-scripts": "5.0.0",
     "react-vis-network": "^1.0.0",
+    "recharts": "^2.1.14",
     "sass": "^1.49.9",
     "sha256": "^0.2.0",
     "stripe": "^10.10.0",

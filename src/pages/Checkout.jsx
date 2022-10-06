@@ -132,6 +132,7 @@ const Checkout = () => {
       const tax = subtotal * 0.13;
       const tipAmt = Math.round((total * tip + Number.EPSILON) * 100) / 100
       setOrderTotal(Math.round(((parseFloat(subtotal) + parseFloat(tax) + parseFloat(driverFee) + parseFloat(tipAmt)) + Number.EPSILON) * 100) / 100)
+      let totalAmt = Math.round(((parseFloat(subtotal) + parseFloat(tax) + parseFloat(driverFee) + parseFloat(tipAmt)) + Number.EPSILON) * 100) / 100;
       console.log(total)
       console.log(driverFee)
       console.log(tax)
@@ -149,18 +150,17 @@ const Checkout = () => {
           tax,
           driverFee,
           subtotal,
-          orderTotal,
+          totalAmt,
           tip,
           today,
           cartItems
       );
       setOrder(order);
       
-      console.log(typeof total);
       fetch("/create-payment-intent", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ total:Math.round((orderTotal + Number.EPSILON) * 100) }),
+        body: JSON.stringify({ total:Math.round((totalAmt + Number.EPSILON) * 100) }),
       })
         .then((res) => res.json())
         .then((data) => setClientSecret(data.clientSecret));

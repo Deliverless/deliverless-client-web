@@ -2,13 +2,11 @@ import React from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
-import AccountInfo from '../AccountInfo';
-import UpdatePayment from './UpdatePayment'
-import MyOrders from './MyOrders'
+import AccountInfo from './components/AccountInfo';
+import UpdatePayment from './components/UpdatePayment'
+import MyOrders from './components/MyOrders'
 
-
-
-export default function CustomerDashboard({id, firstName, lastName, emailAddress, deliveryAddress, encoded}) {
+export default function CustomerAccount({id, firstName, lastName, emailAddress, deliveryAddress, encoded}) {
 	const [tabValue, setValue] = React.useState('info');
 
   const handleChange = (event, newValue) => {

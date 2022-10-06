@@ -1,33 +1,39 @@
 import Home from '../pages/Home'
 import Landing from '../pages/Landing'
-import SignUp from '../pages/SignUp'
+import CustomerSignUp from '../pages/Signup/CustomerSignUp'
 import NotFound from '../pages/NotFound'
-import Login from '../pages/Login'
+import Login from '../pages/Login/CustomerLogin'
 import Cart from '../pages/Cart'
-import Account from '../pages/Account'
-import RestaurantDashboard from '../pages/restaurant/RestaurantDashboard'
-import AdminSettings from '../pages/admin/AdminSettings'
+import Account from '../pages/AccountPages/Account'
+import RestaurantDashboard from '../pages/Dashboards/Restaurant/RestaurantDashboard'
+import AdminSettings from '../pages/AdminSettings'
 import { HasAddressCookie, RequiredPrivilege, RequiredAuth, Logout } from './middleware'
 import RestaurantHome from '../pages/restaurant/RestaurantHome'
-import ThankYou from '../components/ThankYou'
+import ThankYou from '../pages/ThankYou'
 import Checkout from '../pages/Checkout'
-import DriverSignUp from '../pages/DriverSignUp'
+import DriverSignUp from '../pages/Signup/DriverSignUp'
+import RestaurantSignUp from '../pages/Signup/RestaurantSignUp'
+import DriverDashboard from '../pages/Dashboards/Driver/DriverDashboard'
+import DriverProfile from '../pages/DriverProfile'
 
 const routes = [
     { path: "/", element: <HasAddressCookie redirectTo='/landing'><Home /></HasAddressCookie> },
     { path: "/landing", element: <Landing /> },
     { path: "/login", element: <Login /> },
     { path: "/logout", element: <Logout redirectTo="/login"></Logout> },
-    { path: "/signup", element: <SignUp /> },
-    { path: "/restaurant/home", element: <RestaurantHome /> },
+    { path: "/signup", element: <CustomerSignUp /> },
     { path: "/cart", element: <RequiredAuth redirectTo="/login"><Cart /></RequiredAuth> },
     { path: "/account", element: <RequiredAuth redirectTo="/login"><Account /></RequiredAuth> },
+    { path: "/settings", element: <RequiredPrivilege privilege="admin" redirectTo="/login"><AdminSettings /></RequiredPrivilege> },
+    { path: "/restaurant/home", element: <RestaurantHome /> },
     { path: "/restaurant/dashboard", element: <RequiredPrivilege privilege="restaurant" redirectTo="/"><RestaurantDashboard /></RequiredPrivilege> },
-    { path: "/settings", element: <RequiredPrivilege redirectTo="/login"><AdminSettings /></RequiredPrivilege> },
+    { path: "/restaurant/signup", element: <RestaurantSignUp /> },
+    { path: "/driver/profile", element: <DriverProfile /> },
+    { path: "/driver/dashboard", element: <RequiredPrivilege privilege="driver" redirectTo="/"><DriverDashboard /></RequiredPrivilege> },
+    { path: "/driver/signup", element: <DriverSignUp /> },
+    { path: "/thankyou", element: <RequiredAuth redirectTo="/login"><ThankYou /></RequiredAuth> },
+    { path: "/checkout", element: <RequiredAuth redirectTo="/login"><Checkout /></RequiredAuth> },
     { path: "*", element: <NotFound /> },
-    { path: "/thankyou", element: <RequiredAuth redirectTo="/login"><ThankYou></ThankYou></RequiredAuth>},
-    { path: "/checkout", element: <RequiredAuth redirectTo="/login"><Checkout></Checkout></RequiredAuth>},
-    { path: "/driver/signup", element: <DriverSignUp/>}
 ];
 
 const appBarLinks = [
