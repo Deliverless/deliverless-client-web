@@ -1,33 +1,38 @@
-import React, {useContext, useEffect, useState} from 'react'
-import CartItem from '../components/CartItem';
-import { CartContext } from '../lib/cartContext'
-import { Link } from 'react-router-dom';
-import { loadStripe } from "@stripe/stripe-js";
-import { Elements } from "@stripe/react-stripe-js";
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import Typography from '@mui/material/Typography';
-import { CardActionArea } from '@mui/material';
+import '../StripeForm.css';
+
+import React, {
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
+
+import Cookies from 'universal-cookie';
+
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import {
+  Button,
+  TextField,
+} from '@mui/material';
+import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
-import Stepper from '@mui/material/Stepper';
-import Step from '@mui/material/Step';
-import StepLabel from '@mui/material/StepLabel';
-import Cookies from 'universal-cookie'
-import {Button, TextField}  from '@mui/material';
-import { getAutoComplete } from '../lib/addressapi';
+import Card from '@mui/material/Card';
+import Divider from '@mui/material/Divider';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
-import Divider from '@mui/material/Divider';
-import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
-import Avatar from '@mui/material/Avatar';
+import ListItemText from '@mui/material/ListItemText';
+import Step from '@mui/material/Step';
+import StepLabel from '@mui/material/StepLabel';
+import Stepper from '@mui/material/Stepper';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
+import Typography from '@mui/material/Typography';
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
 
-import CheckoutForm from "../components/CheckoutForm";
-import "../StripeForm.css";
+import CheckoutForm from '../components/CheckoutForm';
+import { getAutoComplete } from '../lib/api/addressapi';
+import { CartContext } from '../lib/cartContext';
 
 const stripePromise = loadStripe("pk_test_51LiTBOHlhPKJMrfBUI52YU8nihPcSYlBkCHy46irESS7ev1J7vBI1rHNId6wM0kpZ5OybUNUwPvnT0GdyZo9xQG500i6jQAWVw");
 

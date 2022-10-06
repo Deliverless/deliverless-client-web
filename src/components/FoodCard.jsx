@@ -1,13 +1,14 @@
-import React, {useContext, useState} from 'react'
+import React, { useContext } from 'react';
+
+import { CardActionArea } from '@mui/material';
+import Badge from '@mui/material/Badge';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
-import { CardActionArea } from '@mui/material';
-import { foods } from '../lib/foodData';
+
+import { CartContext } from '../lib/cartContext';
 import FoodCardModal from './FoodCardModal';
-import Badge from '@mui/material/Badge';
-import { CartContext } from '../lib/cartContext'
 
 const FoodCard = ({food}) => {
 	const {cartItems} = useContext(CartContext);

@@ -1,24 +1,31 @@
-import Home from '../pages/Home'
-import Landing from '../pages/Landing'
-import SignUp from '../pages/SignUp'
-import NotFound from '../pages/NotFound'
-import Login from '../pages/Login'
-import Cart from '../pages/Cart'
-import Account from '../pages/Account'
-import RestaurantDashboard from '../pages/restaurant/RestaurantDashboard'
-import AdminSettings from '../pages/admin/AdminSettings'
-import { HasAddressCookie, RequiredPrivilege, RequiredAuth, Logout } from './middleware'
-import RestaurantHome from '../pages/restaurant/RestaurantHome'
-import ThankYou from '../components/ThankYou'
-import Checkout from '../pages/Checkout'
+import { Navigate } from 'react-router-dom';
+
+// import RestaurantHome from '../pages/Restaurants'
+import ThankYou from '../components/ThankYou';
+import Account from '../pages/Account';
+import AdminSettings from '../pages/admin/AdminSettings';
+import Cart from '../pages/Cart';
+import Checkout from '../pages/Checkout';
+import Landing from '../pages/Landing';
+import Login from '../pages/Login';
+import NotFound from '../pages/NotFound';
+import RestaurantDashboard from '../pages/RestaurantDashboard';
+import Restaurants from '../pages/Restaurants';
+import SignUp from '../pages/SignUp';
+import {
+  HasAddressCookie,
+  Logout,
+  RequiredAuth,
+  RequiredPrivilege,
+} from './middleware';
 
 const routes = [
-    { path: "/", element: <HasAddressCookie redirectTo='/landing'><Home /></HasAddressCookie> },
+    { path: "/", element: <HasAddressCookie redirectTo='/landing'><Navigate to='/restaurants' /></HasAddressCookie> },
     { path: "/landing", element: <Landing /> },
     { path: "/login", element: <Login /> },
     { path: "/logout", element: <Logout redirectTo="/login"></Logout> },
     { path: "/signup", element: <SignUp /> },
-    { path: "/restaurant/home", element: <RestaurantHome /> },
+    { path: "/restaurants/*", element: <Restaurants /> },
     { path: "/cart", element: <RequiredAuth redirectTo="/login"><Cart /></RequiredAuth> },
     { path: "/account", element: <RequiredAuth redirectTo="/login"><Account /></RequiredAuth> },
     { path: "/restaurant/dashboard", element: <RequiredPrivilege privilege="restaurant" redirectTo="/"><RestaurantDashboard /></RequiredPrivilege> },
@@ -43,5 +50,4 @@ const appBarLinks = [
     { title: 'Settings', icon: 'cog', url: "/settings", role: 'admin', isAuth: true }
 ];
 
-export { routes, appBarLinks };
-
+export { appBarLinks, routes };

@@ -1,6 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import {Button}  from '@mui/material';
-import { getRestaurant } from '../../../models/restaurant'
+import React, {
+  useEffect,
+  useState,
+} from 'react';
+
+import { Button } from '@mui/material';
+
+import { getRestaurantById } from '../../../models/restaurant';
 
 const Order = ({key, image, itemCount, foods, total,tax, restaurantID, timePlaced, status}) => {
 	const [orderRestaurant, setOrderRestaurant] = useState(null)
@@ -11,7 +16,7 @@ const Order = ({key, image, itemCount, foods, total,tax, restaurantID, timePlace
 	}, [])
 
 	const getRest = async ()=> {
-		const restaurant = await getRestaurant(restaurantID);
+		const restaurant = await getRestaurantById(restaurantID);
 		console.log("restaurantID",restaurantID)
 		setOrderRestaurant(restaurant)
 		setRestaurantImg(restaurant.image)

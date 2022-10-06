@@ -1,7 +1,9 @@
-import Web3 from 'web3';
-import { mnemonicToSeedSync } from 'bip39';
 import BigchainDb from 'bigchaindb-orm';
+import { mnemonicToSeedSync } from 'bip39';
+import Web3 from 'web3';
+
 import * as abiIndex from './abis/index.js';
+
 const abi = abiIndex.default;
 // import * as dotenv from 'dotenv'
 // dotenv.config()
@@ -61,10 +63,10 @@ export const getObjectById = async (modelName, assetId) => {
 
 // TODO: fix data limit
 // find object(s) in the database by metadata (limited to 1 for now)
-export const findObjectByMetadata = async (modelName, metadataJson) => {
+export const findObjectsByMetadata = async (modelName, metadataJson, limit=1) => {
     const client = await getWeb3Client()
     // call(send) function within smart contract
-    const receipt = await client.contractBigchaindb.methods.requestFindObject(modelName, JSON.stringify(metadataJson), 1, "").send({ from: client.account.address, gas: 3000000 });
+    const receipt = await client.contractBigchaindb.methods.requestFindObject(modelName, JSON.stringify(metadataJson), limit, "").send({ from: client.account.address, gas: 3000000 });
     // requestId from Chainlink
     const requestId = getRequestId(receipt);
     console.log('requestId', requestId);
@@ -140,31 +142,9 @@ const requestResponse = async (requestId) => {
         const extractText = data.match(/{"jobRunID":.*}/g);
         const parsedResponse = JSON.parse(extractText);
         parsedResponse.data = JSON.parse(parsedResponse.data);
+        console.log('parsedResponse', parsedResponse);
         return parsedResponse;
     } else {
         return null;
     }
 }
-
-// specify object properties 
-// *** REFERENCE deliverless-chainlink/adapters/bigchaindb-utils/models ***
-const metadataObject = {
-    "role": "admin",
-    "firstName": "marcin",
-    "lastName": "koziel",
-    "birthday": "1990-01-01",
-    "email": "koziel@sheridancollege.ca",
-    "addresses": [],
-    "phone": "647-123-4567",
-    "orderIds": [],
-    "encoded": "sheridanuser",
-    "images": [],
-    "keypair": keypair
-}
-
-
-// createNewObject('user', metadataObject);
-// getObjectById('user', 'id:global:user:8459dad6-f04d-4d63-97e4-61d1c0c4ca73');
-// findObjectByMetadata('user', metadataObject);
-// updateObject('user', 'id:global:user:835249bc-14d3-4210-a10f-5abacdd9b4d6', metadataObject);
-// deleteObject('user', 'id:global:user:c1552c51-bccc-4ff7-ac60-a4b7cd78e40e');

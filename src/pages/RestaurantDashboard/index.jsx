@@ -2,7 +2,7 @@ import React from 'react'
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
-import Home from './RestaurantHome';
+import Home from '../Restaurants';
 import Feedback from './Feedback';
 import Payment from '../../components/AccountDashboards/CustomerDashboard/UpdatePayment'
 import Menu from './Menu';
