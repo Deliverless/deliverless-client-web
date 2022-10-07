@@ -3,9 +3,7 @@ import Order from "./Order";
 // import { getCustomerOrders } from '../../../models/order';
 import { UserContext } from "../../../../lib/context/userContext";
 import LinearProgress from "@mui/material/LinearProgress";
-import { getOrder, getUserOrders } from "../../../../models/order";
-import { getRestaurant } from '../../../../models/restaurant'
-import { RestContext } from "../../../../lib/context/restContext";
+import { getOrder, findOrdersByUserId } from "../../../../models/order";
 
 const MyOrders = ({ id }) => {
   const [orders, setOrders] = useState([]);
@@ -16,24 +14,10 @@ const MyOrders = ({ id }) => {
     getOrders();
   }, []);
 
-  // TODO: pull data from BigChain DB using smart contract
   const getOrders = async () => {
-  
-    user.customer.orderIds.forEach(async id => {
-      const order = await getOrder(id);
-      setOrders((current)=>[...current, order])
-      setLoaded(true);
-    })
-
-    // getUserOrders(user.id).then((orders)=>{
-    //   console.log("orders", orders)
-    //   if(!Array.isArray(orders))
-    //     setOrders([orders])
-    //   else
-    //     setOrders(orders)
-    //   setLoaded(true);
-    // })
-    
+    let userOrders = await findOrdersByUserId(user.id)
+    setOrders(userOrders)
+    setLoaded(true)
   };
 
   if (!loaded) {
