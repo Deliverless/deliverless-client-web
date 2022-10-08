@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { styled } from "@mui/material/styles";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import Switch from "@mui/material/Switch";
 import Typography from "@mui/material/Typography";
+import { updateDriver } from "../../../../models/driver";
+import { UserContext } from "../../../../lib/context/userContext";
+import { Backdrop, CircularProgress } from "@mui/material";
 
 export const MuiSwitchLarge = styled(Switch)(({ theme }) => ({
   width: 105,
@@ -35,32 +38,54 @@ export const MuiSwitchLarge = styled(Switch)(({ theme }) => ({
 }));
 
 export default function OnlineStatusToggle() {
-  const [online, setOnline] = useState(false);
-  const onChangeHandler = (e) => {
-    console.log("toggled", e.target.checked);
-    setOnline(e.target.checked);
+  const { user, setUser } = useContext(UserContext);
+  console.log("driver online", user.driver.online)
+  const [online, setOnline] = useState(user.driver.online);
+  const [loading, setLoading] = useState(false);
+
+  const onChangeHandler = () => {
+    setLoading(true);
+    updateDriver(user.driver.id, { online: !online }).then((d) => {
+      setOnline(!online);
+      setLoading(false);
+      console.log("driver updated online status", d);
+      let updatedUser = {...user}
+      updatedUser.driver.online = !online
+      setUser(updatedUser)
+    });
   };
+
   return (
     <>
       <Card
         sx={{
-          width: 201,
+          width: 203,
           margin: 1,
           maxHeight: 100,
           display: "inline-block",
         }}
       >
         <CardContent>
+          <Backdrop
+            sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+            open={loading}
+          >
+            <CircularProgress color="inherit" />
+          </Backdrop>
           <Typography sx={{ fontSize: 12 }} color="text.secondary" gutterBottom>
             Set Online Status
           </Typography>
           <div className="row">
             <div className="col">
-              <MuiSwitchLarge onChange={onChangeHandler} />
+              <MuiSwitchLarge
+                checked={online}
+                onChange={onChangeHandler}
+                disabled={loading == true}
+              />
             </div>
             <div className="col p-0 m-0 pr-3">
               <Typography sx={{ fontSize: 16 }}>
-                {(online && "Online" || "Offline")}
+                {(online && "Online") || "Offline"}
               </Typography>
             </div>
           </div>

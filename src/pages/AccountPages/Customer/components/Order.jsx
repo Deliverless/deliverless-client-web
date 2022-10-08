@@ -27,7 +27,7 @@ const Order = ({ image, itemCount, foods, total,tax, restaurantId, timePlaced, s
 				{/* <p className="h6">Tax: ${tax.toFixed(2)}</p>
 				<p className="h6">Subtotal: ${parseFloat(total) - parseFloat(tax)}</p> */}
 				<p className="h5">Status: {status}</p>
-				<p className="h4">Total: ${total.toFixed(2)}</p>
+				<p className="h4">Total: ${parseFloat(total).toFixed(2)}</p>
 				
 			</div>
 		

@@ -16,6 +16,7 @@ import sha256 from 'sha256'
 import User, { createUser } from '../../models/user';
 import Driver, { signUpDriver } from '../../models/driver';
 import Vehicle, { createVehicle } from '../../models/vehicle';
+import AddressAutoComplete from '../../components/AddressAutoComplete';
 
 
 const DriverSignUp = ()=> {
@@ -33,6 +34,7 @@ const DriverSignUp = ()=> {
   const [email, setUsername] = React.useState("")
   const [birthday, setBirthday] = React.useState("")
 	const [password, setPassword] = React.useState("")
+  const [city, setCity] = React.useState("")
 
   const [make, setMake] = React.useState("")
 	const [model, setModel] = React.useState("")
@@ -68,6 +70,7 @@ const DriverSignUp = ()=> {
 		else if (input === "lName") setLName(e.currentTarget.value)
 		else if (input === "phone") setPhone(e.currentTarget.value)
 		else if (input === "birthday") setBirthday(e.currentTarget.value)
+    else if (input === "city") setBirthday(e.currentTarget.value)
 	}
 
   const handleVehicleChange = (e, input) =>{
@@ -91,7 +94,7 @@ const DriverSignUp = ()=> {
     console.log(user)
     const vehicle = await createVehicle(newVehicle)
     console.log(vehicle)
-    const driver = await signUpDriver(new Driver(vehicle.id, 0, [], user.id))
+    const driver = await signUpDriver(new Driver(vehicle.id, "", [], user.id, false, city.city))
     console.log(driver)
   }
 
@@ -237,6 +240,7 @@ const DriverSignUp = ()=> {
                   value={password}
                 />
                 <br />
+                <AddressAutoComplete label="Enter City" params={"&type=city"} setAddress={setCity}/>
                 <br />
                 {errors && <div className="alert alert-danger">{errors}</div>}
                 

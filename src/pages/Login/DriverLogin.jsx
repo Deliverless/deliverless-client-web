@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import { Button, TextField }  from '@mui/material';
 import { UserContext } from '../../lib/context/userContext'
 import User, { login } from '../../models/user'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { findDriverByUserId } from '../../models/driver';
 
 const Login = () => {
@@ -53,7 +53,7 @@ const Login = () => {
 	return (
 			<div className="main-content center-container" style={{textAlign: 'center', flexDirection: 'column'}}>
 					<h1>Driver Log In</h1>
-					<p>Want to become a driver? <a href="/driver/signup" >Sign Up</a></p>
+					<p>Want to become a driver? <Link to="/driver/signup" >Sign Up</Link></p>
 					<form className="form-group">
 						<TextField onChange={(e) => handleChange(e, "email")} autoFocus required style={{marginBottom: '20px'}} id="outlined-basic" label="Email" variant="outlined" value={email} /><br/>	
 						<TextField onChange={(e) => handleChange(e, "password")} required style={{marginBottom: '20px'}} id="outlined-basic" label="Password" variant="outlined" value={password} /><br/>
