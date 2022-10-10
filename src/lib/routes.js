@@ -1,17 +1,20 @@
-import { Navigate } from 'react-router-dom';
-
-// import RestaurantHome from '../pages/Restaurants'
-import ThankYou from '../components/ThankYou';
-import Account from '../pages/Account';
-import AdminSettings from '../pages/admin/AdminSettings';
+import Account from '../pages/AccountPages/Account';
+import AdminSettings from '../pages/AdminSettings';
 import Cart from '../pages/Cart';
 import Checkout from '../pages/Checkout';
+import DriverDashboard from '../pages/Dashboards/Driver/DriverDashboard';
+import RestaurantDashboard
+  from '../pages/Dashboards/Restaurant/RestaurantDashboard';
+import DriverProfile from '../pages/DriverProfile';
 import Landing from '../pages/Landing';
-import Login from '../pages/Login';
+import Login from '../pages/Login/CustomerLogin';
+import DriverLogin from '../pages/Login/DriverLogin';
 import NotFound from '../pages/NotFound';
-import RestaurantDashboard from '../pages/RestaurantDashboard';
-import Restaurants from '../pages/Restaurants';
-import SignUp from '../pages/SignUp';
+import RestaurantHome from '../pages/restaurant/RestaurantHome';
+import CustomerSignUp from '../pages/Signup/CustomerSignUp';
+import DriverSignUp from '../pages/Signup/DriverSignUp';
+import RestaurantSignUp from '../pages/Signup/RestaurantSignUp';
+import ThankYou from '../pages/ThankYou';
 import {
   HasAddressCookie,
   Logout,
@@ -24,15 +27,20 @@ const routes = [
     { path: "/landing", element: <Landing /> },
     { path: "/login", element: <Login /> },
     { path: "/logout", element: <Logout redirectTo="/login"></Logout> },
-    { path: "/signup", element: <SignUp /> },
-    { path: "/restaurants/*", element: <Restaurants /> },
+    { path: "/signup", element: <CustomerSignUp /> },
     { path: "/cart", element: <RequiredAuth redirectTo="/login"><Cart /></RequiredAuth> },
     { path: "/account", element: <RequiredAuth redirectTo="/login"><Account /></RequiredAuth> },
+    { path: "/settings", element: <RequiredPrivilege privilege="admin" redirectTo="/login"><AdminSettings /></RequiredPrivilege> },
+    { path: "/restaurant/home", element: <RestaurantHome /> },
     { path: "/restaurant/dashboard", element: <RequiredPrivilege privilege="restaurant" redirectTo="/"><RestaurantDashboard /></RequiredPrivilege> },
-    { path: "/settings", element: <RequiredPrivilege redirectTo="/login"><AdminSettings /></RequiredPrivilege> },
+    { path: "/restaurant/signup", element: <RestaurantSignUp /> },
+    { path: "/driver/profile", element: <DriverProfile /> },
+    { path: "/driver/dashboard", element: <RequiredPrivilege privilege="driver" redirectTo="/"><DriverDashboard /></RequiredPrivilege> },
+    { path: "/driver/signup", element: <DriverSignUp /> },
+    { path: "/driver/login", element: <DriverLogin /> },
+    { path: "/thankyou", element: <RequiredAuth redirectTo="/login"><ThankYou /></RequiredAuth> },
+    { path: "/checkout", element: <RequiredAuth redirectTo="/login"><Checkout /></RequiredAuth> },
     { path: "*", element: <NotFound /> },
-    { path: "/thankyou", element: <RequiredAuth redirectTo="/login"><ThankYou></ThankYou></RequiredAuth>},
-    { path: "/checkout", element: <RequiredAuth redirectTo="/login"><Checkout></Checkout></RequiredAuth>}
 ];
 
 const appBarLinks = [
@@ -45,7 +53,7 @@ const appBarLinks = [
     { title: 'Logout', icon: 'sign-out', url: "/logout", isAuth: true },
     { title: 'Login', icon: 'sign-in', url: "/login", isAuth: false },
     { title: 'Sign Up', icon: 'user-plus', url: "/signup", isAuth: false },
-    { title: 'Become a Driver', icon: 'car', url: "/driver/signup", isAuth: false },
+    { title: 'Login Driver', icon: 'car', url: "/driver/login", isAuth: false },
     { title: 'Add your Restaurant', icon: 'cutlery', url: "/restaurant/signup", isAuth: false },
     { title: 'Settings', icon: 'cog', url: "/settings", role: 'admin', isAuth: true }
 ];

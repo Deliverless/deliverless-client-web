@@ -1,16 +1,20 @@
 import React from 'react'
 import {Button, TextField}  from '@mui/material';
-import http from '../lib/api';
-// import { create } from '../smartcontracts/entities/user'
-import { createUser } from '../models/user';
+// import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
+import sha256 from 'sha256'
 
-const SignUp = () => {
+// import { create } from '../smartcontracts/entities/user'
+import User, { createUser } from '../../models/user';
+import Customer, { signUpCustomer } from '../../models/customer'
+
+const CustomerSignUp = () => {
 
 
 	const [fName, setFName] = React.useState("")
 	const [lName, setLName] = React.useState("")
 	const [phone, setPhone] = React.useState("")
 	const [email, setEmail] = React.useState("")
+	const [birthday, setBirthday] = React.useState("")
 	const [password, setPassword] = React.useState("")
 	const [errors, setErrors] = React.useState(null)
 	const [msg, setMsg] = React.useState("")
@@ -23,19 +27,15 @@ const SignUp = () => {
 	}
 
 	const completeSignup = async () => {
-
-		let signUpObj = {
-			firstName: fName,
-			lastName: lName,
-			phone: phone,
-			email: email,
-			password: password
-		}
-		createUser(signUpObj).then((newUser)=>{
+		let newUser = new User("customer", fName, lName, birthday, email, [], phone, sha256.x2(email + password), []);
+		createUser(newUser).then(async (user)=>{
+			let newCustomer = new Customer([], user.id)
+			signUpCustomer(newCustomer);
 			setFName("");
 			setLName("");
 			setPhone("");
 			setEmail("");
+			setBirthday("");
 			setPassword("");
 			setMsg('Success');
 		});
@@ -48,6 +48,7 @@ const SignUp = () => {
 		else if (input === "fName") setFName(e.currentTarget.value)
 		else if (input === "lName") setLName(e.currentTarget.value)
 		else if (input === "phone") setPhone(e.currentTarget.value)
+		else if (input === "birthday") setBirthday(e.currentTarget.value)
 	}
 
 	const validate = () =>{
@@ -73,6 +74,9 @@ const SignUp = () => {
 				
 				<TextField onChange={(e) => handleChange(e, "phone")} required style={{marginBottom: '20px'}} id="outlined-basic" label="Phone Number" variant="outlined" value={phone} /><br/>	
 
+				<p><input type="date"  onChange={(e) => handleChange(e, "birthday")} required /></p>
+				{/* <MobileDatePicker onChange={(e)=> handleChange(e, "birthday")} required label="Date of Birth" inputFormat="MM/DD/YYYY" value={birthday} renderInput={(params) => <TextField {...params} />}/> */}
+
 				<TextField onChange={(e) => handleChange(e, "email")} required style={{marginBottom: '20px'}} id="outlined-basic" label="Email" variant="outlined" value={email} /><br/>	
 				<TextField onChange={(e) => handleChange(e, "password")} required style={{marginBottom: '20px'}} id="outlined-basic" label="Password" variant="outlined" value={password} /><br/>
 
@@ -85,4 +89,4 @@ const SignUp = () => {
 	 );
 }
  
-export default SignUp;
+export default CustomerSignUp;

@@ -5,15 +5,8 @@ import {
   updateObject,
 } from '../lib/web3-helper';
 
-export const PriceRange = {
-    0: 'Cheap',
-    1: 'Moderate',
-    2: 'Expensive',
-    3: 'Very Expensive'
-}
-
 export default class Restaurant {
-    constructor(id = "", name = "", address = "", hours = "", rating = "", reviewIds = [], image = "", itemIds = [], items = []) {
+    constructor(id = "", name = "", address = "", hours = "", rating = "", reviewIds = [], image = "", itemIds = [], items = [], , userId = "") {
         this.id = id;
         this.name = name;
         this.address = address;
@@ -100,15 +93,25 @@ export const getRestaurantItems = async (restaurant) => {
     return items;
 }
 
+export const getRestaurantByName = async (name) => {
+    const res = await getObjectById('Restaurants', '');
+    console.log("restaurants", res);
+    return (await findObjectsByMetadata("restaurant", { name: name })
+        .catch(err => console.log(err))).data;
+}
+
 export const getRestaurantById = async (id) => {
     return (await getObjectById("restaurant", id)
         .catch(err => console.log(err))).data;
 }
 
-export const getRestaurantByName = async (name) => {
-    const res = await getObjectById('Restaurants', '');
-    console.log("restaurants", res);
-    return (await findObjectsByMetadata("restaurant", { name: name })
+export const getRestaurant = async (id) => {
+    return (await getObjectById("restaurants", id)
+        .catch(err => console.log(err))).data;
+}
+
+export const findRestaurantByUserId = async (userId) => {
+    return (await findObjectsByMetadata("restaurant", { userId })
         .catch(err => console.log(err))).data;
 }
 
@@ -122,7 +125,7 @@ export const updateRestaurant = async (id, newData) => {
         .catch(err => console.log(err))).data;
 }
 
-export const createRestaurant = async (restaurant) => {
+export const signUpRestaurant = async (restaurant) => {
     return (await createNewObject("restaurant", restaurant)
         .catch(err => console.log(err))).data;
 }

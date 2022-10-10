@@ -1,5 +1,3 @@
-import '../StripeForm.css';
-
 import React, { useContext } from 'react';
 
 import { Link } from 'react-router-dom';
@@ -7,6 +5,7 @@ import { Link } from 'react-router-dom';
 import Button from '@mui/material/Button';
 
 import CartItem from '../components/CartItem';
+import { CartContext } from '../lib/cartContext';
 import { CartContext } from '../lib/context/cartContext';
 
 //const stripePromise = loadStripe("pk_test_51LiTBOHlhPKJMrfBUI52YU8nihPcSYlBkCHy46irESS7ev1J7vBI1rHNId6wM0kpZ5OybUNUwPvnT0GdyZo9xQG500i6jQAWVw");

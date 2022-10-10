@@ -1,6 +1,9 @@
 import React, { useContext } from 'react';
 
-import { Link } from 'react-router-dom';
+import {
+  Link,
+  useLocation,
+} from 'react-router-dom';
 
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
@@ -16,16 +19,11 @@ import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import {
-  styled,
-  useTheme,
-} from '@mui/material/styles';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
 
 import { CartContext } from '../lib/context/cartContext';
 import { UserContext } from '../lib/context/userContext';
 import { appBarLinks } from '../lib/routes';
+import AddressPickupSelector from './AddressPickupSelector';
 
 const drawerWidth = 240;
 
@@ -99,7 +97,8 @@ const ResponsiveAppBar = () => {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const { itemCount } = useContext(CartContext);
-
+  const location = useLocation();
+  
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -141,7 +140,7 @@ const ResponsiveAppBar = () => {
           >
             Deliver Less
           </Typography>
-
+          {location.pathname != "/landing" && <AddressPickupSelector/> }
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open} sx={{}}>

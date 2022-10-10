@@ -31,7 +31,7 @@ import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 
 import CheckoutForm from '../components/CheckoutForm';
-import { getAutoComplete } from '../lib/api/addressapi';
+import { getAutoComplete } from '../lib/addressapi';
 import { CartContext } from '../lib/context/cartContext';
 import { OrderContext } from '../lib/context/orderContext';
 import { UserContext } from '../lib/context/userContext';
@@ -51,17 +51,27 @@ const Checkout = () => {
     handleCheckout,
     increase,
   } = useContext(CartContext);
+
   const [clientSecret, setClientSecret] = useState("");
-  const { order, setOrder, clearOrder } = useContext(OrderContext);
+
+  const { order, setOrder, clearOrder } = useContext(OrderContext)
   const { user, setUser } = useContext(UserContext);
+
   const steps = ["Verify Address", "Subtotal + Tip", "Details & Payment"];
+
   const [activeStep, setActiveStep] = useState(0);
   const [errors, setErrors] = useState(null);
+
   const [paymentTotal, setPaymentTotal] = useState(0);
+
   const [tip, setTip] = useState(0.15);
+
+
   const [orderTotal, setOrderTotal] = useState(0);
+
   const cookies = new Cookies();
   const cookieAddress = cookies.get("Address");
+
   const [address, setAddress] = useState(cookieAddress);
 
   const handleNext = () => {
@@ -111,63 +121,53 @@ const Checkout = () => {
           }
         }
       );
-    } else if (activeStep === 2) {
+    }
+    else if (activeStep === 2) {
       let cookies = new Cookies();
-      const { lat, lon, formatted } = cookies.get("Address");
-      const isPickup = cookies.get("isPickup");
+      const {lat, lon, formatted} = cookies.get("Address")
+      const isPickup = cookies.get("isPickup")
       const timeElapsed = Date.now();
       const today = new Date(timeElapsed);
       today.toDateString();
-      console.log("total", total);
+      console.log("total", total)
       const driverFee = 5.0;
       const subtotal = total;
       const tax = subtotal * 0.13;
-      const tipAmt = Math.round((total * tip + Number.EPSILON) * 100) / 100;
-      setOrderTotal(
-        Math.round(
-          (parseFloat(subtotal) +
-            parseFloat(tax) +
-            parseFloat(driverFee) +
-            parseFloat(tipAmt) +
-            Number.EPSILON) *
-            100
-        ) / 100
-      );
-      console.log(total);
-      console.log(driverFee);
-      console.log(tax);
-      console.log(tipAmt);
-      console.log(orderTotal);
+      const tipAmt = Math.round((total * tip + Number.EPSILON) * 100) / 100
+      setOrderTotal(Math.round(((parseFloat(subtotal) + parseFloat(tax) + parseFloat(driverFee) + parseFloat(tipAmt)) + Number.EPSILON) * 100) / 100)
+      let totalAmt = Math.round(((parseFloat(subtotal) + parseFloat(tax) + parseFloat(driverFee) + parseFloat(tipAmt)) + Number.EPSILON) * 100) / 100;
+      console.log(total)
+      console.log(driverFee)
+      console.log(tax)
+      console.log(tipAmt)
+      console.log(orderTotal)
       const order = new Order(
-        user.id,
-        "",
-        cartItems[0].restaurantId,
-        "",
-        { lat, lon, formatted },
-        isPickup,
-        "Pending",
-        0,
-        tax,
-        driverFee,
-        subtotal,
-        orderTotal,
-        tip,
-        today,
-        cartItems
+          user.id,
+          "",
+          cartItems[0].restaurantId,
+          "",
+          { lat, lon, formatted },
+          isPickup,
+          "Pending",
+          0,
+          tax,
+          driverFee,
+          subtotal,
+          totalAmt,
+          tip,
+          today,
+          cartItems
       );
       setOrder(order);
-
-      console.log(typeof total);
+      
       fetch("/create-payment-intent", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          total: Math.round((orderTotal + Number.EPSILON) * 100),
-        }),
+        body: JSON.stringify({ total:Math.round((totalAmt + Number.EPSILON) * 100) }),
       })
         .then((res) => res.json())
         .then((data) => setClientSecret(data.clientSecret));
-    }
+      }
   }, [activeStep]);
 
   // useEffect(() => {
@@ -595,11 +595,17 @@ const Checkout = () => {
                         </p>
                         <p className="mb-1">
                           Delivery Fee:{" "}
-                          <div className="m-0 float-right">${5.0}</div>
+                          <div className="m-0 float-right">
+                            $
+                            {5.00}
+                          </div>
                         </p>
                         <p className="mb-1">
                           Total:{" "}
-                          <div className="m-0 float-right">${orderTotal}</div>
+                          <div className="m-0 float-right">
+                            $
+                            {orderTotal}
+                          </div>
                         </p>
 
                         <ToggleButtonGroup

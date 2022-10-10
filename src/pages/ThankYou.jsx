@@ -15,10 +15,10 @@ function ThankYou() {
 
   const {handleCheckout, cartItems} = useContext(CartContext);
 
-useEffect(() => {
-  handleCheckout()
-  console.log(cartItems)
-}, [])
+  useEffect(() => {
+    handleCheckout();
+    console.log(cartItems)
+  }, [])
 
 
   return ( 

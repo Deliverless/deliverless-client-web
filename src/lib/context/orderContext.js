@@ -6,7 +6,7 @@ import React, {
 import {
   OrderReducer,
   setOrder,
-} from '../orderReducer';
+} from './orderReducer';
 
 export const OrderContext = createContext()
 const storage = localStorage.getItem('order') ? JSON.parse(localStorage.getItem('order')) : {};

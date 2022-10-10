@@ -45,6 +45,6 @@ export const createUser = async (user) => {
 export const login = async (email, password) => {
     let encoded = sha256.x2(email + password);
     const user = await findObjectsByMetadata("user", { encoded })
-    if (user.data.id === undefined) throw new Error("failed login attempt")
+    if (user.data?.id === undefined) throw new Error("failed login attempt")
     return user.data;
 }

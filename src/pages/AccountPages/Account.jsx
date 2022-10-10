@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
 
-import CustomerDashboard
-  from '../components/AccountDashboards/CustomerDashboard/CustomerDashboard';
-import { UserContext } from '../lib/context/userContext';
+import { UserContext } from '../../lib/context/userContext';
+import CustomerAccount from './Customer/CustomerAccount';
+import DriverAccount from './Driver/DriverAccount';
 
 const Account = () => {
    
@@ -15,10 +15,10 @@ const Account = () => {
 		return (
 			<div className="main-content">
 				{role==="customer" && <div>
-						<CustomerDashboard id={id} encoded={encoded} firstName={firstName} lastName={lastName} emailAddress={email} deliveryAddress={address} />
+					<CustomerAccount id={id} encoded={encoded} firstName={firstName} lastName={lastName} emailAddress={email} deliveryAddress={address} />
 				</div>}
 				{role==="driver" && <div>
-					<h1>This is Driver account</h1>
+					<DriverAccount />
 				</div>}
 				{role==="restaurant" && <div>
 						<h1>This is Restaurant account</h1>
