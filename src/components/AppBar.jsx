@@ -19,6 +19,12 @@ import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
+import {
+  styled,
+  useTheme,
+} from '@mui/material/styles';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
 
 import { CartContext } from '../lib/context/cartContext';
 import { UserContext } from '../lib/context/userContext';

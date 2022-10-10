@@ -31,7 +31,7 @@ import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 
 import CheckoutForm from '../components/CheckoutForm';
-import { getAutoComplete } from '../lib/addressapi';
+import { getAutoComplete } from '../lib/api/addressapi';
 import { CartContext } from '../lib/context/cartContext';
 import { OrderContext } from '../lib/context/orderContext';
 import { UserContext } from '../lib/context/userContext';

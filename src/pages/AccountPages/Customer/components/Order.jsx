@@ -1,11 +1,14 @@
 import React, {
+  useContext,
   useEffect,
   useState,
 } from 'react';
 
+import { RestContext } from 'lib/context/restContext';
+
 import { Button } from '@mui/material';
 
-import { getRestaurantById } from '../../../models/restaurant';
+import { getRestaurantById } from '../../../../models/restaurant';
 
 const Order = ({ image, itemCount, foods, total,tax, restaurantId, timePlaced, status}) => {
 	const [orderRestaurant, setOrderRestaurant] = useState(null)
@@ -17,8 +20,8 @@ const Order = ({ image, itemCount, foods, total,tax, restaurantId, timePlaced, s
 	}, []);
 
 	const getRest = async ()=> {
-		const restaurant = await getRestaurantById(restaurantID);
-		console.log("restaurantID",restaurantID)
+		const restaurant = await getRestaurantById(restaurantId);
+		console.log("restaurantID", restaurantId)
 		setOrderRestaurant(restaurant)
 		console.log("restaurant", restaurant)
 		setRestaurantImg(restaurant.image)

@@ -15,7 +15,6 @@ import Cookies from 'universal-cookie';
 
 import { getDirections } from '../lib/api/mapboxapi';
 import { UserContext } from '../lib/context/userContext';
-import { getDirections } from '../lib/mapboxapi';
 import { options } from '../lib/visjs-helper';
 import { RestaurantDecorator } from './RestaurantDecorator';
 

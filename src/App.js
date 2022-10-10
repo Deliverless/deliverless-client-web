@@ -1,5 +1,6 @@
 import './App.scss';
 
+import { routes } from 'lib/routes';
 import { useRoutes } from 'react-router-dom';
 
 import ResponsiveAppBar from './components/AppBar';

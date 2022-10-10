@@ -1,3 +1,8 @@
+import React from 'react';
+
+import Restaurants from 'pages/Restaurants';
+import { Navigate } from 'react-router-dom';
+
 import Account from '../pages/AccountPages/Account';
 import AdminSettings from '../pages/AdminSettings';
 import Cart from '../pages/Cart';
@@ -10,7 +15,7 @@ import Landing from '../pages/Landing';
 import Login from '../pages/Login/CustomerLogin';
 import DriverLogin from '../pages/Login/DriverLogin';
 import NotFound from '../pages/NotFound';
-import RestaurantHome from '../pages/restaurant/RestaurantHome';
+// import RestaurantHome from '../pages/restaurant/RestaurantHome';
 import CustomerSignUp from '../pages/Signup/CustomerSignUp';
 import DriverSignUp from '../pages/Signup/DriverSignUp';
 import RestaurantSignUp from '../pages/Signup/RestaurantSignUp';
@@ -31,7 +36,8 @@ const routes = [
     { path: "/cart", element: <RequiredAuth redirectTo="/login"><Cart /></RequiredAuth> },
     { path: "/account", element: <RequiredAuth redirectTo="/login"><Account /></RequiredAuth> },
     { path: "/settings", element: <RequiredPrivilege privilege="admin" redirectTo="/login"><AdminSettings /></RequiredPrivilege> },
-    { path: "/restaurant/home", element: <RestaurantHome /> },
+    { path: "/restaurants/*", element: <Restaurants /> },
+    // { path: "/restaurant/home", element: <RestaurantHome /> },
     { path: "/restaurant/dashboard", element: <RequiredPrivilege privilege="restaurant" redirectTo="/"><RestaurantDashboard /></RequiredPrivilege> },
     { path: "/restaurant/signup", element: <RestaurantSignUp /> },
     { path: "/driver/profile", element: <DriverProfile /> },
