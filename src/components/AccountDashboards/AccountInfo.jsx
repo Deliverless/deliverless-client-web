@@ -1,7 +1,15 @@
-import React, { useContext, useEffect} from 'react'
-import { TextField, Button } from '@mui/material';
-import { updateUser } from '../../models/user'
-import { UserContext, useAuthorized } from '../../lib/userContext'
+import React, {
+  useContext,
+  useEffect,
+} from 'react';
+
+import {
+  Button,
+  TextField,
+} from '@mui/material';
+
+import { UserContext } from '../../lib/context/userContext';
+import { updateUser } from '../../models/user';
 
 const AccountInfo = ({firstName, lastName, email, address, encoded}) => {
 

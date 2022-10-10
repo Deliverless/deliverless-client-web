@@ -7,7 +7,7 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 
-import { CartContext } from '../lib/cartContext';
+import { CartContext } from '../lib/context/cartContext';
 import FoodCardModal from './FoodCardModal';
 
 const FoodCard = ({food}) => {

@@ -1,7 +1,8 @@
-import React, { useContext } from 'react'
-import {UserContext} from '../lib/userContext'
-import CustomerDashboard from '../components/AccountDashboards/CustomerDashboard/CustomerDashboard';
+import React, { useContext } from 'react';
 
+import CustomerDashboard
+  from '../components/AccountDashboards/CustomerDashboard/CustomerDashboard';
+import { UserContext } from '../lib/context/userContext';
 
 const Account = () => {
    

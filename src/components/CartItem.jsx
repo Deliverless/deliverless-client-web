@@ -1,72 +1,61 @@
-import React, { useState ,useContext } from 'react'
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import { CardActionArea } from '@mui/material';
-import Typography from '@mui/material/Typography';
-import { CartContext } from '../lib/cartContext'
+import React, { useContext } from 'react';
 
-export default function CartItem({food, options}) {
+import {
+  CardActionArea,
+  CardMedia,
+  MenuItem,
+} from '@mui/material';
+import CardContent from '@mui/material/CardContent';
+import Select from '@mui/material/Select';
+import Typography from '@mui/material/Typography';
+
+import { CartContext } from '../lib/context/cartContext';
+
+export default function CartItem({item}) {
 
   const { increase, decrease, removeProduct, setQuantity} = useContext(CartContext);
 
   const handleChange = (event) => {
-		console.log(options)
-    console.log("changed")
     if(event.target.value == -1){
-     return removeProduct(food)
+     return removeProduct(item)
     }
-    setQuantity({id:food.id, quantity:event.target.value})
+    setQuantity({id:item.id, quantity:event.target.value, price:item.price, selectedOptions:item.selectedOptions})
   };
 
-  const imgAlt = food.title
-
-	const getOptions = () => {
-		let opts = ""
-		
-		options.map(opt => {
-			opts += opt + ", "
-		})
-
-		return opts.slice(0,-2)
-	}
-
-
   return (
-    <div sx={{ width: '100%' , borderRadius: '2em', margin: '20px'}}>
+    <div style={{ width: '100%' , borderRadius: '2em', margin: '20px'}}>
 				<CardActionArea sx={{display:'flex', justifyContent: 'flex-start'}}>
 					<CardMedia
 						component="img"
 						height="100"
             sx={{width:"100px!important"}}
-						image={food.photoUrl}
-						alt={imgAlt} />
+						image={item.images.find(img => img.alt === "main").url}
+						alt={item.name}
+					/>
 					<CardContent>
-						<Typography gutterBottom variant="h7" component="div">
-							{food.title}
+						<Typography gutterBottom variant="h6" component="div">
+							{item.name}
 						</Typography>
 						<Typography variant="body2" color="text.secondary">
-							{'$' + (food.price * food.quantity).toFixed(2)}
+							{'$' + (item.price * item.quantity).toFixed(2)}
 						</Typography>
 						<Typography variant="body2" color="text.secondary">
-							{getOptions()}
+							{item.selectedOptions.map(opt => opt.price > 0 ? 'Add ' + opt.name : 'Remove ' + opt.name).join(', ')}
 						</Typography>
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
-              value={food.quantity}
+              value={item.quantity}
               label="Quantity"
               onChange={handleChange}
             >
-                {[...Array(20).keys()].map((i)=>{
-                  if(i == 0){
-                    return <MenuItem key={i} value={-1}>Remove</MenuItem>
-                  }
-                  return <MenuItem key={i} value={i}>{i}</MenuItem>
-                }
-                   
-                )}
+							<MenuItem value={-1}>Remove</MenuItem>
+                {[...Array(10).keys()].map((x) => (
+									<MenuItem key={x} value={x+1}>
+										{x+1}
+									</MenuItem>
+								))}
+
           </Select>
 					
 					</CardContent>

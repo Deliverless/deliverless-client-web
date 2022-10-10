@@ -1,8 +1,14 @@
-import React, { useContext, Component, useState, useEffect } from 'react';
-import Order from './Order';
-// import { getCustomerOrders } from '../../../models/order';
-import { UserContext } from '../../../lib/userContext';
+import React, {
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
+
 import LinearProgress from '@mui/material/LinearProgress';
+
+// import { getCustomerOrders } from '../../../models/order';
+import { UserContext } from '../../../lib/context/userContext';
+import Order from './Order';
 
 const MyOrders = ({id}) => {
 	const [orders, setOrders] = useState([])

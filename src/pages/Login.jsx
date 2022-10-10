@@ -1,8 +1,14 @@
-import React, { useContext } from 'react'
-import { Button, TextField }  from '@mui/material';
-import { UserContext, useAuthorized } from '../lib/userContext'
-import { login } from '../models/user'
-import { useNavigate } from 'react-router-dom'
+import React, { useContext } from 'react';
+
+import { useNavigate } from 'react-router-dom';
+
+import {
+  Button,
+  TextField,
+} from '@mui/material';
+
+import { UserContext } from '../lib/context/userContext';
+import { login } from '../models/user';
 
 const Login = () => {
 
