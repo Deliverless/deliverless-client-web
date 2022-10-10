@@ -5,8 +5,15 @@ import {
   updateObject,
 } from '../lib/web3-helper';
 
+export const PriceRange = {
+    0: 'Cheap',
+    1: 'Moderate',
+    2: 'Expensive',
+    3: 'Very Expensive'
+}
+
 export default class Restaurant {
-    constructor(id = "", name = "", address = "", hours = "", rating = "", reviewIds = [], image = "", itemIds = [], items = [], , userId = "") {
+    constructor(id = "", name = "", address = "", hours = "", rating = "", reviewIds = [], image = "", itemIds = [], items = [], userId = "") {
         this.id = id;
         this.name = name;
         this.address = address;
