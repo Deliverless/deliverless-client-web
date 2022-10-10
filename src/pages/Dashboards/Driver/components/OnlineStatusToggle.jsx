@@ -1,13 +1,20 @@
-import React, { useState, useContext } from "react";
-import { styled } from "@mui/material/styles";
-import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
-import Switch from "@mui/material/Switch";
-import Typography from "@mui/material/Typography";
-import { updateDriver } from "../../../../models/driver";
-import { UserContext } from "../../../../lib/context/userContext";
-import { Backdrop, CircularProgress } from "@mui/material";
+import React, {
+  useContext,
+  useState,
+} from 'react';
+
+import {
+  Backdrop,
+  CircularProgress,
+} from '@mui/material';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import { styled } from '@mui/material/styles';
+import Switch from '@mui/material/Switch';
+import Typography from '@mui/material/Typography';
+
+import { UserContext } from '../../../../lib/context/userContext';
+import { updateDriver } from '../../../../models/driver';
 
 export const MuiSwitchLarge = styled(Switch)(({ theme }) => ({
   width: 105,
@@ -39,8 +46,8 @@ export const MuiSwitchLarge = styled(Switch)(({ theme }) => ({
 
 export default function OnlineStatusToggle() {
   const { user, setUser } = useContext(UserContext);
-  console.log("driver online", user.driver.online)
-  const [online, setOnline] = useState(user.driver.online);
+  // console.log("driver online", user.driver.online)
+  const [online, setOnline] = useState(user.driver ? user.driver.online : false);
   const [loading, setLoading] = useState(false);
 
   const onChangeHandler = () => {
