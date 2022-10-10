@@ -120,7 +120,8 @@ export default function RestaurantDetail({ history }) {
                     <span 
                       style={{ fontSize: "0.7rem", color: "grey" }}
                       >
-                      {`$${item.price}`}
+                      {/* price fixed to 2 decimal places with $ */}
+                      ${item.price.toFixed(2)}
                     </span>
                   </div>
                   <p>{item.description}</p>
@@ -138,8 +139,6 @@ export default function RestaurantDetail({ history }) {
     !restaurant.id && initRestaurant();
     restaurant.id && restaurant.items.length === 0 && fetchRestaurantItems();
   }, [restaurant]);
-  
-  // while is loading, show lazy loading
 
   return (
     <div className="main-content">

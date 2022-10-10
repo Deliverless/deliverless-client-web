@@ -1,9 +1,15 @@
-import React, { useContext } from 'react'
-import { Button, TextField }  from '@mui/material';
-import { UserContext, useAuthorized } from '../lib/context/userContext'
-import User, { login } from '../models/user'
-import { useNavigate } from 'react-router-dom'
+import React, { useContext } from 'react';
+
+import { useNavigate } from 'react-router-dom';
+
+import {
+  Button,
+  TextField,
+} from '@mui/material';
+
+import { UserContext } from '../lib/context/userContext';
 import { findCustomerByUserId } from '../models/customer';
+import { login } from '../models/user';
 
 const Login = () => {
 
@@ -23,6 +29,7 @@ const Login = () => {
 	const completeLogin = async () => {
 
 		login(email, password).then(async user => {
+			console.log("user", user)
 			setUser(user)
 			navigate('/');
 			user.customer = await findCustomerByUserId(user.id)

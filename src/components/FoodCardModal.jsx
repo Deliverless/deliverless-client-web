@@ -13,87 +13,80 @@ import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Typography from '@mui/material/Typography';
 
-import { CartContext } from '../lib/cartContext';
+import { CartContext } from '../lib/context/cartContext';
+
+const style = {
+  position: "relative",
+  overflow: "scroll",
+  top: "50%",
+  height: "600px",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+};
+
+const imgStyle = {
+  width: "100%",
+  height: "auto",
+  borderRadius: "2em",
+  margin: "20px",
+};
 
 const FoodCardModal = ({ show, hide, onHide, restaurantId, food }) => {
-  const [cartItem, setCartItem] = React.useState(food);
+  const [cartItem, setCartItem] = useState(food);
+  const [totalPrice, setTotalPrice] = useState(parseFloat(food.price));
   const { addProduct } = useContext(CartContext);
-  const [adjustedPrice, setAdjustedPrice] = useState(parseFloat(food.price));
-  food.restaurantId = restaurantId;
-  food.selOptions = [];
-
-  const handleChange = (event, option) => {
-    console.log("changed");
-    console.log(event);
-    console.log(event.target.checked);
-    let selOptions = [];
-    if (event.target.checked === true) {
-      selOptions = [...cartItem.selOptions, option.name];
-      handleFoodPrice(option.price, true);
-      console.log(selOptions);
-    } else {
-      selOptions = [...cartItem.selOptions];
-      handleFoodPrice(option.price, false);
-      let tmpOpt = selOptions.findIndex((opt) => opt === option.name);
-      selOptions.splice(tmpOpt, 1);
-      console.log(selOptions);
-    }
-    setCartItem({ ...cartItem, selOptions });
-    console.log("cartItem", cartItem);
-  };
-
-  const handleFoodPrice = (price, add) => {
-    let tmpPrice = adjustedPrice;
-    if (add) {
-      tmpPrice += parseFloat(price);
-    } else {
-      tmpPrice -= parseFloat(price);
-    }
-    setAdjustedPrice(tmpPrice);
-  };
-
-  food.quantity = 1;
-  const style = {
-    position: "relative",
-    overflow: "scroll",
-    top: "50%",
-    height: "600px",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: 400,
-    bgcolor: "background.paper",
-    border: "2px solid #000",
-    boxShadow: 24,
-    p: 4,
-  };
-
-  const imgStyle = {
-    width: "100%",
-    height: "auto",
-    borderRadius: "2em",
-    margin: "20px",
-  };
+  
 
   const incrementQty = () => {
-    let qty = cartItem.quantity + 1;
-    setCartItem({ ...cartItem, quantity: qty });
+    let newQty = cartItem.quantity + 1;
+    setCartItem({ ...cartItem, quantity: newQty });
   };
 
   const decrementQty = () => {
-    let qty = cartItem.quantity > 1 ? cartItem.quantity - 1 : cartItem.quantity;
-    setCartItem({ ...cartItem, quantity: qty });
+    let newQty = cartItem.quantity > 1 ? cartItem.quantity - 1 : 1;
+    setCartItem({ ...cartItem, quantity: newQty });
+  };
+
+  const handleChange = (e, option) => {
+    let newPrice = totalPrice;
+    let newSelectedOptions = cartItem.selectedOptions;
+    if (e.target.checked) {
+      newPrice += parseFloat(option.price);
+    } else {
+      newPrice -= parseFloat(option.price);
+    }
+    if (newSelectedOptions.includes(option)) {
+      newSelectedOptions = newSelectedOptions.filter((opt) => opt !== option);
+    } else {
+      newSelectedOptions.push(option);
+    }
+    setTotalPrice(newPrice);
+    setCartItem({ ...cartItem, selectedOptions: newSelectedOptions });
   };
 
   const handleAddToCart = () => {
-    addProduct(cartItem);
-    setCartItem({ ...cartItem, quantity: 1 });
+    if (cartItem.id) {
+      addProduct(cartItem);
+    }
     onHide();
   };
 
   useEffect(() => {
-    console.log("food", food);
-    setAdjustedPrice(parseFloat(food.price));
-  }, [food]);
+    food.restaurantId = restaurantId;
+    food.selectedOptions = [];
+    food.quantity = 1;
+    setTotalPrice(parseFloat(food.price));
+    setCartItem({ ...food, restaurantId, selectedOptions: [], quantity: 1 });
+  }, [food, restaurantId]);
+
+  useEffect(() => {
+    console.log('cartItem', cartItem);
+  }, [cartItem]);
 
   return (
     show && (
@@ -155,6 +148,15 @@ const FoodCardModal = ({ show, hide, onHide, restaurantId, food }) => {
                                       <FormControlLabel
                                         control={
                                           <Checkbox
+                                            disabled={
+                                              cartItem.selectedOptions ? (
+                                                cartItem.selectedOptions.find(
+                                                (opt) =>
+                                                  opt.name === option.name && (opt.price > 0 && option.price < 0 || opt.price < 0 && option.price > 0)
+                                              )
+                                            ) : (
+                                              false
+                                            )} 
                                             onChange={(e) => {
                                               handleChange(e, option);
                                             }}
@@ -177,47 +179,6 @@ const FoodCardModal = ({ show, hide, onHide, restaurantId, food }) => {
                 </div>
               </div>
             </div>
-
-            {/* <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            {food.description}
-          </Typography>
-          {food.options.map((optionMain) => {
-            return (
-              <FormControl key={optionMain.name}>
-                <FormLabel id="option-title">{optionMain.name}</FormLabel>
-                {optionMain.options.map((optionSub) => (
-                  <FormLabel key={optionSub.name}>
-                    {optionSub.options.map((option) => (
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            value={option.name}
-                            onChange={handleChange}
-                          />
-                        }
-                        label={option.name}
-                      />
-                    ))}
-                  </FormLabel>
-                ))}
-              </FormControl>
-            );
-          })}
-          <Divider />
-          <br></br>
-          <div>
-            <Button onClick={incrementQty}>
-              <Icon className="fa fa-plus-circle"></Icon>
-            </Button>
-            <span>{cartItem.quantity}</span>
-            <Button onClick={decrementQty}>
-              <Icon className="fa fa-minus-circle"></Icon>
-            </Button>
-            <Button onClick={handleAddToCart} variant="contained">
-              Add {cartItem.quantity} To Cart &nbsp;
-              <Icon className="fa fa-cart-plus"></Icon>
-            </Button>
-          </div> */}
           </Modal.Body>
           <Modal.Footer>
             <div className="col-12">
@@ -237,7 +198,7 @@ const FoodCardModal = ({ show, hide, onHide, restaurantId, food }) => {
                   >
                     -
                   </Button>
-                  <span style={{ padding: "10px" }}>{cartItem.quantity}</span>
+                  <span style={{ padding: "10px" }}>{cartItem.quantity ? cartItem.quantity : 1}</span>
                   <Button
                     variant="primary"
                     onClick={incrementQty}
@@ -261,7 +222,7 @@ const FoodCardModal = ({ show, hide, onHide, restaurantId, food }) => {
                   >
                     Add {cartItem.quantity} to Cart
                     <div className="bullet p-2"> {" \u2B24 "} </div>
-                    {`$${(adjustedPrice * cartItem.quantity).toFixed(2)}`}
+                    {`$${(totalPrice * cartItem.quantity).toFixed(2)}`}
                   </Button>
                 </div>
               </div>

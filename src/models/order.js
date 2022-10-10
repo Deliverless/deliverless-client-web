@@ -1,5 +1,10 @@
-import { getObjectById, updateObject, createNewObject, findObjectByMetadata } from '../lib/web3-helper'
-import { updateCustomer } from '../models/customer'
+import {
+  createNewObject,
+  getObjectById,
+  updateObject,
+} from '../lib/web3-helper';
+import { updateCustomer } from '../models/customer';
+
 export default class Order {
     constructor(userId, driverId, restaurantId, transactionId, address, isPickup,
         status, discount, tax, driverFee, subtotal, total, tip, timestamp, items) {

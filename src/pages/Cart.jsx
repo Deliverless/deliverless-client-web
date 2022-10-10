@@ -1,20 +1,18 @@
-import React, {useContext, useEffect, useState} from 'react'
-import CartItem from '../components/CartItem';
-import { CartContext } from '../lib/context/cartContext'
-import { Link } from 'react-router-dom';
-import Button from '@mui/material/Button';
-import { loadStripe } from "@stripe/stripe-js";
-import { Elements } from "@stripe/react-stripe-js";
-import { useNavigate } from 'react-router-dom';
+import '../StripeForm.css';
 
-import CheckoutForm from "../components/CheckoutForm";
-import "../StripeForm.css";
+import React, { useContext } from 'react';
+
+import { Link } from 'react-router-dom';
+
+import Button from '@mui/material/Button';
+
+import CartItem from '../components/CartItem';
+import { CartContext } from '../lib/context/cartContext';
 
 //const stripePromise = loadStripe("pk_test_51LiTBOHlhPKJMrfBUI52YU8nihPcSYlBkCHy46irESS7ev1J7vBI1rHNId6wM0kpZ5OybUNUwPvnT0GdyZo9xQG500i6jQAWVw");
 
 const Cart = () =>{
     const {total, cartItems, itemCount, clearCart, checkout, handleCheckout, increase} = useContext(CartContext);
-
 
     // const [clientSecret, setClientSecret] = useState("");
 
@@ -51,13 +49,11 @@ const Cart = () =>{
           <div className="row no-gutters justify-content-center">
             <div className="col-sm-8 p-3">
               {cartItems.length > 0 ? (
-                cartItems.map((food) => (
+                cartItems.map((item) => (
                   
                   <CartItem
-                    key={food.id}
-                    food={food}
-                    options={food.selOptions}
-                    
+                    key={item.id}
+                    item={item}
                   />
                 ))
               ) : (
@@ -81,7 +77,7 @@ const Cart = () =>{
                   <p className="mb-1">Total Items</p>
                   <h4 className=" mb-3 txt-right">{itemCount}</h4>
                   <p className="mb-1">Total Payment</p>
-                  <h3 className="m-0 txt-right">{total}</h3>
+                  <h3 className="m-0 txt-right">${total}</h3>
                   <hr className="my-4" />
                   <div className="text-center">
                     <p>

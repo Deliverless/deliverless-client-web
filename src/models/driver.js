@@ -1,4 +1,9 @@
-import { getObjectById, updateObject, createNewObject, findObjectByMetadata } from '../lib/web3-helper'
+import {
+  createNewObject,
+  findObjectsByMetadata,
+  getObjectById,
+  updateObject,
+} from '../lib/web3-helper';
 
 export default class Driver {
     constructor(vehicleId, rating, reviewIds, userId) {
@@ -15,7 +20,7 @@ export const getDriver = async (id) => {
 }
 
 export const findDriverByUserId = async (userId) => {
-    return (await findObjectByMetadata("driver", { userId })
+    return (await findObjectsByMetadata("driver", { userId })
         .catch(err => console.log(err))).data;
 }
 

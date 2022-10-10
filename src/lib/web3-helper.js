@@ -58,9 +58,8 @@ export const getObjectById = async (modelName, assetId) => {
 // TODO: fix data limit
 // find object(s) in the database by metadata (limited to 1 for now)
 export const findObjectsByMetadata = async (modelName, metadataJson, limit=1) => {
-    const client = await getWeb3Client()
     // call(send) function within smart contract
-    const receipt = await client.contractBigchaindb.methods.requestFindObject(modelName, JSON.stringify(metadataJson), limit, "").send({ from: client.account.address, gas: 3000000 });
+    const receipt = await contractBigchaindb.methods.requestFindObject(modelName, JSON.stringify(metadataJson), limit, "").send({ from: account.address, gas: 3000000 });
     // requestId from Chainlink
     const requestId = getRequestId(receipt);
     console.log('requestId', requestId);
