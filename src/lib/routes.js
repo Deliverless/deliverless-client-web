@@ -6,6 +6,7 @@ import Account from '../pages/Account';
 import AdminSettings from '../pages/admin/AdminSettings';
 import Cart from '../pages/Cart';
 import Checkout from '../pages/Checkout';
+import DriverSignUp from '../pages/DriverSignUp';
 import Landing from '../pages/Landing';
 import Login from '../pages/Login';
 import NotFound from '../pages/NotFound';
@@ -32,7 +33,8 @@ const routes = [
     { path: "/settings", element: <RequiredPrivilege redirectTo="/login"><AdminSettings /></RequiredPrivilege> },
     { path: "*", element: <NotFound /> },
     { path: "/thankyou", element: <RequiredAuth redirectTo="/login"><ThankYou></ThankYou></RequiredAuth>},
-    { path: "/checkout", element: <RequiredAuth redirectTo="/login"><Checkout></Checkout></RequiredAuth>}
+    { path: "/checkout", element: <RequiredAuth redirectTo="/login"><Checkout></Checkout></RequiredAuth>},
+    { path: "/driver/signup", element: <DriverSignUp/>}
 ];
 
 const appBarLinks = [

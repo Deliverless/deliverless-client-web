@@ -13,15 +13,17 @@ export const PriceRange = {
 }
 
 export default class Restaurant {
-    constructor(id = "", name = "", address = "", hours = "", rating = "", reviewIds = [], image = "", itemIds = [], items = []) {
+    constructor(id = "", name = "", address = "", hours = "", rating = "", reviewIds = [], image = "", itemIds = [], items = [], userId = "") {
         this.id = id;
         this.name = name;
         this.address = address;
         this.hours = hours;
+        this.itemIds = itemIds;
         this.rating = rating;
         this.reviewIds = reviewIds;
         this.itemIds = itemIds;
         this.items = items;
+        this.userId = userId;
         this.menu = {};
         this.reviews = [];
         this.cuisine = "";
@@ -148,4 +150,9 @@ export const getRestaurantPriceIndex = (restaurant) => {
         }
     }
     return null;
+}
+
+export const signUpRestaurant = async (restaurant) => {
+    return (await createNewObject("restaurant", restaurant)
+        .catch(err => console.log(err))).data;
 }

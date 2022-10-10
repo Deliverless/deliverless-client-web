@@ -1,8 +1,9 @@
 import React, { useContext } from 'react'
 import { Button, TextField }  from '@mui/material';
-import { UserContext, useAuthorized } from '../lib/userContext'
-import { login } from '../models/user'
+import { UserContext, useAuthorized } from '../lib/context/userContext'
+import User, { login } from '../models/user'
 import { useNavigate } from 'react-router-dom'
+import { findCustomerByUserId } from '../models/customer';
 
 const Login = () => {
 
@@ -21,11 +22,12 @@ const Login = () => {
 
 	const completeLogin = async () => {
 
-		login(email, password).then(user => {
-			console.log("SAVING THIS USER TO CONTEXT",user)
+		login(email, password).then(async user => {
+			setUser(user)
+			navigate('/');
+			user.customer = await findCustomerByUserId(user.id)
 			setUser(user)
 			setErrors(null)
-			navigate('/');
 		}).catch(error => {
 			setErrors(error.message)
 		})

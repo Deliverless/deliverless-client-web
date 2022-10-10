@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useState} from 'react'
 import CartItem from '../components/CartItem';
-import { CartContext } from '../lib/cartContext'
+import { CartContext } from '../lib/context/cartContext'
 import { Link } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import { loadStripe } from "@stripe/stripe-js";

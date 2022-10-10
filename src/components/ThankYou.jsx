@@ -1,20 +1,21 @@
 import React, { Component, useEffect, useContext } from 'react';
-import { CartContext } from '../lib/cartContext';
+import { CartContext } from '../lib/context/cartContext';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import { textAlign } from '@mui/system';
 import Button from '@mui/material/Button';
 import {ReactComponent as Checkmark} from '../check.svg'
 import { Link } from 'react-router-dom';
+import { OrderContext } from '../lib/context/orderContext';
 
 function ThankYou() {
 
   const {handleCheckout, cartItems} = useContext(CartContext);
 
-useEffect(() => {
-  handleCheckout()
-  console.log(cartItems)
-}, [])
+  useEffect(() => {
+    handleCheckout();
+    console.log(cartItems)
+  }, [])
 
 
   return ( 
