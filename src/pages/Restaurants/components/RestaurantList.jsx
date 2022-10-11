@@ -3,40 +3,123 @@ import React, {
   useState,
 } from 'react';
 
+import {
+  Button,
+  Skeleton,
+} from '@mui/material';
+
 import RestaurantCards from '../../../components/RestaurantCards';
 import RestaurantExplorer from '../../../components/RestaurantExplorer';
 import Toggle from '../../../components/Toggle';
 import { useRestaurantsContext } from './RestaurantsDataContext';
 
+const DEFAULT_CUISINES = [
+  'All',
+  'American',
+  'Asian',
+  'Barbecue',
+  'Burgers',
+  'Chinese',
+  'Dessert',
+  'Fast Food',
+  'French',
+  'Greek',
+  'Indian',
+  'Italian',
+  'Japanese',
+  'Korean',
+  'Mediterranean',
+  'Mexican',
+  'Pizza',
+  'Seafood',
+  'Thai',
+  'Vietnamese',
+];
+
 export default function RestaurantList({ history }) {
-  const [restaurantList, setRestaurantList] = useState([]);
+  const [originalRestaurantList, setOriginalRestaurantList] = useState([]);
+  const [filteredRestaurantList, setFilteredRestaurantList] = useState([]);
   const [listView, setListView] = useState(true);
+  const [cusinieList, setCusinieList] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
  
   const restaurantContext = useRestaurantsContext();
 
-  useEffect(() => {
-    if (restaurantList.length === 0) {
-      restaurantContext.restaurantsUIEvents.setRefetch(true);
+  const filterRestaurants = (cuisine) => {
+    if (cuisine === 'All') {
+      setFilteredRestaurantList(originalRestaurantList);
+    } else {
+      const filteredList = originalRestaurantList.filter((restaurant) => restaurant.cuisine === cuisine);
+      setFilteredRestaurantList(filteredList);
     }
-  }, [restaurantList]);
+  };
+
+  useEffect(() => {
+    if (originalRestaurantList.length === 0) {
+      restaurantContext.restaurantsUIEvents.setRefetch(true);
+    } else if (originalRestaurantList.length > 0 && cusinieList.length === 0) {
+      const cusinieList = DEFAULT_CUISINES.map((cuisine) => {
+        const disabled = cuisine === 'All' ? false : originalRestaurantList.filter((restaurant) => restaurant.cuisine === cuisine).length === 0;
+        return {
+          label: cuisine,
+          value: cuisine,
+          disabled,
+        };
+      });
+      setCusinieList(cusinieList);
+      setIsLoading(false);
+    }
+
+  }, [originalRestaurantList]);
 
   useEffect(() => {
     if (restaurantContext.useStates.restaurants) {
-      setRestaurantList(restaurantContext.useStates.restaurants);
+      setOriginalRestaurantList(restaurantContext.useStates.restaurants);
+      setFilteredRestaurantList(restaurantContext.useStates.restaurants);
     }
   }, [restaurantContext.useStates.restaurants]);
 
+  useEffect(() => {
+    console.log('cusinieList', cusinieList);
+  }, [cusinieList]);
+
   return (
     <div className="main-content">
-      <h1 className="center-container">Explore Restaurants</h1>
-      <h4 className="center-container">In the Blockchain near you</h4>
+      <div className="cusinie-list masked-overflow col-12">
+        {cusinieList.length > 0 ? (
+          cusinieList.map((cusinie) => (
+          <Button
+            key={cusinie}
+            // style={{ backgroundColor: cusinie.disabled ? 'grey' : 'white', color: cusinie.disabled ? 'white' : 'black', opacity: cusinie.disabled ? 0.15 : 1 }}
+            className="cusinie-button col-1"
+            disabled={cusinie.disabled}
+            onClick={() => {
+              filterRestaurants(cusinie.value);
+            }}
+          >
+            {cusinie.label}
+          </Button>
+        ))
+        ) : (
+          <>
+          {Array.from(Array(20).keys()).map((index) => (
+            <Skeleton variant="rounded" width={100} height={30} style={{ margin: '0 5px 10px 5px', minWidth: '100px', borderRadius: '20px' }} />
+          ))}
+          </>
+        )}
+      </div>
+          
       {/* <RestaurantAutoComplete /> */}
-      <Toggle checked={listView} onChange={setListView}/>
+      <div className="col-12">
+          <div className="col-11 d-flex justify-content-end">
+            <Toggle checked={listView} onChange={setListView}/>
+          </div>
+      </div>
 
       {listView ? (
-        <RestaurantCards restaurants={restaurantList} />
+        <RestaurantCards restaurants={filteredRestaurantList} isLoading={isLoading} />
       ) : (
-        <RestaurantExplorer restaurants={restaurantList} />
+        <RestaurantExplorer restaurants={filteredRestaurantList} />
       )}
 
     </div>

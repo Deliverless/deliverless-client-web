@@ -1,8 +1,48 @@
+// list page
+
+.cusinie-list {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  justify-content: flex-start;
+  margin: 0;
+  padding: 10px 50px 0 50px;
+  border-bottom: 1px solid #e5e5e5;
+  width: 100%;
+  mask-image: linear-gradient(to right, transparent, black 100px, black 90%, transparent);
+}
+
+.cusinie-list button {
+  background-color: #f5f5f5;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  color: #757575;
+  font-size: 14px;
+  font-weight: 500;
+  height: 32px;
+  line-height: 32px;
+  margin: 0 8px 8px 0;
+  padding: 0 16px;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  white-space: nowrap;
+  width: auto;
+  border-radius: 20px;
+
+  &:hover {
+    background-color: #e0e0e0;
+    color: #424242;
+  }
+}
+
+.cusinie-button--active {
+  background-color: #e0e0e0;
+  color: #424242;
+}
+
 // detail page
-
-// header
-
-// context
 
 .title {
   font-size: 1.5rem;
@@ -19,18 +59,6 @@
 .star-icon {
   font-size: 1rem !important;
 }
-
-
-
-// menu
-
-// .menu-item {
-//   display: flex;
-//   justify-content: space-between;
-//   align-items: center;
-//   padding: 10px 0;
-//   border-bottom: 1px solid #e0e0e0;
-// }
 
 .carousel img {
 	max-height: 150px;
