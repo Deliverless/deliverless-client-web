@@ -1,6 +1,5 @@
 import './App.scss';
 
-import { routes } from 'lib/routes';
 import { useRoutes } from 'react-router-dom';
 
 import ResponsiveAppBar from './components/AppBar';
@@ -8,6 +7,7 @@ import CartContextProvider from './lib/context/cartContext';
 import OrderContextProvider from './lib/context/orderContext';
 import RestContextProvider from './lib/context/restContext';
 import UserContextProvider from './lib/context/userContext';
+import { routes } from './lib/routes';
 
 const App = () => {
   return useRoutes(routes);

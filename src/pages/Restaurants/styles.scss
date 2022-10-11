@@ -42,6 +42,17 @@
   color: #424242;
 }
 
+.restaurant-cards {
+  min-width: 700px;
+  display: flex;
+  flex-wrap: wrap;
+  // justify-content: center;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  flex-direction: row;
+}
+
 // detail page
 
 .title {
