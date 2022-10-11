@@ -2,7 +2,7 @@ import React from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
-import AccountInfo from './components/AccountInfo';
+import AccountInfo from '../AccountInfo';
 import UpdatePayment from './components/UpdatePayment'
 import MyOrders from './components/MyOrders'
 

@@ -20,6 +20,7 @@ import CustomerSignUp from '../pages/Signup/CustomerSignUp';
 import DriverSignUp from '../pages/Signup/DriverSignUp';
 import RestaurantSignUp from '../pages/Signup/RestaurantSignUp';
 import ThankYou from '../pages/ThankYou';
+import TrackOrder from '../pages/TrackOrder';
 import {
   HasAddressCookie,
   Logout,
@@ -44,6 +45,7 @@ const routes = [
     { path: "/driver/dashboard", element: <RequiredPrivilege privilege="driver" redirectTo="/"><DriverDashboard /></RequiredPrivilege> },
     { path: "/driver/signup", element: <DriverSignUp /> },
     { path: "/driver/login", element: <DriverLogin /> },
+    { path: "/driver/trackorder", element: <TrackOrder /> },
     { path: "/thankyou", element: <RequiredAuth redirectTo="/login"><ThankYou /></RequiredAuth> },
     { path: "/checkout", element: <RequiredAuth redirectTo="/login"><Checkout /></RequiredAuth> },
     { path: "*", element: <NotFound /> },
