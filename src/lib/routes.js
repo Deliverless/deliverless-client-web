@@ -1,25 +1,35 @@
-import Home from '../pages/Home'
-import Landing from '../pages/Landing'
-import CustomerSignUp from '../pages/Signup/CustomerSignUp'
-import NotFound from '../pages/NotFound'
-import Login from '../pages/Login/CustomerLogin'
-import Cart from '../pages/Cart'
-import Account from '../pages/AccountPages/Account'
-import RestaurantDashboard from '../pages/Dashboards/Restaurant/RestaurantDashboard'
-import AdminSettings from '../pages/AdminSettings'
-import { HasAddressCookie, RequiredPrivilege, RequiredAuth, Logout } from './middleware'
-import RestaurantHome from '../pages/restaurant/RestaurantHome'
-import ThankYou from '../pages/ThankYou'
-import Checkout from '../pages/Checkout'
-import DriverSignUp from '../pages/Signup/DriverSignUp'
-import RestaurantSignUp from '../pages/Signup/RestaurantSignUp'
-import DriverDashboard from '../pages/Dashboards/Driver/DriverDashboard'
-import DriverProfile from '../pages/DriverProfile'
-import DriverLogin from '../pages/Login/DriverLogin'
-import TrackOrder from '../pages/TrackOrder'
+import React from 'react';
+
+import Restaurants from 'pages/Restaurants';
+import { Navigate } from 'react-router-dom';
+
+import Account from '../pages/AccountPages/Account';
+import AdminSettings from '../pages/AdminSettings';
+import Cart from '../pages/Cart';
+import Checkout from '../pages/Checkout';
+import DriverDashboard from '../pages/Dashboards/Driver/DriverDashboard';
+import RestaurantDashboard
+  from '../pages/Dashboards/Restaurant/RestaurantDashboard';
+import DriverProfile from '../pages/DriverProfile';
+import Landing from '../pages/Landing';
+import Login from '../pages/Login/CustomerLogin';
+import DriverLogin from '../pages/Login/DriverLogin';
+import NotFound from '../pages/NotFound';
+// import RestaurantHome from '../pages/restaurant/RestaurantHome';
+import CustomerSignUp from '../pages/Signup/CustomerSignUp';
+import DriverSignUp from '../pages/Signup/DriverSignUp';
+import RestaurantSignUp from '../pages/Signup/RestaurantSignUp';
+import ThankYou from '../pages/ThankYou';
+import TrackOrder from '../pages/TrackOrder';
+import {
+  HasAddressCookie,
+  Logout,
+  RequiredAuth,
+  RequiredPrivilege,
+} from './middleware';
 
 const routes = [
-    { path: "/", element: <HasAddressCookie redirectTo='/landing'><Home /></HasAddressCookie> },
+    { path: "/", element: <HasAddressCookie redirectTo='/landing'><Navigate to='/restaurants' /></HasAddressCookie> },
     { path: "/landing", element: <Landing /> },
     { path: "/login", element: <Login /> },
     { path: "/logout", element: <Logout redirectTo="/login"></Logout> },
@@ -27,7 +37,8 @@ const routes = [
     { path: "/cart", element: <RequiredAuth redirectTo="/login"><Cart /></RequiredAuth> },
     { path: "/account", element: <RequiredAuth redirectTo="/login"><Account /></RequiredAuth> },
     { path: "/settings", element: <RequiredPrivilege privilege="admin" redirectTo="/login"><AdminSettings /></RequiredPrivilege> },
-    { path: "/restaurant/home", element: <RestaurantHome /> },
+    { path: "/restaurants/*", element: <Restaurants /> },
+    // { path: "/restaurant/home", element: <RestaurantHome /> },
     { path: "/restaurant/dashboard", element: <RequiredPrivilege privilege="restaurant" redirectTo="/"><RestaurantDashboard /></RequiredPrivilege> },
     { path: "/restaurant/signup", element: <RestaurantSignUp /> },
     { path: "/driver/profile", element: <DriverProfile /> },
@@ -55,5 +66,4 @@ const appBarLinks = [
     { title: 'Settings', icon: 'cog', url: "/settings", role: 'admin', isAuth: true }
 ];
 
-export { routes, appBarLinks };
-
+export { appBarLinks, routes };

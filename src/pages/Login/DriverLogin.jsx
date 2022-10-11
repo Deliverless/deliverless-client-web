@@ -1,9 +1,18 @@
-import React, { useContext } from 'react'
-import { Button, TextField }  from '@mui/material';
-import { UserContext } from '../../lib/context/userContext'
-import User, { login } from '../../models/user'
-import { Link, useNavigate } from 'react-router-dom'
+import React, { useContext } from 'react';
+
+import {
+  Link,
+  useNavigate,
+} from 'react-router-dom';
+
+import {
+  Button,
+  TextField,
+} from '@mui/material';
+
+import { UserContext } from '../../lib/context/userContext';
 import { findDriverByUserId } from '../../models/driver';
+import { login } from '../../models/user';
 
 const Login = () => {
 

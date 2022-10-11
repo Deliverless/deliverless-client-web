@@ -1,12 +1,15 @@
-import React, { Component, useEffect, useContext } from 'react';
-import { CartContext } from '../lib/context/cartContext';
-import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
-import { textAlign } from '@mui/system';
-import Button from '@mui/material/Button';
-import {ReactComponent as Checkmark} from '../check.svg'
+import React, {
+  useContext,
+  useEffect,
+} from 'react';
+
 import { Link } from 'react-router-dom';
-import { OrderContext } from '../lib/context/orderContext';
+
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+
+import { ReactComponent as Checkmark } from '../check.svg';
+import { CartContext } from '../lib/context/cartContext';
 
 function ThankYou() {
 

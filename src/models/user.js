@@ -1,5 +1,12 @@
-import { getObjectById, updateObject, createNewObject, findObjectsByMetadata } from '../lib/web3-helper';
-import sha256 from 'sha256'
+import sha256 from 'sha256';
+
+import {
+  createNewObject,
+  findObjectsByMetadata,
+  getObjectById,
+  updateObject,
+} from '../lib/web3-helper';
+
 export default class User {
     constructor(role, firstName, lastName, birthday, email, addressIds, phone, encoded, images) {
         this.role = role;
@@ -38,7 +45,6 @@ export const createUser = async (user) => {
 export const login = async (email, password) => {
     let encoded = sha256.x2(email + password);
     const user = await findObjectsByMetadata("user", { encoded })
-    console.log("user", user)
     if (user.data?.id === undefined) throw new Error("failed login attempt")
     return user.data;
 }

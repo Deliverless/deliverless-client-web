@@ -1,21 +1,20 @@
-import React, {useState} from 'react'
+import React from 'react';
+
+import { useNavigate } from 'react-router-dom';
+
+import { CardActionArea } from '@mui/material';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
-import { CardActionArea } from '@mui/material';
-import FoodCards from './FoodCards'
-import { foods } from '../lib/foodData';
-import http from '../lib/api';
-import { useNavigate } from 'react-router-dom'
 
 const RestaurantCard = ({ restauId, name, image, address}) => {
 	const imgAlt = name + "'s logo"
-	const addressDets = `${address.number} ${address.street}`;
+	const addressDets = address.number ? `${address.number} - ${address.street}` : address.street
 	const navigate = useNavigate()
 	
 	const getRestaurantMenu = async () =>{
-		navigate(`/restaurant/home?id=${restauId}`);
+		navigate(`/restaurants/${name}`)
 	}
 		return (
 			<Card sx={{ width: 345 , borderRadius: '2em', margin: '20px'}}>

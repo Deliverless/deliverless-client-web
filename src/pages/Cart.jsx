@@ -1,14 +1,11 @@
-import React, {useContext, useEffect, useState} from 'react'
-import CartItem from '../components/CartItem';
-import { CartContext } from '../lib/context/cartContext'
-import { Link } from 'react-router-dom';
-import Button from '@mui/material/Button';
-import { loadStripe } from "@stripe/stripe-js";
-import { Elements } from "@stripe/react-stripe-js";
-import { useNavigate } from 'react-router-dom';
+import React, { useContext } from 'react';
 
-import CheckoutForm from "../components/CheckoutForm";
-import "../StripeForm.css";
+import { Link } from 'react-router-dom';
+
+import Button from '@mui/material/Button';
+
+import CartItem from '../components/CartItem';
+import { CartContext } from '../lib/context/cartContext';
 
 //const stripePromise = loadStripe("pk_test_51LiTBOHlhPKJMrfBUI52YU8nihPcSYlBkCHy46irESS7ev1J7vBI1rHNId6wM0kpZ5OybUNUwPvnT0GdyZo9xQG500i6jQAWVw");
 
@@ -51,13 +48,11 @@ const Cart = () =>{
           <div className="row no-gutters justify-content-center">
             <div className="col-sm-8 p-3">
               {cartItems.length > 0 ? (
-                cartItems.map((food) => (
+                cartItems.map((item) => (
                   
                   <CartItem
-                    key={food.id}
-                    food={food}
-                    options={food.selOptions}
-                    
+                    key={item.id}
+                    item={item}
                   />
                 ))
               ) : (

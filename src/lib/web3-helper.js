@@ -1,7 +1,9 @@
-import Web3 from 'web3';
-import { mnemonicToSeedSync } from 'bip39';
 import BigchainDb from 'bigchaindb-orm';
+import { mnemonicToSeedSync } from 'bip39';
+import Web3 from 'web3';
+
 import * as abiIndex from './abis/index.js';
+
 const abi = abiIndex.default;
 
 // intialize the bigchaindb orm just for keypair
@@ -130,31 +132,9 @@ const requestResponse = async (requestId) => {
         const extractText = data.match(/{"jobRunID":.*}/g);
         const parsedResponse = JSON.parse(extractText);
         parsedResponse.data = JSON.parse(parsedResponse.data);
+        console.log('parsedResponse', parsedResponse);
         return parsedResponse;
     } else {
         return null;
     }
 }
-
-// specify object properties 
-// *** REFERENCE deliverless-chainlink/adapters/bigchaindb-utils/models ***
-const metadataObject = {
-    "role": "admin",
-    "firstName": "marcin",
-    "lastName": "koziel",
-    "birthday": "1990-01-01",
-    "email": "koziel@sheridancollege.ca",
-    "addresses": [],
-    "phone": "647-123-4567",
-    "orderIds": [],
-    "encoded": "sheridanuser",
-    "images": [],
-    "keypair": keypair
-}
-
-
-// createNewObject('user', metadataObject);
-// getObjectById('user', 'id:global:user:8459dad6-f04d-4d63-97e4-61d1c0c4ca73');
-// findObjectByMetadata('user', metadataObject);
-// updateObject('user', 'id:global:user:835249bc-14d3-4210-a10f-5abacdd9b4d6', metadataObject);
-// deleteObject('user', 'id:global:user:c1552c51-bccc-4ff7-ac60-a4b7cd78e40e');

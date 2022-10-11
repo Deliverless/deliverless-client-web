@@ -1,7 +1,8 @@
-import React, { useContext } from 'react'
-import {UserContext} from '../../lib/context/userContext'
-import CustomerAccount from './Customer/CustomerAccount'
-import DriverAccount from './Driver/DriverAccount'
+import React, { useContext } from 'react';
+
+import { UserContext } from '../../lib/context/userContext';
+import CustomerAccount from './Customer/CustomerAccount';
+import DriverAccount from './Driver/DriverAccount';
 
 const Account = () => {
    

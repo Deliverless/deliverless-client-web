@@ -1,37 +1,41 @@
-import React, { useContext, useEffect, useState } from "react";
-import CartItem from "../components/CartItem";
-import { CartContext } from "../lib/context/cartContext";
-import { Link } from "react-router-dom";
-import { loadStripe } from "@stripe/stripe-js";
-import { Elements } from "@stripe/react-stripe-js";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
-import Typography from "@mui/material/Typography";
-import { CardActionArea } from "@mui/material";
-import Box from "@mui/material/Box";
-import Stepper from "@mui/material/Stepper";
-import Step from "@mui/material/Step";
-import StepLabel from "@mui/material/StepLabel";
-import Cookies from "universal-cookie";
-import { Button, TextField } from "@mui/material";
-import { getAutoComplete } from "../lib/addressapi";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import Divider from "@mui/material/Divider";
-import ListItemText from "@mui/material/ListItemText";
-import ListItemAvatar from "@mui/material/ListItemAvatar";
-import Avatar from "@mui/material/Avatar";
-import ToggleButton from "@mui/material/ToggleButton";
-import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
+import '../StripeForm.css';
 
-import CheckoutForm from "../components/CheckoutForm";
-import "../StripeForm.css";
-import Order from "../models/order";
-import { OrderContext } from "../lib/context/orderContext";
-import { UserContext } from "../lib/context/userContext";
-import { ConstructionOutlined } from "@mui/icons-material";
+import React, {
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
+
+import Cookies from 'universal-cookie';
+
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import {
+  Button,
+  TextField,
+} from '@mui/material';
+import Avatar from '@mui/material/Avatar';
+import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
+import Divider from '@mui/material/Divider';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemAvatar from '@mui/material/ListItemAvatar';
+import ListItemText from '@mui/material/ListItemText';
+import Step from '@mui/material/Step';
+import StepLabel from '@mui/material/StepLabel';
+import Stepper from '@mui/material/Stepper';
+import ToggleButton from '@mui/material/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import Typography from '@mui/material/Typography';
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+
+import CheckoutForm from '../components/CheckoutForm';
+import { getAutoComplete } from '../lib/api/addressapi';
+import { CartContext } from '../lib/context/cartContext';
+import { OrderContext } from '../lib/context/orderContext';
+import { UserContext } from '../lib/context/userContext';
+import Order from '../models/order';
 
 const stripePromise = loadStripe(
   "pk_test_51LiTBOHlhPKJMrfBUI52YU8nihPcSYlBkCHy46irESS7ev1J7vBI1rHNId6wM0kpZ5OybUNUwPvnT0GdyZo9xQG500i6jQAWVw"
@@ -56,7 +60,6 @@ const Checkout = () => {
   const steps = ["Verify Address", "Subtotal + Tip", "Details & Payment"];
 
   const [activeStep, setActiveStep] = useState(0);
-
   const [errors, setErrors] = useState(null);
 
   const [paymentTotal, setPaymentTotal] = useState(0);
@@ -322,19 +325,46 @@ const Checkout = () => {
                           >
                             <ListItem alignItems="flex-start">
                               <ListItemAvatar>
-                                <Avatar alt={food.food} src={food.photoUrl} />
+                                <Avatar
+                                  alt={food.name}
+                                  src={
+                                    food.images.find(
+                                      (img) => img.alt === "main"
+                                    ).url
+                                  }
+                                />
                               </ListItemAvatar>
                               <ListItemText
-                                primary={food.title}
+                                primary={food.name}
                                 secondary={
                                   <React.Fragment>
                                     <Typography
-                                      sx={{ display: "inline" }}
+                                      className="d-flex flex-column"
                                       component="span"
                                       variant="body2"
                                       color="text.primary"
                                     >
-                                      {food.selOptions.map((opt) => opt + ", ")}
+                                      {food.selectedOptions.map(
+                                        (opt, index) => (
+                                          <span
+                                            key={index}
+                                            style={{ fontSize: "12px" }}
+                                          >
+                                            {opt.price > 0 ? (
+                                              <span>
+                                                Add {opt.name} (+$
+                                                {opt.price.toFixed(2)})
+                                              </span>
+                                            ) : (
+                                              <span>
+                                                Remove {opt.name} (-$
+                                                {Math.abs(opt.price).toFixed(2)}
+                                                )
+                                              </span>
+                                            )}
+                                          </span>
+                                        )
+                                      )}
                                     </Typography>
                                     <Typography
                                       sx={{ display: "block" }}
@@ -342,7 +372,7 @@ const Checkout = () => {
                                       variant="body2"
                                       color="text.secondary"
                                     >
-                                      {`$` + food.price}
+                                      {`$` + food.price.toFixed(2)}
                                     </Typography>
                                     <Typography
                                       sx={{ display: "block" }}
@@ -448,19 +478,46 @@ const Checkout = () => {
                           >
                             <ListItem alignItems="flex-start">
                               <ListItemAvatar>
-                                <Avatar alt={food.food} src={food.photoUrl} />
+                                <Avatar
+                                  alt={food.name}
+                                  src={
+                                    food.images.find(
+                                      (img) => img.alt === "main"
+                                    ).url
+                                  }
+                                />
                               </ListItemAvatar>
                               <ListItemText
-                                primary={food.title}
+                                primary={food.name}
                                 secondary={
                                   <React.Fragment>
                                     <Typography
-                                      sx={{ display: "inline" }}
+                                      className="d-flex flex-column"
                                       component="span"
                                       variant="body2"
                                       color="text.primary"
                                     >
-                                      {food.selOptions.map((opt) => opt + ", ")}
+                                      {food.selectedOptions.map(
+                                        (opt, index) => (
+                                          <span
+                                            key={index}
+                                            style={{ fontSize: "12px" }}
+                                          >
+                                            {opt.price > 0 ? (
+                                              <span>
+                                                Add {opt.name} (+$
+                                                {opt.price.toFixed(2)})
+                                              </span>
+                                            ) : (
+                                              <span>
+                                                Remove {opt.name} (-$
+                                                {Math.abs(opt.price).toFixed(2)}
+                                                )
+                                              </span>
+                                            )}
+                                          </span>
+                                        )
+                                      )}
                                     </Typography>
                                     <Typography
                                       sx={{ display: "block" }}
@@ -468,7 +525,7 @@ const Checkout = () => {
                                       variant="body2"
                                       color="text.secondary"
                                     >
-                                      {`$` + food.price}
+                                      {`$` + food.price.toFixed(2)}
                                     </Typography>
                                     <Typography
                                       sx={{ display: "block" }}

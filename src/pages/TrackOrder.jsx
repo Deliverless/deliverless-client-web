@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import "mapbox-gl/dist/mapbox-gl.css";
 
 import mapboxgl from "mapbox-gl"; // or "const mapboxgl = require('mapbox-gl');"
-import { getDirections } from "../lib/mapboxapi";
+import { getDirections } from "../lib/api/mapboxapi";
 import { getOrder, updateOrder } from "../models/order";
 import { RestContext } from "../lib/context/restContext";
 import { useSearchParams } from "react-router-dom";

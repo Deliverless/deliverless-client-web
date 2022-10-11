@@ -1,5 +1,13 @@
-import React, { useContext, createContext, useReducer } from 'react';
-import { UserReducer, setUser } from './userReducer';
+import React, {
+  createContext,
+  useContext,
+  useReducer,
+} from 'react';
+
+import {
+  setUser,
+  UserReducer,
+} from './userReducer';
 
 export const UserContext = createContext()
 const storage = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : {};
