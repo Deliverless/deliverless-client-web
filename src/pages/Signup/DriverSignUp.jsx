@@ -70,7 +70,7 @@ const DriverSignUp = ()=> {
 		else if (input === "lName") setLName(e.currentTarget.value)
 		else if (input === "phone") setPhone(e.currentTarget.value)
 		else if (input === "birthday") setBirthday(e.currentTarget.value)
-    else if (input === "city") setBirthday(e.currentTarget.value)
+    else if (input === "city") setCity(e.currentTarget.value)
 	}
 
   const handleVehicleChange = (e, input) =>{
@@ -296,7 +296,7 @@ const DriverSignUp = ()=> {
                 />
                 <br />
                 <TextField
-                  onChange={(e) => handleVehicleChange(e, "colour")}
+                  onChange={(e) => handleVehicleChange(e, "color")}
                   required
                   style={{ marginBottom: "20px" }}
                   id="outlined-basic"

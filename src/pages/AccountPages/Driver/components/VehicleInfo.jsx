@@ -1,8 +1,10 @@
 import React, { useContext, useEffect} from 'react'
 import { TextField, Button, Avatar } from '@mui/material';
 import { getVehicle, updateVehicle } from '../../../../models/vehicle'
+import { updateDriver } from '../../../../models/driver'
 import { UserContext, useAuthorized } from '../../../../lib/context/userContext'
 import LinearProgress from "@mui/material/LinearProgress";
+import AddressAutoComplete from '../../../../components/AddressAutoComplete';
 
 const VehicleInfo = () => {
 
@@ -16,10 +18,19 @@ const VehicleInfo = () => {
 	const [fields, setFields] = React.useState({make:"", model:"", licensePlate:"", year:"", color:"", numberOfPassengers:"", image:"", description:""});
 	const [msg, setMsg] = React.useState("")
 	const { setUser,user } = useContext(UserContext);
+	const [city, setCity] = React.useState(user.driver.city)
 
   useEffect(() => {
     getVehicleObj();
   }, []);
+
+	useEffect(() => {
+    console.log("handle city changed called")
+			if (user.driver.city != city){
+				setUpdateMade(true)
+			}
+  }, [city]);
+
 
     // TODO: pull data from BigChain DB using smart contract
     const getVehicleObj = async () => {
@@ -58,6 +69,16 @@ const VehicleInfo = () => {
 	}, [changeFlags])
 
 	const saveVehicleChanges = ()=>{
+
+		if(user.driver.city != city){
+			updateDriver(user.driver.id, {city}).then( (res) => {
+				console.log(res)
+			})
+			let updatedUser = {...user}
+			updatedUser.driver.city = city
+			setUser(updatedUser)
+		}
+
 		let newData = {}
 		for(let flag in changeFlags){
 			if(!changeFlags[flag]) continue
@@ -92,7 +113,7 @@ const VehicleInfo = () => {
   }
 
 	return ( 
-		<div className="main-content" style={{textAlign: 'center', marginTop:'50px'}}>
+		<div className="center-container" style={{textAlign: 'center', marginTop:'50px', flexDirection: "column"}}>
 			<h1>Vehicle Info</h1>
 			<form className="form-group" >
 				{msg && <div className="alert alert-success">{msg}</div>}
@@ -104,8 +125,9 @@ const VehicleInfo = () => {
         <TextField className="wide-view" onChange={(e) => handleChange(e, "year")} style={{marginBottom: '20px'}} label="Year" id="outlined-basic" variant="outlined" value={fields["year"]}/><br/>	
 				<TextField className="wide-view" onChange={(e) => handleChange(e, "color")} style={{marginBottom: '20px'}} label="Color" id="outlined-basic" variant="outlined" value={fields["color"]}/><br/>	
         <TextField className="wide-view" onChange={(e) => handleChange(e, "image")} style={{marginBottom: '20px'}} label="Image URL" id="outlined-basic" variant="outlined" value={fields["image"]}/><br/>	
-				<TextField className="wide-view" onChange={(e) => handleChange(e, "description")} style={{marginBottom: '20px'}} label="Description" id="outlined-basic" variant="outlined" value={fields["description"]}/><br/>	
-				<Button onClick={saveVehicleChanges} disabled={!updateMade} variant="contained" sx={{height:'56px', backgroundColor:'#2196f3'}}>Save</Button>
+				{/* <TextField className="wide-view" onChange={(e) => handleChange(e, "description")} style={{marginBottom: '20px'}} label="Description" id="outlined-basic" variant="outlined" value={fields["description"]}/><br/> */}
+				<AddressAutoComplete init={user.driver.city}  label="Enter City" params={"&type=city"} setAddress={setCity}/>
+				<Button onClick={saveVehicleChanges} disabled={!updateMade} variant="contained" sx={{height:'56px', marginTop:'20px', backgroundColor:'#2196f3'}}>Save</Button>
 			</form>
 		</div>
 	 );

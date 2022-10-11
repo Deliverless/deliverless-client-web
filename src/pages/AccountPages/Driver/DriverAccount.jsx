@@ -5,6 +5,7 @@ import Box from '@mui/material/Box';
 import AccountInfo from '../AccountInfo';
 import VehicleInfo from './components/VehicleInfo';
 
+
 export default function DriverAccount({id, firstName, lastName, emailAddress, deliveryAddress, encoded}) {
 
   const [tabValue, setValue] = React.useState('info')
@@ -26,7 +27,7 @@ export default function DriverAccount({id, firstName, lastName, emailAddress, de
 					<Tab sx={{'&.Mui-selected': {outline: 'none',}}} 
 								value="info"label="Account Info" />
 					<Tab sx={{'&.Mui-selected': {outline: 'none',}}} 
-								value="vehicle" label="Vehicle Info" />
+								value="vehicle" label="Vehicle & City" />
 				</Tabs>
 
 				<Box className="center-container" sx={{ width: '100%'}}>
