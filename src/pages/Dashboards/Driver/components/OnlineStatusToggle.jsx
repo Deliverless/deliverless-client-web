@@ -37,7 +37,7 @@ export const MuiSwitchLarge = styled(Switch)(({ theme }) => ({
   },
 }));
 
-export default function OnlineStatusToggle() {
+export default function OnlineStatusToggle({height = 100}) {
   const { user, setUser } = useContext(UserContext);
   console.log("driver online", user.driver.online)
   const [online, setOnline] = useState(user.driver.online);
@@ -61,11 +61,11 @@ export default function OnlineStatusToggle() {
         sx={{
           width: 203,
           margin: 1,
-          maxHeight: 100,
+          maxHeight: height,
           display: "inline-block",
         }}
       >
-        <CardContent>
+        <CardContent style={{height: height}}>
           <Backdrop
             sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
             open={loading}

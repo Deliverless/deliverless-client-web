@@ -128,7 +128,7 @@ const Checkout = () => {
       today.toDateString();
       console.log("total", total)
       const driverFee = 5.0;
-      const subtotal = total;
+      const subtotal = parseFloat(total);
       const tax = subtotal * 0.13;
       const tipAmt = Math.round((total * tip + Number.EPSILON) * 100) / 100
       setOrderTotal(Math.round(((parseFloat(subtotal) + parseFloat(tax) + parseFloat(driverFee) + parseFloat(tipAmt)) + Number.EPSILON) * 100) / 100)
