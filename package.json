@@ -32,7 +32,7 @@
     "recharts": "^2.1.14",
     "sass": "^1.49.9",
     "sha256": "^0.2.0",
-    "stripe": "^10.10.0",
+    "stripe": "^10.13.0",
     "styled-components": "^5.3.3",
     "universal-cookie": "^4.0.4",
     "web-vitals": "^2.1.4",

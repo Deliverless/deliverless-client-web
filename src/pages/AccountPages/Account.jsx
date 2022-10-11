@@ -17,7 +17,7 @@ const Account = () => {
 					<CustomerAccount id={id} encoded={encoded} firstName={firstName} lastName={lastName} emailAddress={email} deliveryAddress={address} />
 				</div>}
 				{role==="driver" && <div>
-					<DriverAccount />
+					<DriverAccount id={id} encoded={encoded} firstName={firstName} lastName={lastName} emailAddress={email} deliveryAddress={address} />
 				</div>}
 				{role==="restaurant" && <div>
 						<h1>This is Restaurant account</h1>
