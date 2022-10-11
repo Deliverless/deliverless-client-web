@@ -1,38 +1,62 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-import LinearProgress from '@mui/material/LinearProgress';
+import { Skeleton } from '@mui/material';
 
 import RestaurantCard from './RestaurantCard';
 
-class RestaurantCards extends Component {
+export default function RestaurantCards({ restaurants, isLoading }) {
+  // if (isLoading) {
+  // 	return (
+  // 		<LinearProgress />
+  // 	);
+  // }
 
-	render() { 
-		if(this.props.restaurants.length === 0){
-			return (
-				<React.Fragment>
-					<div className="center-container">
-						Loading Restaurants
-					</div>
-					<LinearProgress  style={{width: 345, margin:'20px auto'}}/>
-				</React.Fragment>)
-		}
-
-		return (
-				<div className="center-container" style={{flexWrap: 'wrap', textAlign: 'center'}}>
-					{this.props.restaurants.map(restau => 
-						<RestaurantCard 
-						// temporary to make keys unique because I added 2 transactions with the same restau id.
-							key={restau.id + restau.name}
-							restauId={restau.id}
-							name={restau.name}
-							// description={restau.description}
-							address={restau.address}
-							image={restau.images.find(image => image.alt === 'main').url}
-						/>
-					)}
-				</div>
-		);
-	}
+  return (
+    <div className="col-12">
+      <div className="restaurant-cards col-10 offset-1">
+        {isLoading
+          ? Array.from(new Array(20)).map((item, index) => (
+						<div style={{ margin: "0 50px 50px 0", minWidth: "300px", minHeight: "160px", borderRadius: "20px" }}>
+							<Skeleton
+								key={index}
+								width={300}
+								height={160}
+								variant="rectangular"
+							/>
+							<div className="col-12" style={{ display: "flex", justifyContent: "space-between", marginTop: "10px" }}>
+								<Skeleton
+									key={index}
+									variant="text"
+									width={100}
+								/>
+								<Skeleton
+									key={index}
+									variant="circular"
+									width={30}
+									height={25}
+								/>
+							</div>
+							<Skeleton
+								key={index}
+								variant="text"
+								width={300}
+							/>
+						</div>
+            ))
+          : restaurants.map((restaurant) => (
+              <RestaurantCard
+                // temporary to make keys unique because I added 2 transactions with the same restau id.
+                key={restaurant.id + restaurant.name}
+                restauId={restaurant.id}
+                name={restaurant.name}
+                // description={restau.description}
+                address={restaurant.address}
+                image={
+                  restaurant.images.find((image) => image.alt === "main").url
+                }
+              />
+            ))}
+      </div>
+    </div>
+  );
 }
- 
-export default RestaurantCards;

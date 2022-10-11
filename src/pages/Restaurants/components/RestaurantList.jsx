@@ -1,4 +1,5 @@
 import React, {
+  useContext,
   useEffect,
   useState,
 } from 'react';
@@ -11,6 +12,7 @@ import {
 import RestaurantCards from '../../../components/RestaurantCards';
 import RestaurantExplorer from '../../../components/RestaurantExplorer';
 import Toggle from '../../../components/Toggle';
+import { RestContext } from '../../../lib/context/restContext';
 import { useRestaurantsContext } from './RestaurantsDataContext';
 
 const DEFAULT_CUISINES = [
@@ -42,6 +44,7 @@ export default function RestaurantList({ history }) {
   const [listView, setListView] = useState(true);
   const [cusinieList, setCusinieList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { rests, setRests} = useContext(RestContext);
  
   const restaurantContext = useRestaurantsContext();
 
@@ -83,6 +86,10 @@ export default function RestaurantList({ history }) {
     console.log('cusinieList', cusinieList);
   }, [cusinieList]);
 
+  useEffect(() => {
+    originalRestaurantList && setRests(originalRestaurantList);
+  }, [originalRestaurantList]);
+
   return (
     <div className="main-content">
       <div className="cusinie-list masked-overflow col-12">
@@ -116,11 +123,19 @@ export default function RestaurantList({ history }) {
           </div>
       </div>
 
-      {listView ? (
-        <RestaurantCards restaurants={filteredRestaurantList} isLoading={isLoading} />
-      ) : (
-        <RestaurantExplorer restaurants={filteredRestaurantList} />
-      )}
+      <div className="col-12">
+        
+        <div className="col-3">
+          <div style={{ backgroundColor: 'grey', height: '100%', minWidth: '100%' }} />
+        </div>
+
+        {listView ? (
+          <RestaurantCards restaurants={filteredRestaurantList} isLoading={isLoading} />
+        ) : (
+          <RestaurantExplorer restaurants={filteredRestaurantList} />
+        )}
+
+      </div>
 
     </div>
   );

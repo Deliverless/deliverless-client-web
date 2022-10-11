@@ -1,15 +1,20 @@
-import React, { useContext, useState, useEffect} from 'react'
-import { ResponsiveContainer } from 'recharts'
+import React, {
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
+
+import Box from '@mui/material/Box';
+import Tab from '@mui/material/Tab';
+import Tabs from '@mui/material/Tabs';
+
+import { RestContext } from '../../../lib/context/restContext';
 import { UserContext } from '../../../lib/context/userContext';
+import { findObjectsByMetadata } from '../../../lib/web3-helper';
 import DataCard from './components/DataCard';
 import OnlineStatusToggle from './components/OnlineStatusToggle';
 import OrderTable from './components/OrderTable';
-import RevenueChart from './components/RevenueChart'
-import { findObjectsByMetadata } from '../../../lib/web3-helper'
-import { RestContext } from '../../../lib/context/restContext';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import Box from '@mui/material/Box';
+import RevenueChart from './components/RevenueChart';
 
 export default function DriverDashboard() {
   const { user, setUser } = useContext(UserContext);
@@ -24,6 +29,8 @@ export default function DriverDashboard() {
   useEffect(async ()=>{
     getOrders();
   },[])
+
+  console.log("rests", rests);
 
   const getOrders = async () => {
     
