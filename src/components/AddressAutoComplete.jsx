@@ -16,7 +16,7 @@ import Cookies from 'universal-cookie'
 import { useNavigate } from 'react-router-dom'
 import debounce from 'lodash.debounce';
 
-const AddressAutoComplete = ({init, setAddress}) => {
+const AddressAutoComplete = ({init={formatted:""}, setAddress, params, label = "Enter Address"}) => {
     const [value, setValue] = useState(init);
     const [inputValue, setInputValue] = useState(init.formatted);
     const [options, setOptions] = useState([]);
@@ -25,7 +25,7 @@ const AddressAutoComplete = ({init, setAddress}) => {
 
     const fetchData = useCallback(debounce(() => {
         if (inputRef.current === '') return
-        getAutoComplete(inputRef.current)
+        getAutoComplete(inputRef.current, params)
         .then( (results) => {
           setOptions(results.results)
         })
@@ -64,7 +64,7 @@ const AddressAutoComplete = ({init, setAddress}) => {
             setInputValue(newInputValue);
           }}
           renderInput={(params) => (
-            <TextField {...params} label="Enter Address" fullWidth />
+            <TextField {...params} label={label} fullWidth />
           )}
           renderOption={(props, option) => {
             const matches = options;

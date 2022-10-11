@@ -1,11 +1,13 @@
 import { getObjectById, updateObject, createNewObject, findObjectsByMetadata } from '../lib/web3-helper'
 
 export default class Driver {
-    constructor(vehicleId, rating, reviewIds, userId) {
+    constructor(vehicleId, rating, reviewIds, userId, online, city) {
         this.vehicleId = vehicleId;
         this.rating = rating;
         this.reviewIds = reviewIds;
         this.userId = userId;
+        this.online = online;
+        this.city = city;
     }
 }
 
