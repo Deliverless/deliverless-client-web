@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Restaurants from 'pages/Restaurants';
+import Restaurants from '../pages/Restaurants';
 import { Navigate } from 'react-router-dom';
 
 import Account from '../pages/AccountPages/Account';
@@ -29,41 +29,41 @@ import {
 } from './middleware';
 
 const routes = [
-    { path: "/", element: <HasAddressCookie redirectTo='/landing'><Navigate to='/restaurants' /></HasAddressCookie> },
-    { path: "/landing", element: <Landing /> },
-    { path: "/login", element: <Login /> },
-    { path: "/logout", element: <Logout redirectTo="/login"></Logout> },
-    { path: "/signup", element: <CustomerSignUp /> },
-    { path: "/cart", element: <RequiredAuth redirectTo="/login"><Cart /></RequiredAuth> },
-    { path: "/account", element: <RequiredAuth redirectTo="/login"><Account /></RequiredAuth> },
-    { path: "/settings", element: <RequiredPrivilege privilege="admin" redirectTo="/login"><AdminSettings /></RequiredPrivilege> },
-    { path: "/restaurants/*", element: <Restaurants /> },
-    // { path: "/restaurant/home", element: <RestaurantHome /> },
-    { path: "/restaurant/dashboard", element: <RequiredPrivilege privilege="restaurant" redirectTo="/"><RestaurantDashboard /></RequiredPrivilege> },
-    { path: "/restaurant/signup", element: <RestaurantSignUp /> },
-    { path: "/driver/profile", element: <DriverProfile /> },
-    { path: "/driver/dashboard", element: <RequiredPrivilege privilege="driver" redirectTo="/"><DriverDashboard /></RequiredPrivilege> },
-    { path: "/driver/signup", element: <DriverSignUp /> },
-    { path: "/driver/login", element: <DriverLogin /> },
-    { path: "/driver/trackorder", element: <TrackOrder /> },
-    { path: "/thankyou", element: <RequiredAuth redirectTo="/login"><ThankYou /></RequiredAuth> },
-    { path: "/checkout", element: <RequiredAuth redirectTo="/login"><Checkout /></RequiredAuth> },
-    { path: "*", element: <NotFound /> },
+  { path: "/", element: <HasAddressCookie redirectTo='/landing'><Navigate to='/restaurants' /></HasAddressCookie> },
+  { path: "/landing", element: <Landing /> },
+  { path: "/login", element: <Login /> },
+  { path: "/logout", element: <Logout redirectTo="/login"></Logout> },
+  { path: "/signup", element: <CustomerSignUp /> },
+  { path: "/cart", element: <RequiredAuth redirectTo="/login"><Cart /></RequiredAuth> },
+  { path: "/account", element: <RequiredAuth redirectTo="/login"><Account /></RequiredAuth> },
+  { path: "/settings", element: <RequiredPrivilege privilege="admin" redirectTo="/login"><AdminSettings /></RequiredPrivilege> },
+  { path: "/restaurants/*", element: <Restaurants /> },
+  // { path: "/restaurant/home", element: <RestaurantHome /> },
+  { path: "/restaurant/dashboard", element: <RequiredPrivilege privilege="restaurant" redirectTo="/"><RestaurantDashboard /></RequiredPrivilege> },
+  { path: "/restaurant/signup", element: <RestaurantSignUp /> },
+  { path: "/driver/profile", element: <DriverProfile /> },
+  { path: "/driver/dashboard", element: <RequiredPrivilege privilege="driver" redirectTo="/"><DriverDashboard /></RequiredPrivilege> },
+  { path: "/driver/signup", element: <DriverSignUp /> },
+  { path: "/driver/login", element: <DriverLogin /> },
+  { path: "/driver/trackorder", element: <TrackOrder /> },
+  { path: "/thankyou", element: <RequiredAuth redirectTo="/login"><ThankYou /></RequiredAuth> },
+  { path: "/checkout", element: <RequiredAuth redirectTo="/login"><Checkout /></RequiredAuth> },
+  { path: "*", element: <NotFound /> },
 ];
 
 const appBarLinks = [
 
-    { title: 'Home', icon: 'home', url: "/", role: 'customer', isAuth: false },
-    { title: 'Restaurant Dashboard', icon: 'home', url: "/restaurant/dashboard", role: 'restaurant', isAuth: true },
-    { title: 'Driver Dashboard', icon: 'home', url: "/driver/dashboard", role: 'driver', isAuth: true },
-    { title: 'Cart', icon: 'shopping-cart', url: "/cart", role: 'customer', isAuth: true },
-    { title: 'Account', icon: 'user-circle', url: "/account", isAuth: true },
-    { title: 'Logout', icon: 'sign-out', url: "/logout", isAuth: true },
-    { title: 'Login', icon: 'sign-in', url: "/login", isAuth: false },
-    { title: 'Sign Up', icon: 'user-plus', url: "/signup", isAuth: false },
-    { title: 'Login Driver', icon: 'car', url: "/driver/login", isAuth: false },
-    { title: 'Add your Restaurant', icon: 'cutlery', url: "/restaurant/signup", isAuth: false },
-    { title: 'Settings', icon: 'cog', url: "/settings", role: 'admin', isAuth: true }
+  { title: 'Home', icon: 'home', url: "/", role: 'customer', isAuth: false },
+  { title: 'Restaurant Dashboard', icon: 'home', url: "/restaurant/dashboard", role: 'restaurant', isAuth: true },
+  { title: 'Driver Dashboard', icon: 'home', url: "/driver/dashboard", role: 'driver', isAuth: true },
+  { title: 'Cart', icon: 'shopping-cart', url: "/cart", role: 'customer', isAuth: true },
+  { title: 'Account', icon: 'user-circle', url: "/account", isAuth: true },
+  { title: 'Logout', icon: 'sign-out', url: "/logout", isAuth: true },
+  { title: 'Login', icon: 'sign-in', url: "/login", isAuth: false },
+  { title: 'Sign Up', icon: 'user-plus', url: "/signup", isAuth: false },
+  { title: 'Login Driver', icon: 'car', url: "/driver/login", isAuth: false },
+  { title: 'Add your Restaurant', icon: 'cutlery', url: "/restaurant/signup", isAuth: false },
+  { title: 'Settings', icon: 'cog', url: "/settings", role: 'admin', isAuth: true }
 ];
 
 export { appBarLinks, routes };
