@@ -16,6 +16,7 @@ import RestaurantSignUp from '../pages/Signup/RestaurantSignUp'
 import DriverDashboard from '../pages/Dashboards/Driver/DriverDashboard'
 import DriverProfile from '../pages/DriverProfile'
 import DriverLogin from '../pages/Login/DriverLogin'
+import TrackOrder from '../pages/TrackOrder'
 
 const routes = [
     { path: "/", element: <HasAddressCookie redirectTo='/landing'><Home /></HasAddressCookie> },
@@ -33,6 +34,7 @@ const routes = [
     { path: "/driver/dashboard", element: <RequiredPrivilege privilege="driver" redirectTo="/"><DriverDashboard /></RequiredPrivilege> },
     { path: "/driver/signup", element: <DriverSignUp /> },
     { path: "/driver/login", element: <DriverLogin /> },
+    { path: "/driver/trackorder", element: <TrackOrder /> },
     { path: "/thankyou", element: <RequiredAuth redirectTo="/login"><ThankYou /></RequiredAuth> },
     { path: "/checkout", element: <RequiredAuth redirectTo="/login"><Checkout /></RequiredAuth> },
     { path: "*", element: <NotFound /> },
