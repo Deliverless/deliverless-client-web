@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import RestaurantCard from './RestaurantCard';
+
 import LinearProgress from '@mui/material/LinearProgress';
-import DBRequest from '../lib/api'
+
+import RestaurantCard from './RestaurantCard';
 
 class RestaurantCards extends Component {
 
@@ -24,9 +25,10 @@ class RestaurantCards extends Component {
 							key={restau.id + restau.name}
 							restauId={restau.id}
 							name={restau.name}
-							description={restau.description}
+							// description={restau.description}
 							address={restau.address}
-							image={restau.image}  />
+							image={restau.images.find(image => image.alt === 'main').url}
+						/>
 					)}
 				</div>
 		);
