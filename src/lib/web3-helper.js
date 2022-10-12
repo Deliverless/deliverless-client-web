@@ -131,10 +131,32 @@ const requestResponse = async (requestId) => {
         const data = Buffer.from(event.returnValues.data.slice(2), 'hex').toString('ascii');
         const extractText = data.match(/{"jobRunID":.*}/g);
         const parsedResponse = JSON.parse(extractText);
-        parsedResponse.data = JSON.parse(parsedResponse.data);
-        console.log('parsedResponse', parsedResponse);
+        if (typeof parsedResponse.data === 'string') {
+            parsedResponse.data = JSON.parse(parsedResponse.data);
+        }
         return parsedResponse;
     } else {
         return null;
     }
 }
+
+// *** Stripe ***
+
+const addressStripe = process.env.REACT_APP_CONTRACTS_STRIPE_ADDRESS
+
+// initialize the contract
+const contractStripe = new web3.eth.Contract(abi.abiStripe, addressStripe)
+
+export const getStripeSecret = async (total) => {
+  // call(send) function within smart contract
+  console.log('getStripeSecret', total)
+  const receipt = await contractStripe.methods
+    .requestSecretToken(total)
+    .send({ from: account.address, gas: 3000000 });
+  // requestId from Chainlink
+  const requestId = getRequestId(receipt);
+  console.log("getStripeSecret requestId", requestId);
+  // return response from Chainlink
+  const response = await requestResponse(requestId);
+  return response;
+};
