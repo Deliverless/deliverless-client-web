@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { Skeleton } from '@mui/material';
 
@@ -10,13 +10,17 @@ export default function RestaurantCards({ restaurants, isLoading }) {
   // 		<LinearProgress />
   // 	);
   // }
+  
+  useEffect(() => {
+    console.log("restaurants", restaurants);
+  }, [restaurants]);
 
   return (
     <div className="col-12">
       <div className="restaurant-cards col-10 offset-1">
         {isLoading
-          ? Array.from(new Array(20)).map((item, index) => (
-						<div style={{ margin: "0 50px 50px 0", minWidth: "300px", minHeight: "160px", borderRadius: "20px" }}>
+          ? Array.from(new Array(20).keys()).map((index) => (
+						<div style={{ margin: "0 50px 50px 0", minWidth: "300px", minHeight: "160px", borderRadius: "20px" }} key={index}>
 							<Skeleton
 								key={index}
 								width={300}
@@ -58,5 +62,8 @@ export default function RestaurantCards({ restaurants, isLoading }) {
             ))}
       </div>
     </div>
+
+        
+    
   );
 }
