@@ -6,10 +6,16 @@ import React, {
 } from 'react';
 
 import {
+  useDispatch,
+  useSelector,
+} from 'react-redux';
+
+import {
   getRestaurantById,
   getRestaurantByName,
   getRestaurants,
 } from '../../../models/restaurant';
+import { setRestaurants } from '../_redux/restaurantsRedux';
 
 const RestaurantsContext = createContext();
 
@@ -20,44 +26,60 @@ export function useRestaurantsContext() {
 export const RestaurantsConsumer = RestaurantsContext.Provider;
 
 export function RestaurantsContextProvider({restaurantsUIEvents, children}) {
-  const [restaurants, setRestaurants] = useState([]);
+  const [originalRestaurantList, setOriginalRestaurantList] = useState([]);
+
+  const { stateRestaurantList } = useSelector((state) => {
+    return {
+      stateRestaurantList: state.restaurants.list,
+    };
+  });
+  const dispatch = useDispatch();
 
   const fetchRestaurants = async () => {
-    console.log("fetching restaurants");
     const res_restaurants = await getRestaurants();
-    setRestaurants(res_restaurants);
+    dispatch(setRestaurants(res_restaurants));
+    // setOriginalRestaurantList(res_restaurants);
   };
 
   const fetchRestaurantById = async (id) => {
     console.log("fetching restaurant by id");
-    if (restaurants.length === 0 || !restaurants.find(r => r.id === id)) {
+    if (originalRestaurantList.length === 0 || !originalRestaurantList.find(r => r.id === id)) {
       const res_restaurant = await getRestaurantById(id);
-      setRestaurants([...restaurants, res_restaurant]);
+      setOriginalRestaurantList([...originalRestaurantList, res_restaurant]);
       return res_restaurant;
     }
-    return restaurants.find(r => r.id === id);
+    return originalRestaurantList.find(r => r.id === id);
   };
 
   const fetchRestaurantByTitle = async (title) => {
     console.log("fetching restaurant by title");
-    if (restaurants.length === 0 || !restaurants.find(r => r.name === title)) {
+    if (originalRestaurantList.length === 0 || !originalRestaurantList.find(r => r.name === title)) {
       const res_restaurant = await getRestaurantByName(title);
-      setRestaurants([...restaurants, res_restaurant]);
+      setOriginalRestaurantList([...originalRestaurantList, res_restaurant]);
       return res_restaurant;
     }
-    return restaurants.find(r => r.name === title);
+    return originalRestaurantList.find(r => r.name === title);
+  };
+
+  const syncRestaurants = async () => {
+    const res_restaurants = await getRestaurants();
+    dispatch(setRestaurants(res_restaurants));
+    restaurantsUIEvents.setRefetch(false);
   };
 
   useEffect(() => {
-    restaurantsUIEvents.refetch && fetchRestaurants();
-    restaurantsUIEvents.setRefetch(false);
+    restaurantsUIEvents.refetch && syncRestaurants();
   }, [restaurantsUIEvents]);
+
+  useEffect(() => {
+    stateRestaurantList && setOriginalRestaurantList(stateRestaurantList);
+  }, [stateRestaurantList]);
 
   const restaurantsContext = {
     restaurantsUIEvents,
     useStates: {
-      restaurants,
-      setRestaurants,
+      originalRestaurantList,
+      setOriginalRestaurantList,
     },
     functions: {
       fetchRestaurants,

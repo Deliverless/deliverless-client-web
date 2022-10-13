@@ -76,11 +76,10 @@ export default function RestaurantList({ history }) {
   }, [originalRestaurantList]);
 
   useEffect(() => {
-    if (restaurantContext.useStates.restaurants) {
-      setOriginalRestaurantList(restaurantContext.useStates.restaurants);
-      setFilteredRestaurantList(restaurantContext.useStates.restaurants);
+    if (restaurantContext.useStates.originalRestaurantList) {
+      setOriginalRestaurantList(restaurantContext.useStates.originalRestaurantList);
     }
-  }, [restaurantContext.useStates.restaurants]);
+  }, [restaurantContext.useStates.originalRestaurantList]);
 
   useEffect(() => {
     console.log('cusinieList', cusinieList);
@@ -88,6 +87,7 @@ export default function RestaurantList({ history }) {
 
   useEffect(() => {
     originalRestaurantList && setRests(originalRestaurantList);
+    setFilteredRestaurantList(restaurantContext.useStates.originalRestaurantList);
   }, [originalRestaurantList]);
 
   return (
@@ -110,7 +110,9 @@ export default function RestaurantList({ history }) {
         ) : (
           <>
           {Array.from(Array(20).keys()).map((index) => (
-            <Skeleton variant="rounded" width={100} height={30} style={{ margin: '0 5px 10px 5px', minWidth: '100px', borderRadius: '20px' }} />
+            <div key={'cusinie' + index}>
+              <Skeleton variant="rounded" width={100} height={30} style={{ margin: '0 5px 10px 5px', minWidth: '100px', borderRadius: '20px' }} />
+            </div>
           ))}
           </>
         )}
