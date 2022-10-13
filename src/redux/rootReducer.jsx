@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 
-import { restaurantsSlice } from '../pages/Home/_redux/restaurantsRedux';
+import { restaurantsSlice } from '../lib/redux/restaurantRedux';
 
 export const rootReducer = combineReducers({
-  restaurants: restaurantsSlice.reducer,
+  restaurant: restaurantsSlice.reducer,
 });

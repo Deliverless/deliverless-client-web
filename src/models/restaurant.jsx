@@ -94,25 +94,23 @@ export default class Restaurant {
 
 }
 
-export const getRestaurantItems = async (restaurant) => {
+export const requestRestaurantItems = async (restaurant) => {
     
     const items = findObjectsByMetadata('Item', { restaurantId: restaurant.id });
     return items;
 }
 
-export const getRestaurantByName = async (name) => {
-    const res = await getObjectById('Restaurants', '');
-    console.log("restaurants", res);
+export const requestRestaurantByName = async (name) => {
     return (await findObjectsByMetadata("restaurant", { name: name })
         .catch(err => console.log(err))).data;
 }
 
-export const getRestaurantById = async (id) => {
+export const requestRestaurantById = async (id) => {
     return (await getObjectById("restaurant", id)
         .catch(err => console.log(err))).data;
 }
 
-export const getRestaurant = async (id) => {
+export const requestRestaurant = async (id) => {
     return (await getObjectById("restaurants", id)
         .catch(err => console.log(err))).data;
 }
@@ -122,7 +120,7 @@ export const findRestaurantByUserId = async (userId) => {
         .catch(err => console.log(err))).data;
 }
 
-export const getRestaurants = async () => {
+export const requestRestaurants = async () => {
     return (await getObjectById("restaurant", "")
         .catch(err => console.log(err))).data;
 }

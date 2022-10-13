@@ -5,6 +5,11 @@ import React, {
 } from 'react';
 
 import {
+  useDispatch,
+  useSelector,
+} from 'react-redux';
+
+import {
   Button,
   Skeleton,
 } from '@mui/material';
@@ -13,7 +18,6 @@ import RestaurantCards from '../../../components/RestaurantCards';
 import RestaurantExplorer from '../../../components/RestaurantExplorer';
 import Toggle from '../../../components/Toggle';
 import { RestContext } from '../../../lib/context/restContext';
-import { useRestaurantsContext } from './RestaurantsDataContext';
 
 const DEFAULT_CUISINES = [
   'All',
@@ -39,56 +43,51 @@ const DEFAULT_CUISINES = [
 ];
 
 export default function RestaurantList({ history }) {
-  const [originalRestaurantList, setOriginalRestaurantList] = useState([]);
   const [filteredRestaurantList, setFilteredRestaurantList] = useState([]);
   const [listView, setListView] = useState(true);
   const [cusinieList, setCusinieList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const { rests, setRests} = useContext(RestContext);
- 
-  const restaurantContext = useRestaurantsContext();
 
+  const restaurantList = useSelector(state => state.restaurant.list);
+  const dispatch = useDispatch();
+ 
   const filterRestaurants = (cuisine) => {
     if (cuisine === 'All') {
-      setFilteredRestaurantList(originalRestaurantList);
+      setFilteredRestaurantList(restaurantList);
     } else {
-      const filteredList = originalRestaurantList.filter((restaurant) => restaurant.cuisine === cuisine);
+      const filteredList = restaurantList.filter((restaurant) => restaurant.cuisine === cuisine);
       setFilteredRestaurantList(filteredList);
     }
   };
 
-  useEffect(() => {
-    if (originalRestaurantList.length === 0) {
-      restaurantContext.restaurantsUIEvents.setRefetch(true);
-    } else if (originalRestaurantList.length > 0 && cusinieList.length === 0) {
-      const cusinieList = DEFAULT_CUISINES.map((cuisine) => {
-        const disabled = cuisine === 'All' ? false : originalRestaurantList.filter((restaurant) => restaurant.cuisine === cuisine).length === 0;
-        return {
-          label: cuisine,
-          value: cuisine,
-          disabled,
-        };
-      });
-      setCusinieList(cusinieList);
-      setIsLoading(false);
+  const initializeRestaurantList = async () => {
+    if (restaurantList.length === 0) {
+      dispatch({ type: 'GET_RESTAURANTS' });
     }
+  };
 
-  }, [originalRestaurantList]);
+  const initializeCusinieList = () => {
+    const cusinieList = DEFAULT_CUISINES.map((cuisine) => {
+      const disabled = cuisine === 'All' ? false : restaurantList.filter((restaurant) => restaurant.cuisine === cuisine).length === 0;
+      return {
+        label: cuisine,
+        value: cuisine,
+        disabled,
+      };
+    });
+    setCusinieList(cusinieList);
+  };
 
   useEffect(() => {
-    if (restaurantContext.useStates.originalRestaurantList) {
-      setOriginalRestaurantList(restaurantContext.useStates.originalRestaurantList);
+    restaurantList.length === 0 && initializeRestaurantList();
+    if (restaurantList.length > 0) {
+      initializeCusinieList();
+      setRests(restaurantList);
+      setFilteredRestaurantList(restaurantList);
     }
-  }, [restaurantContext.useStates.originalRestaurantList]);
-
-  useEffect(() => {
-    console.log('cusinieList', cusinieList);
-  }, [cusinieList]);
-
-  useEffect(() => {
-    originalRestaurantList && setRests(originalRestaurantList);
-    setFilteredRestaurantList(restaurantContext.useStates.originalRestaurantList);
-  }, [originalRestaurantList]);
+  }, [restaurantList]);
+  
 
   return (
     <div className="main-content">
@@ -132,7 +131,7 @@ export default function RestaurantList({ history }) {
         </div>
 
         {listView ? (
-          <RestaurantCards restaurants={filteredRestaurantList} isLoading={isLoading} />
+          <RestaurantCards restaurants={filteredRestaurantList} />
         ) : (
           <RestaurantExplorer restaurants={filteredRestaurantList} />
         )}

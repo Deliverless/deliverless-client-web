@@ -1,25 +1,30 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import { Skeleton } from '@mui/material';
 
 import RestaurantCard from './RestaurantCard';
 
-export default function RestaurantCards({ restaurants, isLoading }) {
-  // if (isLoading) {
-  // 	return (
-  // 		<LinearProgress />
-  // 	);
-  // }
+export default function RestaurantCards({ restaurants }) {
   
-  useEffect(() => {
-    console.log("restaurants", restaurants);
-  }, [restaurants]);
-
   return (
     <div className="col-12">
       <div className="restaurant-cards col-10 offset-1">
-        {isLoading
-          ? Array.from(new Array(20).keys()).map((index) => (
+        {restaurants && restaurants.length > 0 ? (
+          restaurants.map((restaurant) => (
+            <RestaurantCard
+              // temporary to make keys unique because I added 2 transactions with the same restau id.
+              key={restaurant.id + restaurant.name}
+              restauId={restaurant.id}
+              name={restaurant.name}
+              // description={restau.description}
+              address={restaurant.address}
+              image={
+                restaurant.images.find((image) => image.alt === "main").url
+              }
+            />
+          ))
+        ) : (
+          Array.from(new Array(20).keys()).map((index) => (
 						<div style={{ margin: "0 50px 50px 0", minWidth: "300px", minHeight: "160px", borderRadius: "20px" }} key={'card' + index}>
 							<Skeleton
 								width={300}
@@ -43,19 +48,7 @@ export default function RestaurantCards({ restaurants, isLoading }) {
 							/>
 						</div>
             ))
-          : restaurants.map((restaurant) => (
-              <RestaurantCard
-                // temporary to make keys unique because I added 2 transactions with the same restau id.
-                key={restaurant.id + restaurant.name}
-                restauId={restaurant.id}
-                name={restaurant.name}
-                // description={restau.description}
-                address={restaurant.address}
-                image={
-                  restaurant.images.find((image) => image.alt === "main").url
-                }
-              />
-            ))}
+        )}
       </div>
     </div>
 

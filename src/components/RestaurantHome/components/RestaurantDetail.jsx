@@ -8,6 +8,10 @@ import {
   OverlayTrigger,
   Tooltip,
 } from 'react-bootstrap';
+import {
+  useDispatch,
+  useSelector,
+} from 'react-redux';
 import { useParams } from 'react-router-dom';
 
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
@@ -18,36 +22,35 @@ import { Skeleton } from '@mui/material';
 
 import Restaurant from '../../../models/restaurant';
 import {
-  useRestaurantsContext,
-} from '../../../pages/Home/components/RestaurantsDataContext';
-import {
   StoreHoursModal,
 } from '../../../pages/Home/components/StoreHoursModal';
 import FoodCardModal from '../../FoodCardModal';
 
 export default function RestaurantDetail({ history }) {
-  const [isLoading, setIsLoading] = useState(false);
   const [favorite, setFavorite] = useState(false);
   const [showStoreHours, setShowStoreHours] = useState(false);
   const [restaurant, setRestaurant] = useState(new Restaurant());
-  const { restaurantName: restaurantName } = useParams();
   const [itemsLoaded, setItemsLoaded] = useState(false);
   const [showFoodCardModal, setShowFoodCardModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
-  
-  const restaurantContext = useRestaurantsContext();
+
+  const { restaurantName: restaurantName } = useParams();
+  const restaurantList = useSelector(state => state.restaurant.list);
+  const dispatch = useDispatch();
 
   const initRestaurant = async () => {
-    setIsLoading(true);
-    let res_restaurant = restaurantContext.useStates.originalRestaurantList.find(r => r.name === restaurantName);
-    if (!res_restaurant) {
-      res_restaurant = await restaurantContext.functions.fetchRestaurantByTitle(restaurantName);
-    }
-    const new_restaurant = new Restaurant();
-    new_restaurant.initJson(res_restaurant);
-    setRestaurant(new_restaurant);
-    setIsLoading(false);
-  };
+    if (restaurantList.length > 0) {
+      let restaurant = restaurantList.find((restaurant) => restaurant.name === restaurantName);
+      console.log("restaurant", restaurant);
+      if (restaurant) {
+        let restaurantObj = new Restaurant();
+        restaurantObj.initJson(restaurant);
+        console.log("restaurantObj", restaurantObj);
+        setRestaurant(restaurantObj);
+      }
+    } else {
+      dispatch({ type: 'GET_RESTAURANTS' });
+  }};
 
   const fetchRestaurantItems = async () => {
     let updatedRestaurant = restaurant;
@@ -55,7 +58,6 @@ export default function RestaurantDetail({ history }) {
     updatedRestaurant.items = res_items;
     updatedRestaurant.itemIds = res_items.map(i => i.id); 
     setRestaurant(updatedRestaurant);
-    setIsLoading(false);
     setItemsLoaded(true);
   };
 
@@ -138,7 +140,7 @@ export default function RestaurantDetail({ history }) {
   useEffect(() => {
     !restaurant.id && initRestaurant();
     restaurant.id && restaurant.items.length === 0 && fetchRestaurantItems();
-  }, [restaurant]);
+  }, [restaurant, restaurantList]);
 
   return (
     <div className="main-content">

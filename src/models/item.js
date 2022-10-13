@@ -1,5 +1,12 @@
-import { getRestaurant, updateRestaurant } from "./restaurant";
-import { getObjectById, updateObject, createNewObject, findObjectsByMetadata } from '../lib/web3-helper'
+import {
+  createNewObject,
+  getObjectById,
+  updateObject,
+} from '../lib/web3-helper';
+import {
+  requestRestaurant,
+  updateRestaurant,
+} from './restaurant';
 
 export default class Item {
     constructor(name, description, size, category, imgs, options, price, quantity, discount, isPickupOnly, isAvailable, restaurantId) {
@@ -36,7 +43,7 @@ export const updateItem = async (id, newData) => {
 }
 
 export const createItem = async (item) => {
-    const restaurant = getRestaurant(item.restaurantId);
+    const restaurant = requestRestaurant(item.restaurantId);
     return (await createNewObject("item", item)
         .then(async item => {
             let rest = await restaurant;
