@@ -1,6 +1,5 @@
 import React from 'react';
 
-import Restaurants from '../pages/Restaurants';
 import { Navigate } from 'react-router-dom';
 
 import Account from '../pages/AccountPages/Account';
@@ -11,6 +10,7 @@ import DriverDashboard from '../pages/Dashboards/Driver/DriverDashboard';
 import RestaurantDashboard
   from '../pages/Dashboards/Restaurant/RestaurantDashboard';
 import DriverProfile from '../pages/DriverProfile';
+import Home from '../pages/Home';
 import Landing from '../pages/Landing';
 import Login from '../pages/Login/CustomerLogin';
 import DriverLogin from '../pages/Login/DriverLogin';
@@ -37,7 +37,7 @@ const routes = [
   { path: "/cart", element: <RequiredAuth redirectTo="/login"><Cart /></RequiredAuth> },
   { path: "/account", element: <RequiredAuth redirectTo="/login"><Account /></RequiredAuth> },
   { path: "/settings", element: <RequiredPrivilege privilege="admin" redirectTo="/login"><AdminSettings /></RequiredPrivilege> },
-  { path: "/restaurants/*", element: <Restaurants /> },
+  { path: "/restaurants/*", element: <Home /> },
   // { path: "/restaurant/home", element: <RestaurantHome /> },
   { path: "/restaurant/dashboard", element: <RequiredPrivilege privilege="restaurant" redirectTo="/"><RestaurantDashboard /></RequiredPrivilege> },
   { path: "/restaurant/signup", element: <RestaurantSignUp /> },
