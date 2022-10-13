@@ -38,7 +38,7 @@ export default function RestaurantDetail({ history }) {
   const initRestaurant = async () => {
     setIsLoading(true);
     console.log("initRestaurant");
-    let res_restaurant = restaurantContext.useStates.restaurants.find(r => r.name === restaurantName);
+    let res_restaurant = restaurantContext.useStates.originalRestaurantList.find(r => r.name === restaurantName);
     if (!res_restaurant) {
       res_restaurant = await restaurantContext.functions.fetchRestaurantByTitle(restaurantName);
     }
