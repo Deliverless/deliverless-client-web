@@ -26,7 +26,7 @@ function Row(props) {
 
   return (
     <>
-    { row.status == status && 
+    { row.status == status && row.restaurant && 
     <React.Fragment>
     <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
       <TableCell>
