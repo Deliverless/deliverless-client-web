@@ -20,28 +20,24 @@ export default function RestaurantCards({ restaurants, isLoading }) {
       <div className="restaurant-cards col-10 offset-1">
         {isLoading
           ? Array.from(new Array(20).keys()).map((index) => (
-						<div style={{ margin: "0 50px 50px 0", minWidth: "300px", minHeight: "160px", borderRadius: "20px" }} key={index}>
+						<div style={{ margin: "0 50px 50px 0", minWidth: "300px", minHeight: "160px", borderRadius: "20px" }} key={'card' + index}>
 							<Skeleton
-								key={index}
 								width={300}
 								height={160}
 								variant="rectangular"
 							/>
 							<div className="col-12" style={{ display: "flex", justifyContent: "space-between", marginTop: "10px" }}>
 								<Skeleton
-									key={index}
 									variant="text"
 									width={100}
 								/>
 								<Skeleton
-									key={index}
 									variant="circular"
 									width={30}
 									height={25}
 								/>
 							</div>
 							<Skeleton
-								key={index}
 								variant="text"
 								width={300}
 							/>

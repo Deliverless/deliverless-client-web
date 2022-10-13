@@ -1,5 +1,3 @@
-import '../styles.scss';
-
 import React, {
   useEffect,
   useState,
@@ -18,10 +16,14 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import StarIcon from '@mui/icons-material/Star';
 import { Skeleton } from '@mui/material';
 
-import FoodCardModal from '../../../components/FoodCardModal';
 import Restaurant from '../../../models/restaurant';
-import { useRestaurantsContext } from './RestaurantsDataContext';
-import { StoreHoursModal } from './StoreHoursModal';
+import {
+  useRestaurantsContext,
+} from '../../../pages/Home/components/RestaurantsDataContext';
+import {
+  StoreHoursModal,
+} from '../../../pages/Home/components/StoreHoursModal';
+import FoodCardModal from '../../FoodCardModal';
 
 export default function RestaurantDetail({ history }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -37,12 +39,10 @@ export default function RestaurantDetail({ history }) {
 
   const initRestaurant = async () => {
     setIsLoading(true);
-    console.log("initRestaurant");
     let res_restaurant = restaurantContext.useStates.originalRestaurantList.find(r => r.name === restaurantName);
     if (!res_restaurant) {
       res_restaurant = await restaurantContext.functions.fetchRestaurantByTitle(restaurantName);
     }
-    console.log("res_restaurant", res_restaurant);
     const new_restaurant = new Restaurant();
     new_restaurant.initJson(res_restaurant);
     setRestaurant(new_restaurant);
