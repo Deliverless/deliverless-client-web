@@ -1,19 +1,15 @@
-import React, { useEffect, useCallback, useRef, useState } from "react";
-import { getRestaurants } from '../models/restaurant'
-import Box from "@mui/material/Box";
-import FormControl from "@mui/material/FormControl";
-import TextField from "@mui/material/TextField";
-import { Button } from "@mui/material";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import Select from "@mui/material/Select";
-import { Autocomplete } from "@mui/material";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
-import Grid from "@mui/material/Grid";
-import Typography from "@mui/material/Typography";
-import parse from "autosuggest-highlight/parse";
-import Cookies from "universal-cookie";
-import debounce from "lodash.debounce";
+import React, {
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+
+import { Autocomplete } from '@mui/material';
+import Box from '@mui/material/Box';
+import FormControl from '@mui/material/FormControl';
+import TextField from '@mui/material/TextField';
+
+import { requestRestaurants } from '../models/restaurant';
 
 export default function RestaurantAutoComplete() {
   const [value, setValue] = useState(null);
@@ -23,7 +19,7 @@ export default function RestaurantAutoComplete() {
   inputRef.current = inputValue;
 
     useEffect(async ()=>{
-        await getRestaurants().then(async (rests) => {
+        await requestRestaurants().then(async (rests) => {
           setOptions(rests.map((rest) => (
             {
               label: rest.name, 
