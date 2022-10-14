@@ -24,6 +24,23 @@ const address = process.env.REACT_APP_CONTRACTS_BIGCHAINDB_ADDRESS
 // initialize the contract
 const contractBigchaindb = new web3.eth.Contract(abi.abiBigchaindb, address);
 
+//WEBSOCKETS
+// const web3socket = new Web3(new Web3.providers.WebsocketProvider('ws://24.150.93.243:3334'));
+// const socketInstance = new web3socket.eth.Contract(abi.abiBigchaindb, address)
+// socketInstance.events.transfer({ fromBlock:0}, (error, event)=>{
+//     if(error) console.log(error)
+//     console.log(event)
+// })
+
+const web3socket = new Web3(new Web3.providers.WebsocketProvider('ws://24.150.93.243:3334'));
+
+// unsubscribes the subscription
+// subscription.unsubscribe((error, success) => {
+//     if (error) return console.error(error);
+
+//     console.log('Successfully unsubscribed!');
+// });
+
 export const getBalance = async () => {
     // get the balance of the account 
     const balance = await web3.eth.getBalance(account.address);
@@ -99,45 +116,30 @@ const getRequestId = (receipt) => {
 }
 
 const requestResponse = async (requestId) => {
-    const operatorAddress = process.env.REACT_APP_CONTRACTS_OPERATOR_ADDRESS
-    const operatorContract = new web3.eth.Contract(abi.abiOperator, operatorAddress);
-    const events = await new Promise((resolve, reject) => {
-        setTimeout(async () => {
-            for (let i = 0; i < 60 / 0.3; i++) {
-                const results = await operatorContract.getPastEvents(
-                    'DeliverlessResponse',
-                    {
-                        fromBlock: 0,
-                        filter: { requestId: String(requestId) }
-                    }
-                );
-                console.log("results", results);
-                if (results.length > 0) {
-                    resolve(results);
-                    break;
-                }
-                await new Promise((resolve, reject) => {
-                    setTimeout(() => {
-                        resolve();
-                    }, 300);
-                });
-            }
-            reject();
-        }, 1000);
-    });
-
-    if (events.length > 0) {
-        const event = events.find(e => e.returnValues.requestId === requestId);
-        const data = Buffer.from(event.returnValues.data.slice(2), 'hex').toString('ascii');
-        const extractText = data.match(/{"jobRunID":.*}/g);
-        const parsedResponse = JSON.parse(extractText);
-        if (typeof parsedResponse.data === 'string') {
-            parsedResponse.data = JSON.parse(parsedResponse.data);
-        }
-        return parsedResponse;
-    } else {
-        return null;
+    var options = {
+        reconnect: {
+            auto: true,
+            delay: 5000, // ms
+            maxAttempts: 5,
+            onTimeout: false
+        },
+        filter: { requestId: String(requestId) }
     }
+    return await new Promise((resolve, reject) => {
+        const subscribe = web3socket.eth.subscribe('logs', options, async (error, result) => {
+            if (error) return console.error(error);
+        })
+        subscribe.on("data", (event)=>{
+            const data =  Buffer.from(event?.data.slice(2), 'hex').toString('ascii')
+            const extractText = data.match(/{"jobRunID":.*}/g);
+            const parsedResponse = JSON.parse(extractText);
+            if (typeof parsedResponse.data === 'string') {
+                parsedResponse.data = JSON.parse(parsedResponse.data);
+            }
+            console.log(parsedResponse)
+            resolve(parsedResponse);
+        })
+    });
 }
 
 // *** Stripe ***
@@ -148,15 +150,15 @@ const addressStripe = process.env.REACT_APP_CONTRACTS_STRIPE_ADDRESS
 const contractStripe = new web3.eth.Contract(abi.abiStripe, addressStripe)
 
 export const getStripeSecret = async (total) => {
-  // call(send) function within smart contract
-  console.log('getStripeSecret', total)
-  const receipt = await contractStripe.methods
-    .requestSecretToken(total)
-    .send({ from: account.address, gas: 3000000 });
-  // requestId from Chainlink
-  const requestId = getRequestId(receipt);
-  console.log("getStripeSecret requestId", requestId);
-  // return response from Chainlink
-  const response = await requestResponse(requestId);
-  return response;
+    // call(send) function within smart contract
+    console.log('getStripeSecret', total)
+    const receipt = await contractStripe.methods
+        .requestSecretToken(total)
+        .send({ from: account.address, gas: 3000000 });
+    // requestId from Chainlink
+    const requestId = getRequestId(receipt);
+    console.log("getStripeSecret requestId", requestId);
+    // return response from Chainlink
+    const response = await requestResponse(requestId);
+    return response;
 };

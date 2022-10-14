@@ -1,6 +1,6 @@
 import React, { useContext, createContext, useReducer } from 'react';
 import { CartReducer, sumItems } from './cartReducer';
-import Order, { createOrder } from '../../models/order';
+import Order, { createOrder, delegateOrder } from '../../models/order';
 import { UserContext } from './userContext';
 import Cookies from 'universal-cookie'
 import { OrderContext } from './orderContext';
@@ -40,12 +40,12 @@ const CartContextProvider = ({ children }) => {
     }
 
     const handleCheckout = async () => {
-        createOrder(order, user.customer).then((newOrder) => {
-            let prevOrderIds = user.customer.orderIds != null ? user.customer.orderIds : []
-            let updatedUser = { ...user };
-            updatedUser.customer.orderIds = [...prevOrderIds, newOrder.id]
-            setUser(updatedUser)
-        })
+        const newOrder = await createOrder(order, user.customer);
+        let prevOrderIds = user.customer.orderIds != null ? user.customer.orderIds : []
+        let updatedUser = { ...user };
+        updatedUser.customer.orderIds = [...prevOrderIds, newOrder.id]
+        setUser(updatedUser)
+        await delegateOrder(newOrder);
         clearOrder()
         dispatch({ type: 'CHECKOUT' })
     }

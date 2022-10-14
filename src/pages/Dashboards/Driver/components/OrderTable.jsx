@@ -22,8 +22,6 @@ function Row(props) {
   const { row, status } = props;
   const [open, setOpen] = React.useState(false);
 
-  console.log('row', row);
-
   return (
     <>
     { row.status == status && row.restaurant && 

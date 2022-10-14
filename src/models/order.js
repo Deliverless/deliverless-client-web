@@ -54,3 +54,32 @@ export const createOrder = async (order, customer) => {
     console.log("returning", returnobj);
     return returnobj
 }
+
+export const delegateOrder = async (order) => {
+    let { address } = order;
+    //get all online drivers
+    let drivers = await findObjectsByMetadata("driver", { online: true }, 0);
+    //find drivers that are in the same city as the order destination address
+    let sameCityDrivers = drivers?.filter((d) => {
+        return address.local?.includes(d.city);
+    })
+    //if there are any drivers nearby, pick from them, otherwise pick from all
+    if (sameCityDrivers?.length >= 0) drivers = sameCityDrivers;
+
+    let isValidDriver = false, randomDriver;
+    let allPendingOrders = await findObjectsByMetadata("order", { status: 'Pending' }, 0);
+    if(!drivers || !allPendingOrders) return false;
+    console.log("Drivers to pick from", drivers);
+    console.log("Orders to check", allPendingOrders);
+    do {
+        //pick random driver from drivers
+        randomDriver = drivers[Math.floor((Math.random() * drivers.length))]
+        //fetch all pending orders, if any contain the selected randomDriver id, the driver already has an order pending and it thereby invalid, loop, try again.
+        isValidDriver = !allPendingOrders.some((o) => {
+            return o.driverId == randomDriver.id;
+        });
+    } while (!isValidDriver);
+    //assign order to driver
+    updateObject("order", order.id, { driverId: randomDriver.id });
+    return true;
+}

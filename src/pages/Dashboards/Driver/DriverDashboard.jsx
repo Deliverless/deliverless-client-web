@@ -35,7 +35,7 @@ export default function DriverDashboard() {
   const getOrders = async () => {
     
     let pendingOrders = findObjectsByMetadata("order", {status: 'Pending'}, 10);
-    let deliveredOrders = findObjectsByMetadata("order", {status: 'Delivered'}, 10);
+    let deliveredOrders = findObjectsByMetadata("order", {status: 'Delivered'}, 0);
     await Promise.all([pendingOrders, deliveredOrders])
     console.log("pending", await pendingOrders);
     console.log("delivered", await deliveredOrders);
@@ -46,7 +46,7 @@ export default function DriverDashboard() {
     for(let i = 0; i < availOrders.length; i++){
       availOrders[i].restaurant = rests.find(r=> r.id == availOrders[i].restaurantId)
     }
-    console.log("ords", availOrders);
+    console.log("ords=========================================", availOrders);
     setOrders(availOrders);
   }
 

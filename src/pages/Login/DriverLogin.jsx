@@ -33,10 +33,10 @@ const Login = () => {
 
 		login(email, password).then(async user => {
 			setUser(user)
-			navigate('/');
 			user.driver = await findDriverByUserId(user.id)
 			setUser(user)
 			setErrors(null)
+			navigate('/driver/dashboard');
 		}).catch(error => {
 			setErrors(error.message)
 		})

@@ -2,7 +2,7 @@ import React, { useContext, useEffect} from 'react'
 import { TextField, Button, Avatar } from '@mui/material';
 import { getVehicle, updateVehicle } from '../../../../models/vehicle'
 import { updateDriver } from '../../../../models/driver'
-import { UserContext, useAuthorized } from '../../../../lib/context/userContext'
+import { UserContext } from '../../../../lib/context/userContext'
 import LinearProgress from "@mui/material/LinearProgress";
 import AddressAutoComplete from '../../../../components/AddressAutoComplete';
 
@@ -26,9 +26,11 @@ const VehicleInfo = () => {
 
 	useEffect(() => {
     console.log("handle city changed called")
-			if (user.driver.city != city){
-				setUpdateMade(true)
-			}
+		if (user.driver.city != city)
+			setUpdateMade(true);
+		else
+			setUpdateMade(false);
+		
   }, [city]);
 
 
@@ -91,11 +93,10 @@ const VehicleInfo = () => {
 				//setUser(updatedAsset)
 				setDefaultValues({make:updatedAsset.make, model:updatedAsset.model, licensePlate:updatedAsset.licensePlate, year:updatedAsset.year,
            color:updatedAsset.color, numberOfPassengers:updatedAsset.numberOfPassengers, image:updatedAsset.image, description:updatedAsset.description})
-				setChangeFlags({make:false, model:false, licensePlate:false, year:false, color:false, numberOfPassengers:false, image:false, description:false})
+				setChangeFlags({make:false, model:false, licensePlate:false, year:false, color:false, numberOfPassengers:false, image:false, description:false});
+				setUpdateMade(false)
 			});
 		}
-		
-			
 	}
 
 	// TODO: save new account info in BigChain DB - referencing id (need smart contract)
@@ -126,7 +127,7 @@ const VehicleInfo = () => {
 				<TextField className="wide-view" onChange={(e) => handleChange(e, "color")} style={{marginBottom: '20px'}} label="Color" id="outlined-basic" variant="outlined" value={fields["color"]}/><br/>	
         <TextField className="wide-view" onChange={(e) => handleChange(e, "image")} style={{marginBottom: '20px'}} label="Image URL" id="outlined-basic" variant="outlined" value={fields["image"]}/><br/>	
 				{/* <TextField className="wide-view" onChange={(e) => handleChange(e, "description")} style={{marginBottom: '20px'}} label="Description" id="outlined-basic" variant="outlined" value={fields["description"]}/><br/> */}
-				<AddressAutoComplete init={user.driver.city}  label="Enter City" params={"&type=city"} setAddress={setCity}/>
+				<AddressAutoComplete init={{formatted:user.driver.city}} label="Enter City" params={"&type=city"} setAddress={(address)=>setCity(address?.formatted)}/>
 				<Button onClick={saveVehicleChanges} disabled={!updateMade} variant="contained" sx={{height:'56px', marginTop:'20px', backgroundColor:'#2196f3'}}>Save</Button>
 			</form>
 		</div>
