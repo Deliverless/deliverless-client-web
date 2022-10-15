@@ -36,6 +36,7 @@ import { CartContext } from '../lib/context/cartContext';
 import { OrderContext } from '../lib/context/orderContext';
 import { UserContext } from '../lib/context/userContext';
 import Order from '../models/order';
+import { getStripeSecret } from '../lib/web3-helper';
 
 const stripePromise = loadStripe(
   "pk_test_51LiTBOHlhPKJMrfBUI52YU8nihPcSYlBkCHy46irESS7ev1J7vBI1rHNId6wM0kpZ5OybUNUwPvnT0GdyZo9xQG500i6jQAWVw"
@@ -108,7 +109,7 @@ const Checkout = () => {
       setAddress({ ...address, country_code: e.currentTarget.value });
   };
 
-  useEffect(() => {
+  useEffect( async ()  => {
     if (activeStep === 1) {
       getAutoComplete(`${address.housenumber} ${address.street}, 
     ${address.city}, ${address.state_code} ${address.postcode}, ${address.country_code} `).then(
@@ -160,20 +161,14 @@ const Checkout = () => {
       );
       setOrder(order);
       
-      fetch("/create-payment-intent", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ total:Math.round((totalAmt + Number.EPSILON) * 100) }),
-      })
-        .then((res) => res.json())
-        .then((data) => setClientSecret(data.clientSecret));
+      let testVar = Math.round((totalAmt + Number.EPSILON) * 100).toString()
+      console.log("hello", testVar)
+
+      setClientSecret( (await getStripeSecret(testVar)).data.secret)
+
       }
   }, [activeStep]);
 
-  // useEffect(() => {
-  //   // Create PaymentIntent as soon as the page loads
-
-  // }, []);
 
   const appearance = {
     theme: "stripe",
