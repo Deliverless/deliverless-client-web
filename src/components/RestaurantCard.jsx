@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import { CardActionArea } from '@mui/material';
@@ -12,9 +13,14 @@ const RestaurantCard = ({ restauId, name, image, address}) => {
 	const imgAlt = name + "'s logo"
 	const addressDets = address.number ? `${address.number} - ${address.street}` : address.street
 	const navigate = useNavigate()
+	const dispatch = useDispatch();
 	
 	const getRestaurantMenu = async () =>{
-		navigate(`/restaurants/${name}`)
+		navigate(`/restaurants/${name}`);
+		dispatch({
+			type: "SET_RESTAURANT",
+			payload: { id: restauId },
+		});
 	}
 		return (
 			<Card sx={{ width: 345 , borderRadius: '2em', margin: '20px'}}>

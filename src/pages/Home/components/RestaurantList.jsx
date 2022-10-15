@@ -61,11 +61,11 @@ export default function RestaurantList({ history }) {
     }
   };
 
-  const initializeRestaurantList = async () => {
-    if (restaurantList.length === 0) {
-      dispatch({ type: 'GET_RESTAURANTS' });
-    }
-  };
+  // const initializeRestaurantList = async () => {
+  //   if (restaurantList.length === 0) {
+  //     dispatch({ type: 'GET_RESTAURANTS' });
+  //   }
+  // };
 
   const initializeCusinieList = () => {
     const cusinieList = DEFAULT_CUISINES.map((cuisine) => {
@@ -80,7 +80,7 @@ export default function RestaurantList({ history }) {
   };
 
   useEffect(() => {
-    initializeRestaurantList();
+    dispatch({ type: 'GET_RESTAURANTS' });
   }, [cusinieList]);
 
   useEffect(() => {
@@ -91,7 +91,6 @@ export default function RestaurantList({ history }) {
       setFilteredRestaurantList(restaurantList);
     }
   }, [restaurantList]);
-  
 
   return (
     <div className="main-content">
