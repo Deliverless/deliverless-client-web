@@ -1,0 +1,84 @@
+
+.modal {
+
+}
+
+.description {
+  font-size: 0.9rem;
+}
+
+.title-edit-icon {
+  margin: 0 0 0.4rem 0.25rem;
+  font-size: 1.5rem;
+  color: #aaa;
+  cursor: pointer;
+}
+
+.option-title-edit-icon {
+  margin: 0 0 0.4rem 0.25rem;
+  font-size: 1.25rem;
+  color: #aaa;
+  cursor: pointer;
+}
+
+.option-subtitle-edit-icon {
+  margin: 0 0 0.4rem 0.25rem;
+  font-size: 1rem;
+  color: #aaa;
+  cursor: pointer;
+}
+
+.image-container {
+  position: relative;
+  display: inline-block;
+  max-width: 450px;
+  max-height: 300px;
+}
+
+.image {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  max-width: 450px;
+  max-height: 300px;
+  object-fit: cover;
+}
+
+.image-edit-icon {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 2rem;
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 5px;
+  cursor: pointer;
+}
+
+.option-title {
+  margin: 0 0 0.4rem 0;
+  padding: 0.5rem;
+  font-size: 1.25rem;
+  font-weight: 500;
+  background-color: #eee;
+  border-radius: 0.25rem;
+}
+
+.option-subtitle {
+  margin: 0 0 0.4rem 0.5rem;
+  padding: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  background-color: rgb(245, 245, 245);
+  border-radius: 0.25rem;
+}
+
+.option-checkbox {
+  margin: 0 0 0.4rem 0.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.option-price {
+  margin-right: 0.5rem;
+}

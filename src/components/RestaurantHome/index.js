@@ -9,10 +9,11 @@ import {
 
 import RestaurantDetail from './components/RestaurantDetail';
 
-export default function RestaurantsHome({ history }) {
+export default function RestaurantsHome({ history, restaurant }) {
+  
   return (
     <Routes>
-      <Route path={"/"} element={<RestaurantDetail history={history} />} />
+      <Route path={"/"} element={<RestaurantDetail history={history} restaurant={restaurant} />} />
     </Routes>
   );
 }

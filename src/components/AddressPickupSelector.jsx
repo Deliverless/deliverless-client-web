@@ -1,12 +1,15 @@
 import * as React from 'react';
+
+import Cookies from 'universal-cookie';
+
+import LocationOnIcon from '@mui/icons-material/LocationOn';
 import Box from '@mui/material/Box';
-import Popper from '@mui/material/Popper';
 import Fade from '@mui/material/Fade';
-import Cookies from 'universal-cookie'
-import LocationOnIcon from "@mui/icons-material/LocationOn";
-import AddressAutoComplete from './AddressAutoComplete';
+import Popper from '@mui/material/Popper';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+
+import AddressAutoComplete from './AddressAutoComplete';
 
 export default function AddressPickupSelector() {
     const [open, setOpen] = React.useState(false);
@@ -16,10 +19,10 @@ export default function AddressPickupSelector() {
     let isPickupCookie = cookies.get('isPickup');
     let addressCookie = cookies.get('Address');
 
-    console.log("pickup", isPickupCookie)
+    // console.log("pickup", isPickupCookie)
     const [isPickup, setPickup] = React.useState(isPickupCookie)
 
-    console.log("address", addressCookie)
+    // console.log("address", addressCookie)
     const [address, setAddress] = React.useState();
 
     const handleClick = (event) => {
@@ -27,7 +30,7 @@ export default function AddressPickupSelector() {
         setOpen((previousOpen) => !previousOpen);
     };
     const handlePickupChange = (event) => {
-        console.log("new pickup", event.target.value)
+        // console.log("new pickup", event.target.value)
         if(event.target.value == null) return;
         setPickup(event.target.value);
         cookies.set('isPickup', event.target.value)

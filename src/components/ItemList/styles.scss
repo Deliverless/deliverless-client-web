@@ -1,0 +1,90 @@
+.add-item-container {
+  position: relative;
+  display: inline-block;
+
+  .add-item {
+    position: relative;
+    min-width: 200px;
+    max-width: 200px;
+    min-height: 150px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    background-color: #eee;
+
+    .add-item-icon {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 3rem;
+      color: #aaa;
+    }
+
+    &:hover {
+      background-color: #fff;
+
+      .add-item-icon {
+        color: #000;
+      }
+    }
+  
+  }
+
+}
+
+.add-row-container {
+  position: relative;
+
+  .add-row {
+    position: relative;
+    min-width: 200px;
+    width: 100%;
+    min-height: 75px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    background-color: #eee;
+  
+    .add-row-icon {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 3rem;
+      color: #aaa;
+    }
+
+    &:hover {
+      background-color: #fff;
+
+      .add-row-icon {
+        color: #000;
+      }
+    }
+  }
+
+}
+
+.move-cat {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+
+
+  .move-cat-icon-up, .move-cat-icon-down {
+    font-size: 3rem;
+    color: #aaa;
+    margin-top: 7rem;
+    cursor: pointer;
+
+    &:hover {
+      color: #000;
+    }
+
+  }
+
+  .move-cat-icon-down {
+    margin-top: 1rem;
+  }
+
+}
