@@ -21,8 +21,8 @@ export default function RestaurantAccount() {
 	const [restaurant, setRestaurant] = useState(null);
 	
 	const restaurantList = useSelector(state => state.restaurant.list);
-	// const selectedRestaurantId = useSelector(state => state.restaurant.selectedRestaurantId);
-	const selectedRestaurantId = "id:global:restaurant:25aaf9af-2c0b-4b17-9939-b222eaee89e5";
+	const selectedRestaurantId = useSelector(state => state.restaurant.selectedRestaurantId);
+	// const selectedRestaurantId = "id:global:restaurant:25aaf9af-2c0b-4b17-9939-b222eaee89e5";
 	const dispatch = useDispatch();
 	
 	const handleChange = (event, newValue) => {
@@ -31,14 +31,14 @@ export default function RestaurantAccount() {
 
 	const initializeRestaurant = () => {
 		if (selectedRestaurantId) {
-			console.log('initializeRestaurant', selectedRestaurantId, restaurantList);
+			// console.log('initializeRestaurant', selectedRestaurantId, restaurantList);
 			const res_restaurant = restaurantList.find(restaurant => restaurant.id === selectedRestaurantId);
 			if (res_restaurant) {
 				const new_restaurant = new Restaurant();
 				new_restaurant.initJson(res_restaurant);
 				setRestaurant(new_restaurant);
 			} else {
-				dispatch({ type: 'GET_RESTAURANT', payload: { id: selectedRestaurantId } });
+				dispatch({ type: 'GET_RESTAURANT_BY_ID', payload: { id: selectedRestaurantId } });
 			}
 		} else {
 			console.log('No restaurant selected');
