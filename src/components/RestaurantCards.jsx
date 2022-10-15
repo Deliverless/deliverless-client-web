@@ -8,7 +8,8 @@ export default function RestaurantCards({ restaurants }) {
   
   return (
     <div className="col-12">
-      <div className="restaurant-cards col-10 offset-1">
+      <div className="restaurant-cards">
+        <div className="col-10 offset-1 d-flex flex-wrap">
         {restaurants && restaurants.length > 0 ? (
           restaurants.map((restaurant) => (
             <RestaurantCard
@@ -49,6 +50,7 @@ export default function RestaurantCards({ restaurants }) {
 						</div>
             ))
         )}
+        </div>
       </div>
     </div>
 

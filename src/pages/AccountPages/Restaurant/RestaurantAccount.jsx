@@ -1,19 +1,65 @@
-import React from 'react'
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
+import React, {
+  useEffect,
+  useState,
+} from 'react';
+
+import {
+  useDispatch,
+  useSelector,
+} from 'react-redux';
+
 import Box from '@mui/material/Box';
-import Home from '../../restaurant/RestaurantHome';
-import Feedback from '../../restaurant/Feedback';
-import Payment from '../../components/AccountDashboards/Customer/UpdatePayment'
-import Menu from '../../restaurant/Menu';
-import Hours from '../../restaurant/Hours';
-import MyOrders from '../../components/AccountDashboards/Customer/MyOrders';
+import Tab from '@mui/material/Tab';
+import Tabs from '@mui/material/Tabs';
+
+import ItemList from '../../../components/ItemList/index';
+import RestaurantHome from '../../../components/RestaurantHome';
+import Restaurant from '../../../models/restaurant';
 
 export default function RestaurantAccount() {
-	const [tabValue, setTabValue] = React.useState('home');
+	const [tabValue, setTabValue] = useState('home');
+	const [restaurant, setRestaurant] = useState(null);
+	
+	const restaurantList = useSelector(state => state.restaurant.list);
+	// const selectedRestaurantId = useSelector(state => state.restaurant.selectedRestaurantId);
+	const selectedRestaurantId = "id:global:restaurant:25aaf9af-2c0b-4b17-9939-b222eaee89e5";
+	const dispatch = useDispatch();
+	
 	const handleChange = (event, newValue) => {
     setTabValue(newValue);
   };
+
+	const initializeRestaurant = () => {
+		if (selectedRestaurantId) {
+			console.log('initializeRestaurant', selectedRestaurantId, restaurantList);
+			const res_restaurant = restaurantList.find(restaurant => restaurant.id === selectedRestaurantId);
+			if (res_restaurant) {
+				const new_restaurant = new Restaurant();
+				new_restaurant.initJson(res_restaurant);
+				setRestaurant(new_restaurant);
+			} else {
+				dispatch({ type: 'GET_RESTAURANT', payload: { id: selectedRestaurantId } });
+			}
+		} else {
+			console.log('No restaurant selected');
+		}
+	};
+
+	const fetchRestaurantItems = async () => {
+    dispatch({ type: 'GET_RESTAURANT_ITEMS', payload: { id: selectedRestaurantId } });
+  };
+
+	useEffect(() => {
+		console.log('RestaurantAccount useEffect', restaurant, restaurantList);
+		if (restaurant === null || restaurant.items.length === 0) {
+			initializeRestaurant();
+		}
+	}, [restaurantList]);
+
+  useEffect(() => {
+    console.log("restaurantDetail useEffect", restaurant);
+    restaurant && restaurant.id && restaurant.items.length === 0 && fetchRestaurantItems();
+  }, [restaurant]);
 
   return (
 		<Box sx={{ width: '100%'}} className="main-content">
@@ -49,12 +95,15 @@ export default function RestaurantAccount() {
 			</Tabs>
 
 			<Box>
-				{tabValue === 'home' && <Home />}
-				{tabValue === 'feedback' && <Feedback />}
+				{tabValue === 'home' && <RestaurantHome restaurant={restaurant} />}
+				{tabValue === 'menu' && (
+					<ItemList restaurant={restaurant} edit={true} />
+				)}
+				{/* {tabValue === 'feedback' && <Feedback />}
 				{tabValue === 'payments' && <Payment />}
 				{tabValue === 'orders' && <MyOrders />}
 				{tabValue === 'menu' && <Menu />}
-				{tabValue === 'hours' && <Hours />}
+				{tabValue === 'hours' && <Hours />} */}
 
 			</Box>
 		</Box>

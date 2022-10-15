@@ -43,6 +43,11 @@ export default class Restaurant {
         this.menu = json.menu || {};
     }
 
+    async initId(id) {
+        const res = await requestRestaurantById(id);
+        this.initJson(res);
+    }
+
     getPriceIndex() {
         return getRestaurantPriceIndex(this);
     }
@@ -53,50 +58,52 @@ export default class Restaurant {
     }
 
     getRestaurantHours(military = false) {
-        const currentHour = new Date().getHours();
-        const currentMinute = new Date().getMinutes();
-        let currentUTC = new Date().getUTCHours();
-        if (currentUTC < currentHour) {
-            currentUTC += 24;
-        }
-        const hourDiff = currentUTC - currentHour;
-        const storeHoursObj = Object.keys(this.hours).map((day, index) => {
-            const dayHours = this.hours[day];
-            const openingTime = dayHours.split("-")[0];
-            const closingTime = dayHours.split("-")[1];
-            const openingHour = parseInt(openingTime.split(":")[0]);
-            const closingHour = parseInt(closingTime.split(":")[0]);
-            const openingMinute = parseInt(openingTime.split(":")[1]);
-            const closingMinute = parseInt(closingTime.split(":")[1]);
-            const duration = closingHour < openingHour ? closingHour + 24 - openingHour : closingHour - openingHour;
-            const localOpeningHour = openingHour < hourDiff ? openingHour + 24 - hourDiff : openingHour - hourDiff;
-            let localClosingHour = closingHour < hourDiff ? closingHour + 24 - hourDiff : closingHour - hourDiff;
-            localClosingHour = localClosingHour < localOpeningHour ? localClosingHour + 24 : localClosingHour; //if closing hour is before opening hour, add 24 to closing hour
-            return {
-                day: day,
-                openingTime: military ? (
-                    `${localOpeningHour < 10 ? "0" + localOpeningHour : localOpeningHour}:${openingTime.split(":")[1]}`
-                ) : (
-                    `${localOpeningHour % 12 === 0 ? 12 : localOpeningHour % 12}:${openingTime.split(":")[1]} ${localOpeningHour < 12 ? "AM" : "PM"}`
-                ),
-                closingTime: military ? (
-                    `${localClosingHour < 10 ? "0" + localClosingHour : localClosingHour}:${closingTime.split(":")[1]}`
-                ) : (
-                    `${localClosingHour % 12 === 0 ? 12 : localClosingHour % 12}:${closingTime.split(":")[1]} ${localClosingHour < 12 ? "AM" : "PM"}`
-                ),
-                duration: duration,
-                isOpen: (currentHour != localOpeningHour ? currentHour >= localOpeningHour : currentHour >= localOpeningHour && currentMinute >= openingMinute) 
-                && (currentHour != localClosingHour ? currentHour <= localClosingHour : currentHour <= localClosingHour && currentMinute <= closingMinute)
+        if (this.hours) {
+            const currentHour = new Date().getHours();
+            const currentMinute = new Date().getMinutes();
+            let currentUTC = new Date().getUTCHours();
+            if (currentUTC < currentHour) {
+                currentUTC += 24;
             }
-        });
-        return storeHoursObj;
+            const hourDiff = currentUTC - currentHour;
+            const storeHoursObj = Object.keys(this.hours).map((day, index) => {
+                const dayHours = this.hours[day];
+                const openingTime = dayHours.split("-")[0];
+                const closingTime = dayHours.split("-")[1];
+                const openingHour = parseInt(openingTime.split(":")[0]);
+                const closingHour = parseInt(closingTime.split(":")[0]);
+                const openingMinute = parseInt(openingTime.split(":")[1]);
+                const closingMinute = parseInt(closingTime.split(":")[1]);
+                const duration = closingHour < openingHour ? closingHour + 24 - openingHour : closingHour - openingHour;
+                const localOpeningHour = openingHour < hourDiff ? openingHour + 24 - hourDiff : openingHour - hourDiff;
+                let localClosingHour = closingHour < hourDiff ? closingHour + 24 - hourDiff : closingHour - hourDiff;
+                localClosingHour = localClosingHour < localOpeningHour ? localClosingHour + 24 : localClosingHour; //if closing hour is before opening hour, add 24 to closing hour
+                return {
+                    day: day,
+                    openingTime: military ? (
+                        `${localOpeningHour < 10 ? "0" + localOpeningHour : localOpeningHour}:${openingTime.split(":")[1]}`
+                    ) : (
+                        `${localOpeningHour % 12 === 0 ? 12 : localOpeningHour % 12}:${openingTime.split(":")[1]} ${localOpeningHour < 12 ? "AM" : "PM"}`
+                    ),
+                    closingTime: military ? (
+                        `${localClosingHour < 10 ? "0" + localClosingHour : localClosingHour}:${closingTime.split(":")[1]}`
+                    ) : (
+                        `${localClosingHour % 12 === 0 ? 12 : localClosingHour % 12}:${closingTime.split(":")[1]} ${localClosingHour < 12 ? "AM" : "PM"}`
+                    ),
+                    duration: duration,
+                    isOpen: (currentHour != localOpeningHour ? currentHour >= localOpeningHour : currentHour >= localOpeningHour && currentMinute >= openingMinute) 
+                    && (currentHour != localClosingHour ? currentHour <= localClosingHour : currentHour <= localClosingHour && currentMinute <= closingMinute)
+                }
+            });
+            return storeHoursObj;
+        }
+        return [];
     }
 
 }
 
-export const requestRestaurantItems = async (restaurant) => {
-    
-    const items = findObjectsByMetadata('Item', { restaurantId: restaurant.id });
+export const requestRestaurantItems = async (restaurantId) => {
+    const items = findObjectsByMetadata('Item', { restaurantId: restaurantId }, 0);
     return items;
 }
 
@@ -105,7 +112,9 @@ export const requestRestaurantByName = async (name) => {
         .catch(err => console.log(err))).data;
 }
 
+// TODO: requestRestaurant and requestRestaurantById are the same function
 export const requestRestaurantById = async (id) => {
+    console.log("requesting restaurant by id", id);
     return (await getObjectById("restaurant", id)
         .catch(err => console.log(err))).data;
 }

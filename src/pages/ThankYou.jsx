@@ -17,7 +17,7 @@ function ThankYou() {
 
   useEffect(() => {
     handleCheckout();
-    console.log(cartItems)
+    // console.log(cartItems)
   }, [])
 
 

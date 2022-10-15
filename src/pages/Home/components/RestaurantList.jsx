@@ -51,7 +51,7 @@ export default function RestaurantList({ history }) {
 
   const restaurantList = useSelector(state => state.restaurant.list);
   const dispatch = useDispatch();
- 
+
   const filterRestaurants = (cuisine) => {
     if (cuisine === 'All') {
       setFilteredRestaurantList(restaurantList);
@@ -80,7 +80,11 @@ export default function RestaurantList({ history }) {
   };
 
   useEffect(() => {
-    restaurantList.length === 0 && initializeRestaurantList();
+    initializeRestaurantList();
+  }, [cusinieList]);
+
+  useEffect(() => {
+    // restaurantList.length === 0 && initializeRestaurantList();
     if (restaurantList.length > 0) {
       initializeCusinieList();
       setRests(restaurantList);
