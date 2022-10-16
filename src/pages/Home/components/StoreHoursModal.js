@@ -5,6 +5,8 @@ import {
   Modal,
 } from 'react-bootstrap';
 
+import { Skeleton } from '@mui/material';
+
 export function StoreHoursModal({
   show,
   onHide,
@@ -25,16 +27,20 @@ export function StoreHoursModal({
       <Modal.Body>
         <div className="row">
           <div className="col-12">
-            {storeHours.map((day, index) => (
-              <div className="row" key={index}>
-                <div className="col-md-4 offset-md-1">
-                  {day.day.charAt(0).toUpperCase() + day.day.slice(1)}
+            {storeHours ? (
+              storeHours.map((day, index) => (
+                <div className="row" key={index}>
+                  <div className="col-md-4 offset-md-1">
+                    {day.day.charAt(0).toUpperCase() + day.day.slice(1)}
+                  </div>
+                  <div className="col-md-7">
+                    <p>{day.openingTime} - {day.closingTime}</p>
+                  </div>
                 </div>
-                <div className="col-md-7">
-                  <p>{day.openingTime} - {day.closingTime}</p>
-                </div>
-              </div>
-            ))}
+              ))
+            ) : (
+              <Skeleton variant="rectangular" width={210} height={118} />
+            )}
           </div>
         </div>
       </Modal.Body>

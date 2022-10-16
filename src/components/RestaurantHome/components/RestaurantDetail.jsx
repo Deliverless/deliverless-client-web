@@ -1,18 +1,10 @@
-import React, {
-  useEffect,
-  useState,
-} from 'react';
+import React, { useState } from 'react';
 
 import {
   Button,
   OverlayTrigger,
   Tooltip,
 } from 'react-bootstrap';
-import {
-  useDispatch,
-  useSelector,
-} from 'react-redux';
-import { useParams } from 'react-router-dom';
 
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import FavoriteIcon from '@mui/icons-material/Favorite';
@@ -20,46 +12,17 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import StarIcon from '@mui/icons-material/Star';
 import { Skeleton } from '@mui/material';
 
-import Restaurant from '../../../models/restaurant';
 import {
   StoreHoursModal,
 } from '../../../pages/Home/components/StoreHoursModal';
 import FoodCardModal from '../../FoodCardModal';
+import ItemList from '../../ItemList';
 
-export default function RestaurantDetail({ history }) {
+export default function RestaurantDetail({ restaurant }) {
   const [favorite, setFavorite] = useState(false);
   const [showStoreHours, setShowStoreHours] = useState(false);
-  const [restaurant, setRestaurant] = useState(new Restaurant());
-  const [itemsLoaded, setItemsLoaded] = useState(false);
   const [showFoodCardModal, setShowFoodCardModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
-
-  const { restaurantName: restaurantName } = useParams();
-  const restaurantList = useSelector(state => state.restaurant.list);
-  const dispatch = useDispatch();
-
-  const initRestaurant = async () => {
-    if (restaurantList.length > 0) {
-      let restaurant = restaurantList.find((restaurant) => restaurant.name === restaurantName);
-      console.log("restaurant", restaurant);
-      if (restaurant) {
-        let restaurantObj = new Restaurant();
-        restaurantObj.initJson(restaurant);
-        console.log("restaurantObj", restaurantObj);
-        setRestaurant(restaurantObj);
-      }
-    } else {
-      dispatch({ type: 'GET_RESTAURANTS' });
-  }};
-
-  const fetchRestaurantItems = async () => {
-    let updatedRestaurant = restaurant;
-    const res_items = await restaurant.fetchItems();
-    updatedRestaurant.items = res_items;
-    updatedRestaurant.itemIds = res_items.map(i => i.id); 
-    setRestaurant(updatedRestaurant);
-    setItemsLoaded(true);
-  };
 
   const getPriceIndexSymbol = (priceIndex) => {
     switch (priceIndex) {
@@ -88,64 +51,10 @@ export default function RestaurantDetail({ history }) {
       );
   };
 
-  const getMenuItems = () => {
-    const menuCategories = Object.values(restaurant.menu).map((categoryObj, index) => {
-      const categoryName = categoryObj.name.charAt(0).toUpperCase() + categoryObj.name.slice(1);
-      const priortizedItems = Object.values(restaurant.items).filter(item => Object.values(categoryObj.itemIds).find(itemIdObj => itemIdObj.id === item.id));
-      const nonPriortizedItems = Object.values(restaurant.items).filter(item => item.category.toLowerCase() === categoryObj.name.toLowerCase() && !Object.values(categoryObj.itemIds).find(itemIdObj => itemIdObj.id === item.id));
-      const items = [...priortizedItems, ...nonPriortizedItems];
-      return (
-        <div key={index} className="menu-category mt-4" style={{ minWidth: "400px" }}>
-          <div className="menu-category-title">
-            <span style={{ fontSize: "1.15rem", fontWeight: "bold" }}>{categoryName}</span>
-          </div>
-          <div 
-            className="menu-items col-md-12 d-flex flex-wrap"
-            
-          >
-            {items.map((item, index) => {
-              const itemImageObj = item.images.length > 0 ? item.images[0] : "https://via.placeholder.com/150"
-              return (
-                <a 
-                  key={index} 
-                  className="menu-item col-sm-6 col-md-4 col-lg-3 m-4"
-                  style={{ maxWidth: "200px", textDecoration: "none", color: "black", maxWidth: "200px", maxHeight: "150px" }} 
-                  href="#"
-                  onClick={() => {
-                    setSelectedItem(Object.assign({}, item));
-                    setShowFoodCardModal(true);
-                  }}
-                >
-                  <img src={itemImageObj.url} alt={itemImageObj.alt} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                  <div className="menu-item-title row">
-                    <span style={{ fontSize: "0.8rem" }}>{item.name}</span>
-                    <span 
-                      style={{ fontSize: "0.7rem", color: "grey" }}
-                      >
-                      {/* price fixed to 2 decimal places with $ */}
-                      ${item.price.toFixed(2)}
-                    </span>
-                  </div>
-                  <p>{item.description}</p>
-                </a>
-              );
-            })}
-          </div>
-        </div>
-      );
-    });
-    return menuCategories;
-  };
-
-  useEffect(() => {
-    !restaurant.id && initRestaurant();
-    restaurant.id && restaurant.items.length === 0 && fetchRestaurantItems();
-  }, [restaurant, restaurantList]);
-
   return (
     <div className="main-content">
       <div>
-        {restaurant.images.find(i => i.alt === "banner") != undefined ? (
+        {restaurant && restaurant.images.find(i => i.alt === "banner") != undefined ? (
           <img
             src={restaurant.images.find(i => i.alt === "banner")['url']}
             style={{ maxHeight: "150px", width: "100%", minWidth: "500px", objectFit: "cover" }} 
@@ -162,7 +71,7 @@ export default function RestaurantDetail({ history }) {
           className="col-sm-10 col-md-10 offset-sm-1 offset-md-1 pt-3"
           style={{ minWidth: "500px" }}
         >
-          {restaurant.name ? (
+          {restaurant && restaurant.name ? (
             <div className="col-md-12 m-0 row">
               <h3 className="col-md-10 p-0" style={{ fontWeight: "bold" }}>{restaurant.name}</h3>
               <div className="col-md-2 p-0 d-flex justify-content-end">
@@ -228,7 +137,7 @@ export default function RestaurantDetail({ history }) {
             </div>
           )}
           
-          {restaurant.id ? (
+          {restaurant && restaurant.id ? (
             <div className="subtitle" col>
               <StarIcon className="star-icon" style={{ fontSize: "1.5rem", marginRight: "5px" }} />
               {restaurant.rating ? `${restaurant.rating} (${restaurant.reviews.length} ratings)` : "No ratings"}
@@ -247,7 +156,7 @@ export default function RestaurantDetail({ history }) {
             <Skeleton variant="text" sx={{ fontSize: "1rem", width: "50%", marginTop: "10px" }} />
           )}
 
-          {restaurant.id ? (
+          {restaurant && restaurant.id ? (
             
                 <div 
                   col className="subtitle" 
@@ -265,7 +174,7 @@ export default function RestaurantDetail({ history }) {
             <Skeleton variant="text" sx={{ fontSize: "0.75rem", width: "40%", marginTop: "10px" }} />
           )}
           
-          {restaurant.id ? (
+          {restaurant && restaurant.id ? (
             <div className="col-md-12 m-0 row">
               <div className="col-md-8 p-0">
                 <div
@@ -299,14 +208,8 @@ export default function RestaurantDetail({ history }) {
           )}
           {/* restaurant && restaurant.items.length > 0 ? ( */}
           <div>
-            {restaurant && itemsLoaded > 0 ? (
-              <div className="row">
-                <div className="col-md-12">
-                  <div className="row">
-                    {getMenuItems()}
-                  </div>
-                </div>
-              </div>
+            {restaurant && restaurant.items.length > 0 ? (
+              <ItemList restaurant={restaurant} inheritWidth={true} />
             ) : (
               <div className="row">
                 <div className="col-md-12 pt-5">
@@ -376,15 +279,17 @@ export default function RestaurantDetail({ history }) {
           <StoreHoursModal
             show={showStoreHours}
             onHide={() => setShowStoreHours(false)}
-            storeHours={restaurant.getRestaurantHours()}
+            storeHours={restaurant ? restaurant.getRestaurantHours() : null}
           />
-
-          <FoodCardModal
-            show={showFoodCardModal}
-            onHide={() => setShowFoodCardModal(false)}
-            restaurantId={restaurant.id}
-            food={Object.assign({}, selectedItem)}
-          />
+          
+          {restaurant ? (
+            <FoodCardModal
+              show={showFoodCardModal}
+              onHide={() => setShowFoodCardModal(false)}
+              restaurantId={restaurant.id}
+              food={Object.assign({}, selectedItem)}
+            />
+          ) : null}
           
           {/* <Carousel>
             <Carousel.Item>
