@@ -51,7 +51,7 @@ export default function RestaurantList({ history }) {
 
   const restaurantList = useSelector(state => state.restaurant.list);
   const dispatch = useDispatch();
- 
+
   const filterRestaurants = (cuisine) => {
     if (cuisine === 'All') {
       setFilteredRestaurantList(restaurantList);
@@ -61,11 +61,11 @@ export default function RestaurantList({ history }) {
     }
   };
 
-  const initializeRestaurantList = async () => {
-    if (restaurantList.length === 0) {
-      dispatch({ type: 'GET_RESTAURANTS' });
-    }
-  };
+  // const initializeRestaurantList = async () => {
+  //   if (restaurantList.length === 0) {
+  //     dispatch({ type: 'GET_RESTAURANTS' });
+  //   }
+  // };
 
   const initializeCusinieList = () => {
     const cusinieList = DEFAULT_CUISINES.map((cuisine) => {
@@ -80,14 +80,17 @@ export default function RestaurantList({ history }) {
   };
 
   useEffect(() => {
-    restaurantList.length === 0 && initializeRestaurantList();
+    dispatch({ type: 'GET_RESTAURANTS' });
+  }, [cusinieList]);
+
+  useEffect(() => {
+    // restaurantList.length === 0 && initializeRestaurantList();
     if (restaurantList.length > 0) {
       initializeCusinieList();
       setRests(restaurantList);
       setFilteredRestaurantList(restaurantList);
     }
   }, [restaurantList]);
-  
 
   return (
     <div className="main-content">
