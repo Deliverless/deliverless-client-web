@@ -157,6 +157,7 @@ export default function RestaurantSignUp() {
   const completeRestSignup = async () => {
     const user = await createUser(newUser)
     console.log(user)
+    newRest.userId = user.id
     const rest = await signUpRestaurant(newRest)
     console.log(rest)
   }

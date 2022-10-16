@@ -14,6 +14,7 @@ import Home from '../pages/Home';
 import Landing from '../pages/Landing';
 import Login from '../pages/Login/CustomerLogin';
 import DriverLogin from '../pages/Login/DriverLogin';
+import RestaurantLogin from '../pages/Login/RestaurantLogin';
 import NotFound from '../pages/NotFound';
 // import RestaurantHome from '../pages/restaurant/RestaurantHome';
 import CustomerSignUp from '../pages/Signup/CustomerSignUp';
@@ -41,6 +42,7 @@ const routes = [
   // { path: "/restaurant/home", element: <RestaurantHome /> },
   { path: "/restaurant/dashboard", element: <RequiredPrivilege privilege="restaurant" redirectTo="/"><RestaurantDashboard /></RequiredPrivilege> },
   { path: "/restaurant/signup", element: <RestaurantSignUp /> },
+  { path: "/restaurant/login", element: <RestaurantLogin /> },
   { path: "/driver/profile", element: <DriverProfile /> },
   { path: "/driver/dashboard", element: <RequiredPrivilege privilege="driver" redirectTo="/"><DriverDashboard /></RequiredPrivilege> },
   { path: "/driver/signup", element: <DriverSignUp /> },
@@ -62,7 +64,7 @@ const appBarLinks = [
   { title: 'Login', icon: 'sign-in', url: "/login", isAuth: false },
   { title: 'Sign Up', icon: 'user-plus', url: "/signup", isAuth: false },
   { title: 'Login Driver', icon: 'car', url: "/driver/login", isAuth: false },
-  { title: 'Add your Restaurant', icon: 'cutlery', url: "/restaurant/signup", isAuth: false },
+  { title: 'Login Restaurant', icon: 'cutlery', url: "/restaurant/login", isAuth: false },
   { title: 'Settings', icon: 'cog', url: "/settings", role: 'admin', isAuth: true }
 ];
 
