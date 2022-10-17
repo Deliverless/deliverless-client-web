@@ -134,6 +134,7 @@ const requestResponse = async (requestId) => {
         if (typeof parsedResponse.data === 'string') {
             parsedResponse.data = JSON.parse(parsedResponse.data);
         }
+        console.log("resp: ", parsedResponse)
         return parsedResponse;
     } else {
         return null;
