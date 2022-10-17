@@ -17,19 +17,40 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
-import { updateOrder } from '../../../../models/order';
+import { delegateOrder, getOrder, updateOrder } from '../../../../models/order';
 
 function Row(props) {
-  const { row, status } = props;
+  const { row, status, setOrders } = props;
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
 
-  async function makeOrderReady(orderId) {
+  async function makeOrderReady(order) {
+
     setLoading(true)
-    await updateOrder(orderId, {
-      status: "FoodReady"
+
+    if (!order.driverId || order.driverId == "")
+    {
+      const {status, driverId} = await delegateOrder(row)
+      order.driverId = driverId
+      console.log('status: ', status)
+      if (!status) return setLoading(false)
     } 
+    console.log('after the if')
+    console.log(order.id)
+    await updateOrder(order.id, 
+      {
+      status: "FoodReady"
+      }
+       
     )
+    console.log('jk: ', setOrders)  
+
+    setOrders((_orders) => 
+    {
+      _orders.find((o) => o.id == order.id).status = "FoodReady";
+      return _orders
+    } )
+    console.log(await getOrder(order.id))
     setLoading(false)
   }
 
@@ -56,9 +77,9 @@ function Row(props) {
       <TableCell component="th" scope="row">{row.restaurant?.name ?? "Name not found"}</TableCell>
       <TableCell align="right">{row.items.length}</TableCell>
       {/* <TableCell align="right">{Math.round(row.driverFee * 100) / 100}</TableCell> */}
-      <TableCell align="right">{Math.round((row.tip * row.subtotal + Number.EPSILON) * 100) / 100}</TableCell>
+      <TableCell align="right">{Math.round((row.tax + row.subtotal + Number.EPSILON) * 100) / 100}</TableCell>
       <TableCell align="right">{row.timestamp}</TableCell>
-      {status == "Pending" && <TableCell align="right"><Button onClick={() => makeOrderReady(row.id)}  variant="contained">Food Ready</Button></TableCell>}
+      {status == "Pending" && <TableCell align="right"><Button onClick={() => makeOrderReady(row)}  variant="contained">Food Ready</Button></TableCell>}
     </TableRow>
     <TableRow>
       <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
@@ -127,7 +148,7 @@ function Row(props) {
   );
 }
 
-export default function OrderTable({orders: rows, status}) {
+export default function OrderTable({orders: rows, status, setOrders}) {
   console.log("rows", rows)
   return (
     <TableContainer component={Paper}>
@@ -137,15 +158,14 @@ export default function OrderTable({orders: rows, status}) {
             <TableCell />
             <TableCell>Restaurant</TableCell>
             <TableCell align="right"># Of Items</TableCell>
-            {/* <TableCell align="right">Delivery Fee ($)</TableCell>
-            <TableCell align="right">Tip ($)</TableCell> */}
+            <TableCell align="right">Total ($)</TableCell>
             <TableCell align="center">Time Placed</TableCell>
             {status=="Pending" && <TableCell align="center">Actions</TableCell>}
           </TableRow>
         </TableHead>
         <TableBody>
           {rows?.map((row) => (
-            <Row key={row.id} row={row} status={status} />
+            <Row key={row.id} row={row} status={status} setOrders={setOrders}  />
           ))}
         </TableBody>
       </Table>

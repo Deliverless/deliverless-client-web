@@ -41,7 +41,7 @@ export default function RestaurantDashboard() {
 
   const getOrders = async () => {
     
-    let availOrders = (await findObjectsByMetadata("order", {restaurantId: user.restaurant.id}, 30)).data;
+    let availOrders = (await findObjectsByMetadata("order", {restaurantId: user.restaurant.id}, 35)).data;
     console.log("ords", availOrders);
 
     setOrderNum((availOrders.filter(o=>o.status == "FoodReady")).length);
@@ -104,9 +104,9 @@ export default function RestaurantDashboard() {
 				</Tabs>
 
         <Box className="center-container" sx={{ width: '100%'}}>
-					{tabValue==='pending' && <OrderTable orders={orders} status="Pending"/>}
-					{tabValue==='foodready' && <OrderTable orders={orders} status="FoodReady"/>}
-          {tabValue==='cancelled' && <OrderTable orders={orders} status="Cancelled"/>}
+					{tabValue==='pending' && <OrderTable orders={orders} setOrders={setOrders} status="Pending"/>}
+					{tabValue==='foodready' && <OrderTable orders={orders} setOrders={setOrders} status="FoodReady"/>}
+          {tabValue==='cancelled' && <OrderTable orders={orders} setOrders={setOrders} status="Cancelled"/>}
 				</Box>
 
       </div>
