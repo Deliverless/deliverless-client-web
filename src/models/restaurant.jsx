@@ -16,6 +16,7 @@ export default class Restaurant {
     constructor(id = "", name = "", address = "", hours = "", rating = "", reviewIds = [], image = "", itemIds = [], items = [], userId = "") {
         this.id = id;
         this.name = name;
+        this.userId = userId;
         this.address = address;
         this.hours = hours;
         this.rating = rating;
