@@ -90,5 +90,8 @@ export const delegateOrder = async (order) => {
     } while (!isValidDriver && tries > 0);
     //assign order to driver
     if (isValidDriver) updateObject("order", order.id, { driverId: randomDriver.id });
-    return tries != 0;
+    return {
+        status: tries != 0,
+        driverId: randomDriver.id
+    };
 }
