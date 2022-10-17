@@ -45,9 +45,13 @@ const CartContextProvider = ({ children }) => {
         let updatedUser = { ...user };
         updatedUser.customer.orderIds = [...prevOrderIds, newOrder.id]
         setUser(updatedUser)
-        await delegateOrder(newOrder);
-        clearOrder()
-        dispatch({ type: 'CHECKOUT' })
+        let status = (await delegateOrder(newOrder));
+        if (status) {
+            clearOrder()
+            dispatch({ type: 'CHECKOUT' })
+            return true;
+        }
+        return false;
     }
 
     const contextValues = {

@@ -58,28 +58,37 @@ export const createOrder = async (order, customer) => {
 export const delegateOrder = async (order) => {
     let { address } = order;
     //get all online drivers
-    let drivers = await findObjectsByMetadata("driver", { online: true }, 0);
     //find drivers that are in the same city as the order destination address
-    let sameCityDrivers = drivers?.filter((d) => {
-        return address.local?.includes(d.city);
-    })
+    let [drivers, allPendingOrders] = await Promise.all([
+        findObjectsByMetadata("driver", { online: true }, 0),
+        findObjectsByMetadata("order", { status: 'Pending' }, 0)
+    ]);
+    drivers = (await drivers).data;
+    allPendingOrders = (await allPendingOrders).data;
+
+    let sameCityDrivers = drivers?.filter((d) => d.city.split(", ")).some((w) => address.formatted?.includes(w));
     //if there are any drivers nearby, pick from them, otherwise pick from all
-    if (sameCityDrivers?.length >= 0) drivers = sameCityDrivers;
+    if (sameCityDrivers?.length > 0) drivers = sameCityDrivers;
 
     let isValidDriver = false, randomDriver;
-    let allPendingOrders = await findObjectsByMetadata("order", { status: 'Pending' }, 0);
-    if(!drivers || !allPendingOrders) return false;
+
+    if (!drivers || !allPendingOrders || drivers.length === 0) {
+        console.log("returning false", drivers)
+        return false;
+    }
     console.log("Drivers to pick from", drivers);
     console.log("Orders to check", allPendingOrders);
+    let tries = 10;
     do {
+        tries--;
         //pick random driver from drivers
         randomDriver = drivers[Math.floor((Math.random() * drivers.length))]
         //fetch all pending orders, if any contain the selected randomDriver id, the driver already has an order pending and it thereby invalid, loop, try again.
         isValidDriver = !allPendingOrders.some((o) => {
             return o.driverId == randomDriver.id;
         });
-    } while (!isValidDriver);
+    } while (!isValidDriver && tries > 0);
     //assign order to driver
-    updateObject("order", order.id, { driverId: randomDriver.id });
-    return true;
+    if (isValidDriver) updateObject("order", order.id, { driverId: randomDriver.id });
+    return tries != 0;
 }

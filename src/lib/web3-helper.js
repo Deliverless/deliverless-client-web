@@ -14,6 +14,7 @@ const keypair = new bigchaindb.driver.Ed25519Keypair(seed);
 
 // *** REFERENCE objects dir: deliverless-chainlink/adapters/bigchaindb-utils/models ***
 
+const web3socket = new Web3(new Web3.providers.WebsocketProvider('ws://24.150.93.243:3334'));
 
 // create a new user using web3
 const web3 = new Web3('http://24.150.93.243:8546');
@@ -32,7 +33,6 @@ const contractBigchaindb = new web3.eth.Contract(abi.abiBigchaindb, address);
 //     console.log(event)
 // })
 
-const web3socket = new Web3(new Web3.providers.WebsocketProvider('ws://24.150.93.243:3334'));
 
 // unsubscribes the subscription
 // subscription.unsubscribe((error, success) => {
@@ -76,7 +76,7 @@ export const getObjectById = async (modelName, assetId) => {
 // find object(s) in the database by metadata (limited to 1 for now)
 export const findObjectsByMetadata = async (modelName, metadataJson, limit = 1) => {
     // call(send) function within smart contract
-    const receipt = await contractBigchaindb.methods.requestFindObject(modelName, JSON.stringify(metadataJson), limit, "").send({ from: account.address, gas: 3000000 });
+    const receipt = await contractBigchaindb.methods.requestFindObject(modelName, JSON.stringify(metadataJson), limit, "").send({ from: account.address, gas: 3000000, gasPrice: 61011523 });
     // requestId from Chainlink
     const requestId = getRequestId(receipt);
     console.log('requestId', requestId);
@@ -123,23 +123,27 @@ const requestResponse = async (requestId) => {
             maxAttempts: 5,
             onTimeout: false
         },
-        filter: { requestId: String(requestId) }
+        topics: [null, String(requestId)]
     }
-    return await new Promise((resolve, reject) => {
-        const subscribe = web3socket.eth.subscribe('logs', options, async (error, result) => {
+    let subscribe;
+    let resp = await new Promise((resolve, reject) => {
+        subscribe = web3socket.eth.subscribe('logs', options, async (error, result) => {
             if (error) return console.error(error);
         })
-        subscribe.on("data", (event)=>{
-            const data =  Buffer.from(event?.data.slice(2), 'hex').toString('ascii')
+        subscribe.on("data", async (event) => {
+            const data = Buffer.from(event?.data.slice(2), 'hex').toString('ascii')
             const extractText = data.match(/{"jobRunID":.*}/g);
             const parsedResponse = JSON.parse(extractText);
-            if (typeof parsedResponse.data === 'string') {
+            if (!parsedResponse) return;
+            if ((typeof parsedResponse.data) === 'string') {
                 parsedResponse.data = JSON.parse(parsedResponse.data);
             }
-            console.log(parsedResponse)
-            resolve(parsedResponse);
+            console.log("PARSED RESPONSE", parsedResponse.data)
+            return resolve(parsedResponse);
         })
     });
+    subscribe.unsubscribe();
+    return resp;
 }
 
 // *** Stripe ***
