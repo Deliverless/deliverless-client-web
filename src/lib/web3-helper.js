@@ -25,21 +25,6 @@ const address = process.env.REACT_APP_CONTRACTS_BIGCHAINDB_ADDRESS
 // initialize the contract
 const contractBigchaindb = new web3.eth.Contract(abi.abiBigchaindb, address);
 
-//WEBSOCKETS
-// const web3socket = new Web3(new Web3.providers.WebsocketProvider('ws://24.150.93.243:3334'));
-// const socketInstance = new web3socket.eth.Contract(abi.abiBigchaindb, address)
-// socketInstance.events.transfer({ fromBlock:0}, (error, event)=>{
-//     if(error) console.log(error)
-//     console.log(event)
-// })
-
-
-// unsubscribes the subscription
-// subscription.unsubscribe((error, success) => {
-//     if (error) return console.error(error);
-
-//     console.log('Successfully unsubscribed!');
-// });
 
 export const getBalance = async () => {
     // get the balance of the account 
