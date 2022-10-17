@@ -54,3 +54,41 @@ export const createOrder = async (order, customer) => {
     console.log("returning", returnobj);
     return returnobj
 }
+
+export const delegateOrder = async (order) => {
+    let { address } = order;
+    //get all online drivers
+    //find drivers that are in the same city as the order destination address
+    let [drivers, allPendingOrders] = await Promise.all([
+        findObjectsByMetadata("driver", { online: true }, 0),
+        findObjectsByMetadata("order", { status: 'Pending' }, 0)
+    ]);
+    drivers = (await drivers).data;
+    allPendingOrders = (await allPendingOrders).data;
+
+    let sameCityDrivers = drivers?.filter((d) => d.city.split(", ")).some((w) => address.formatted?.includes(w));
+    //if there are any drivers nearby, pick from them, otherwise pick from all
+    if (sameCityDrivers?.length > 0) drivers = sameCityDrivers;
+
+    let isValidDriver = false, randomDriver;
+
+    if (!drivers || !allPendingOrders || drivers.length === 0) {
+        console.log("returning false", drivers)
+        return false;
+    }
+    console.log("Drivers to pick from", drivers);
+    console.log("Orders to check", allPendingOrders);
+    let tries = 10;
+    do {
+        tries--;
+        //pick random driver from drivers
+        randomDriver = drivers[Math.floor((Math.random() * drivers.length))]
+        //fetch all pending orders, if any contain the selected randomDriver id, the driver already has an order pending and it thereby invalid, loop, try again.
+        isValidDriver = !allPendingOrders.some((o) => {
+            return o.driverId == randomDriver.id;
+        });
+    } while (!isValidDriver && tries > 0);
+    //assign order to driver
+    if (isValidDriver) updateObject("order", order.id, { driverId: randomDriver.id });
+    return tries != 0;
+}

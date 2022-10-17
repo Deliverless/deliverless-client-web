@@ -14,6 +14,7 @@ const keypair = new bigchaindb.driver.Ed25519Keypair(seed);
 
 // *** REFERENCE objects dir: deliverless-chainlink/adapters/bigchaindb-utils/models ***
 
+const web3socket = new Web3(new Web3.providers.WebsocketProvider('ws://24.150.93.243:3334'));
 
 // create a new user using web3
 const web3 = new Web3('http://24.150.93.243:8546');
@@ -23,6 +24,22 @@ const account = web3.eth.accounts.privateKeyToAccount(process.env.REACT_APP_WALL
 const address = process.env.REACT_APP_CONTRACTS_BIGCHAINDB_ADDRESS
 // initialize the contract
 const contractBigchaindb = new web3.eth.Contract(abi.abiBigchaindb, address);
+
+//WEBSOCKETS
+// const web3socket = new Web3(new Web3.providers.WebsocketProvider('ws://24.150.93.243:3334'));
+// const socketInstance = new web3socket.eth.Contract(abi.abiBigchaindb, address)
+// socketInstance.events.transfer({ fromBlock:0}, (error, event)=>{
+//     if(error) console.log(error)
+//     console.log(event)
+// })
+
+
+// unsubscribes the subscription
+// subscription.unsubscribe((error, success) => {
+//     if (error) return console.error(error);
+
+//     console.log('Successfully unsubscribed!');
+// });
 
 export const getBalance = async () => {
     // get the balance of the account 
@@ -59,7 +76,7 @@ export const getObjectById = async (modelName, assetId) => {
 // find object(s) in the database by metadata (limited to 1 for now)
 export const findObjectsByMetadata = async (modelName, metadataJson, limit = 1) => {
     // call(send) function within smart contract
-    const receipt = await contractBigchaindb.methods.requestFindObject(modelName, JSON.stringify(metadataJson), limit, "").send({ from: account.address, gas: 3000000 });
+    const receipt = await contractBigchaindb.methods.requestFindObject(modelName, JSON.stringify(metadataJson), limit, "").send({ from: account.address, gas: 3000000, gasPrice: 61011523 });
     // requestId from Chainlink
     const requestId = getRequestId(receipt);
     console.log('requestId', requestId);
@@ -99,46 +116,34 @@ const getRequestId = (receipt) => {
 }
 
 const requestResponse = async (requestId) => {
-    const operatorAddress = process.env.REACT_APP_CONTRACTS_OPERATOR_ADDRESS
-    const operatorContract = new web3.eth.Contract(abi.abiOperator, operatorAddress);
-    const events = await new Promise((resolve, reject) => {
-        setTimeout(async () => {
-            for (let i = 0; i < 60 / 0.3; i++) {
-                const results = await operatorContract.getPastEvents(
-                    'DeliverlessResponse',
-                    {
-                        fromBlock: 0,
-                        filter: { requestId: String(requestId) }
-                    }
-                );
-                console.log("results", results);
-                if (results.length > 0) {
-                    resolve(results);
-                    break;
-                }
-                await new Promise((resolve, reject) => {
-                    setTimeout(() => {
-                        resolve();
-                    }, 300);
-                });
-            }
-            reject();
-        }, 1000);
-    });
-
-    if (events.length > 0) {
-        const event = events.find(e => e.returnValues.requestId === requestId);
-        const data = Buffer.from(event.returnValues.data.slice(2), 'hex').toString('ascii');
-        const extractText = data.match(/{"jobRunID":.*}/g);
-        const parsedResponse = JSON.parse(extractText);
-        if (typeof parsedResponse.data === 'string') {
-            parsedResponse.data = JSON.parse(parsedResponse.data);
-        }
-        console.log("resp: ", parsedResponse)
-        return parsedResponse;
-    } else {
-        return null;
+    var options = {
+        reconnect: {
+            auto: true,
+            delay: 5000, // ms
+            maxAttempts: 5,
+            onTimeout: false
+        },
+        topics: [null, String(requestId)]
     }
+    let subscribe;
+    let resp = await new Promise((resolve, reject) => {
+        subscribe = web3socket.eth.subscribe('logs', options, async (error, result) => {
+            if (error) return console.error(error);
+        })
+        subscribe.on("data", async (event) => {
+            const data = Buffer.from(event?.data.slice(2), 'hex').toString('ascii')
+            const extractText = data.match(/{"jobRunID":.*}/g);
+            const parsedResponse = JSON.parse(extractText);
+            if (!parsedResponse) return;
+            if ((typeof parsedResponse.data) === 'string') {
+                parsedResponse.data = JSON.parse(parsedResponse.data);
+            }
+            console.log("PARSED RESPONSE", parsedResponse.data)
+            return resolve(parsedResponse);
+        })
+    });
+    subscribe.unsubscribe();
+    return resp;
 }
 
 // *** Stripe ***
@@ -149,15 +154,15 @@ const addressStripe = process.env.REACT_APP_CONTRACTS_STRIPE_ADDRESS
 const contractStripe = new web3.eth.Contract(abi.abiStripe, addressStripe)
 
 export const getStripeSecret = async (total) => {
-  // call(send) function within smart contract
-  console.log('getStripeSecret', total)
-  const receipt = await contractStripe.methods
-    .requestSecretToken(total)
-    .send({ from: account.address, gas: 3000000 });
-  // requestId from Chainlink
-  const requestId = getRequestId(receipt);
-  console.log("getStripeSecret requestId", requestId);
-  // return response from Chainlink
-  const response = await requestResponse(requestId);
-  return response;
+    // call(send) function within smart contract
+    console.log('getStripeSecret', total)
+    const receipt = await contractStripe.methods
+        .requestSecretToken(total)
+        .send({ from: account.address, gas: 3000000 });
+    // requestId from Chainlink
+    const requestId = getRequestId(receipt);
+    console.log("getStripeSecret requestId", requestId);
+    // return response from Chainlink
+    const response = await requestResponse(requestId);
+    return response;
 };

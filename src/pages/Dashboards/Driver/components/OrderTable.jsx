@@ -22,11 +22,9 @@ function Row(props) {
   const { row, status } = props;
   const [open, setOpen] = React.useState(false);
 
-  console.log('row', row);
-
   return (
     <>
-    { row.status == status && row.restaurant && 
+    { row.status == status && 
     <React.Fragment>
     <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
       <TableCell>
@@ -38,7 +36,7 @@ function Row(props) {
           {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
         </IconButton>
       </TableCell>
-      <TableCell component="th" scope="row">{row.restaurant.name}</TableCell>
+      <TableCell component="th" scope="row">{row.restaurant?.name ?? "Name not found"}</TableCell>
       <TableCell align="right">{row.items.length}</TableCell>
       <TableCell align="right">{Math.round(row.driverFee * 100) / 100}</TableCell>
       <TableCell align="right">{Math.round((row.tip * row.subtotal + Number.EPSILON) * 100) / 100}</TableCell>
@@ -69,7 +67,7 @@ function Row(props) {
                 {row.items.map((item) => (
                   <TableRow key={item.id}>
                     <TableCell component="th" scope="row">
-                      {item.title}
+                      {item.name}
                     </TableCell>
                     <TableCell>{item.quantity}</TableCell>
                     <TableCell align="right">{item.price}</TableCell>
@@ -113,6 +111,7 @@ function Row(props) {
 }
 
 export default function OrderTable({orders: rows, status}) {
+  console.log("rows", rows)
   return (
     <TableContainer component={Paper}>
       <Table aria-label="collapsible table">

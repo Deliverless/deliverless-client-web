@@ -1,37 +1,15 @@
 import React from "react";
 import { AreaChart, Area, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
-export default function RevenueChart() {
-  const data = [
-    {
-      "name": "January",
-      "Total": 2400,
-    },
-    {
-      "name": "February",
-      "Total": 1398,
-    },
-    {
-      "name": "March",
-      "Total": 1800,
-    },
-    {
-      "name": "April",
-      "Total": 3908,
-    },
-    {
-      "name": "May",
-      "Total": 4800,
-    },
-    {
-      "name": "June",
-      "Total": 3800,
-    },
-    {
-      "name": "July",
-      "Total": 4300,
-    }
-  ]
+export default function RevenueChart({orders}) {
+
+  const data = orders.map((o)=>{
+    return ({
+      name: new Date(o.timestamp).toLocaleString('default', {month: 'long'}),
+      Total: (o.tip * o.subtotal) + o.driverFee
+    })
+  })
+  console.log("data", data)
   
   return (
     <>
