@@ -109,7 +109,7 @@ export default function TrackOrder() {
     <>
       <div style={{ height: "60px" }}>
         <p>Status: {status}</p>
-        { status == "Pending" && <Button onClick={()=> setStatusHandler("OnRoute")} variant="contained">OnRoute</Button> } 
+        { (status == "FoodReady" || status == "Pending") && <Button onClick={()=> setStatusHandler("OnRoute")} variant="contained">OnRoute</Button> } 
         { status == "OnRoute" && <Button onClick={()=> setStatusHandler("Delivered")} variant="contained">Delivered</Button> } 
         { status == "Delivered" && <p>Order Completed</p>}
       </div>

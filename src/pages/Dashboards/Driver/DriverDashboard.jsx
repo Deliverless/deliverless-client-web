@@ -21,7 +21,7 @@ export default function DriverDashboard() {
   const { user, setUser } = useContext(UserContext);
   const [ orders, setOrders ] = useState([]);
 	const { rests, setRests } = useContext(RestContext);
-  const [tabValue, setValue] = React.useState('pending');
+  const [tabValue, setValue] = React.useState('foodready');
   const [orderNum, setOrderNum] = useState(0);
   const [totalRev, setTotalRev] = useState(0);
 
@@ -81,27 +81,42 @@ export default function DriverDashboard() {
         </div>
       </div>
       <div className="row">
-      <Tabs
-					variant="fullWidth"
-					value={tabValue}
-					onChange={handleTabChange}
-					textColor="primary"
-					indicatorColor="primary"
-					aria-label="primary customer account tabs">
-					<Tab sx={{'&.Mui-selected': {outline: 'none',}}} 
-								value="pending"label="Ready to Deliver" />
-					<Tab sx={{'&.Mui-selected': {outline: 'none',}}} 
-								value="delivered" label="Delivered Orders" />
-          <Tab sx={{'&.Mui-selected': {outline: 'none',}}} 
-                value="cancelled" label="Cancelled Orders" />
-				</Tabs>
+        <Tabs
+          variant="fullWidth"
+          value={tabValue}
+          onChange={handleTabChange}
+          textColor="primary"
+          indicatorColor="primary"
+          aria-label="primary customer account tabs"
+        >
+          <Tab
+            sx={{ "&.Mui-selected": { outline: "none" } }}
+            value="foodready"
+            label="Ready to Deliver"
+          />
+          <Tab
+            sx={{ "&.Mui-selected": { outline: "none" } }}
+            value="delivered"
+            label="Delivered Orders"
+          />
+          <Tab
+            sx={{ "&.Mui-selected": { outline: "none" } }}
+            value="cancelled"
+            label="Cancelled Orders"
+          />
+        </Tabs>
 
-        <Box className="center-container" sx={{ width: '100%'}}>
-					{tabValue==='pending' && <OrderTable orders={orders} status="Pending"/>}
-					{tabValue==='delivered' && <OrderTable orders={orders} status="Delivered"/>}
-          {tabValue==='cancelled' && <OrderTable orders={orders} status="Cancelled"/>}
-				</Box>
-
+        <Box className="center-container" sx={{ width: "100%" }}>
+          {tabValue === "foodready" && (
+            <OrderTable orders={orders} status="FoodReady" />
+          )}
+          {tabValue === "delivered" && (
+            <OrderTable orders={orders} status="Delivered" />
+          )}
+          {tabValue === "cancelled" && (
+            <OrderTable orders={orders} status="Cancelled" />
+          )}
+        </Box>
       </div>
     </div>
   )
