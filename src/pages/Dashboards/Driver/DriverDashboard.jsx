@@ -59,11 +59,25 @@ export default function DriverDashboard() {
     <div className="main-content container">
       <h1 className="row m-0">Hi {user.firstName} </h1>
       <div className="row">
-        <div className="col d-block" style={{overflowX: 'scroll', overflowY: 'auto', whiteSpace: 'nowrap', height: '183px'}}>
-            <span className="d-lg-none"><OnlineStatusToggle height={142}/></span>
-            <DataCard title="TOTAL REVENUE" mainValue={`$${totalRev}`} CTA="See All Transactions" />
-            <DataCard title="ORDERS" mainValue={orderNum} CTA="See All Orders" />
-            {/* <DataCard title="AVG RATING" mainValue="4.43 &#9733;" CTA="See All Reviews" /> */}
+        <div
+          className="col d-block"
+          style={{
+            overflowX: "scroll",
+            overflowY: "auto",
+            whiteSpace: "nowrap",
+            height: "183px",
+          }}
+        >
+          <span className="d-lg-none">
+            <OnlineStatusToggle height={142} />
+          </span>
+          <DataCard
+            title="TOTAL REVENUE"
+            mainValue={`$${totalRev}`}
+            CTA="See All Transactions"
+          />
+          <DataCard title="ORDERS" mainValue={orderNum} CTA="See All Orders" />
+          {/* <DataCard title="AVG RATING" mainValue="4.43 &#9733;" CTA="See All Reviews" /> */}
         </div>
         <div className="col-lg-3 col-xl-4 d-none d-lg-inline-block">
           <OnlineStatusToggle />
@@ -71,38 +85,61 @@ export default function DriverDashboard() {
       </div>
       <div className="row">
         <div className="col">
-            <div style={{maxWidth:'500px'}}>
-              <h4>Revenue (all time)</h4>
-              <RevenueChart orders={orders.filter(o=>o.status =="Delivered")}/>
-            </div>
+          <div style={{ maxWidth: "500px" }}>
+            <h4>Revenue (all time)</h4>
+            <RevenueChart
+              data={orders.map((o) => {
+                return {
+                  name: new Date(o.timestamp).toLocaleString("default", {
+                    month: "long",
+                  }),
+                  Total: o.tip * o.subtotal + o.driverFee,
+                };
+              })}
+              orders={orders.filter((o) => o.status == "Delivered")}
+            />
+          </div>
         </div>
-        <div className="col">
-          
-        </div>
+        <div className="col"></div>
       </div>
       <div className="row">
-      <Tabs
-					variant="fullWidth"
-					value={tabValue}
-					onChange={handleTabChange}
-					textColor="primary"
-					indicatorColor="primary"
-					aria-label="primary customer account tabs">
-					<Tab sx={{'&.Mui-selected': {outline: 'none',}}} 
-								value="pending"label="Ready to Deliver" />
-					<Tab sx={{'&.Mui-selected': {outline: 'none',}}} 
-								value="delivered" label="Delivered Orders" />
-          <Tab sx={{'&.Mui-selected': {outline: 'none',}}} 
-                value="cancelled" label="Cancelled Orders" />
-				</Tabs>
+        <Tabs
+          variant="fullWidth"
+          value={tabValue}
+          onChange={handleTabChange}
+          textColor="primary"
+          indicatorColor="primary"
+          aria-label="primary customer account tabs"
+        >
+          <Tab
+            sx={{ "&.Mui-selected": { outline: "none" } }}
+            value="pending"
+            label="Ready to Deliver"
+          />
+          <Tab
+            sx={{ "&.Mui-selected": { outline: "none" } }}
+            value="delivered"
+            label="Delivered Orders"
+          />
+          <Tab
+            sx={{ "&.Mui-selected": { outline: "none" } }}
+            value="cancelled"
+            label="Cancelled Orders"
+          />
+        </Tabs>
 
-        <Box className="center-container" sx={{ width: '100%'}}>
-					{tabValue==='pending' && <OrderTable orders={orders} status="Pending"/>}
-					{tabValue==='delivered' && <OrderTable orders={orders} status="Delivered"/>}
-          {tabValue==='cancelled' && <OrderTable orders={orders} status="Cancelled"/>}
-				</Box>
-
+        <Box className="center-container" sx={{ width: "100%" }}>
+          {tabValue === "pending" && (
+            <OrderTable orders={orders} status="Pending" />
+          )}
+          {tabValue === "delivered" && (
+            <OrderTable orders={orders} status="Delivered" />
+          )}
+          {tabValue === "cancelled" && (
+            <OrderTable orders={orders} status="Cancelled" />
+          )}
+        </Box>
       </div>
     </div>
-  )
+  );
 }

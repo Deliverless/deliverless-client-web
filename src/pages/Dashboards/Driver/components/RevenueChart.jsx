@@ -1,15 +1,7 @@
 import React from "react";
 import { AreaChart, Area, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
-export default function RevenueChart({orders}) {
-
-  const data = orders.map((o)=>{
-    return ({
-      name: new Date(o.timestamp).toLocaleString('default', {month: 'long'}),
-      Total: (o.tip * o.subtotal) + o.driverFee
-    })
-  })
-  console.log("data", data)
+export default function RevenueChart({data}) {
   
   return (
     <>
