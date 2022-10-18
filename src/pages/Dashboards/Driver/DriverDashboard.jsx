@@ -21,7 +21,7 @@ export default function DriverDashboard() {
   const { user, setUser } = useContext(UserContext);
   const [ orders, setOrders ] = useState([]);
 	const { rests, setRests } = useContext(RestContext);
-  const [tabValue, setValue] = React.useState('pending');
+  const [tabValue, setValue] = React.useState('foodready');
   const [orderNum, setOrderNum] = useState(0);
   const [totalRev, setTotalRev] = useState(0);
 
@@ -113,7 +113,7 @@ export default function DriverDashboard() {
         >
           <Tab
             sx={{ "&.Mui-selected": { outline: "none" } }}
-            value="pending"
+            value="foodready"
             label="Ready to Deliver"
           />
           <Tab
@@ -129,8 +129,8 @@ export default function DriverDashboard() {
         </Tabs>
 
         <Box className="center-container" sx={{ width: "100%" }}>
-          {tabValue === "pending" && (
-            <OrderTable orders={orders} status="Pending" />
+          {tabValue === "foodready" && (
+            <OrderTable orders={orders} status="FoodReady" />
           )}
           {tabValue === "delivered" && (
             <OrderTable orders={orders} status="Delivered" />

@@ -107,7 +107,7 @@ const requestResponse = async (requestId) => {
             delay: 5000, // ms
             maxAttempts: 5,
             onTimeout: false
-        },
+        },//filter by requestId to only listen for your request.
         topics: [null, String(requestId)]
     }
     let subscribe;
@@ -124,7 +124,7 @@ const requestResponse = async (requestId) => {
                 parsedResponse.data = JSON.parse(parsedResponse.data);
             }
             console.log("PARSED RESPONSE", parsedResponse.data)
-            return resolve(parsedResponse);
+            return resolve(parsedResponse);//resolve after data was found.
         })
     });
     subscribe.unsubscribe();

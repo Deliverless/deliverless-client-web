@@ -41,7 +41,7 @@ function Row(props) {
       <TableCell align="right">{Math.round(row.driverFee * 100) / 100}</TableCell>
       <TableCell align="right">{Math.round((row.tip * row.subtotal + Number.EPSILON) * 100) / 100}</TableCell>
       <TableCell align="right">{row.timestamp}</TableCell>
-      {status == "Pending" && <TableCell align="right"><Button component={Link} to={`/driver/trackorder?orderId=${row.id}`} variant="contained">Select Order</Button></TableCell>}
+      {(status == "Pending" || status == "FoodReady") && <TableCell align="right"><Button component={Link} to={`/driver/trackorder?orderId=${row.id}`} variant="contained">Select Order</Button></TableCell>}
     </TableRow>
     <TableRow>
       <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
