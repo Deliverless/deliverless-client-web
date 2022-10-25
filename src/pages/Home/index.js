@@ -30,7 +30,6 @@ export default function RestaurantsHome({ history }) {
 	
 	const initializeRestaurant = () => {
 		if (selectedRestaurantId) {
-			// console.log('initializeRestaurant', selectedRestaurantId, restaurantList);
 			const res_restaurant = restaurantList.find(restaurant => restaurant.id === selectedRestaurantId);
 			if (res_restaurant) {
 				const new_restaurant = new Restaurant();
@@ -63,7 +62,7 @@ export default function RestaurantsHome({ history }) {
 	return (
 		<Suspense fallback={<LayoutSplashScreen />}>
 				<Routes>
-					<Route path={"/"} element={<RestaurantList history={history} />} />
+					<Route path={"/"} element={<RestaurantList restaurantList={restaurantList} history={history} />} />
 					<Route path={"/:restaurantName"} element={<RestaurantHome restaurant={restaurant} restaurantList={restaurantList} history={history} />} />
 				</Routes>
 		</Suspense>
