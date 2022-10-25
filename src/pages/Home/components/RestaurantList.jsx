@@ -98,7 +98,7 @@ export default function RestaurantList({ history }) {
         {cusinieList.length > 0 ? (
           cusinieList.map((cusinie) => (
           <Button
-            key={cusinie}
+            key={cusinie.value}
             // style={{ backgroundColor: cusinie.disabled ? 'grey' : 'white', color: cusinie.disabled ? 'white' : 'black', opacity: cusinie.disabled ? 0.15 : 1 }}
             className="cusinie-button col-1"
             disabled={cusinie.disabled}
