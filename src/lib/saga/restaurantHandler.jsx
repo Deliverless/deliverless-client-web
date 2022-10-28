@@ -5,6 +5,8 @@ import {
 } from 'redux-saga/effects';
 
 import {
+  createRestaurantItem,
+  deleteRestaurantItem,
   requestRestaurantById,
   requestRestaurantByName,
   requestRestaurantItems,
@@ -52,6 +54,20 @@ function* setRestaurantItem(action) {
   yield put(setIsLoading(false));
 }
 
+function* addRestaurantItemSaga(action) {
+  yield put(setIsLoading(true));
+  yield call(createRestaurantItem, action.payload.data);
+  yield call(fetchRestaurantItems, { payload: { id: action.payload.restaurantId } });
+  yield put(setIsLoading(false));
+}
+
+function* deleteRestaurantItemSaga(action) {
+  yield put(setIsLoading(true));
+  yield call(deleteRestaurantItem, action.payload.id);
+  yield call(fetchRestaurantItems, { payload: { id: action.payload.restaurantId } });
+  yield put(setIsLoading(false));
+}
+
 export function* restaurantsSaga() {
   yield takeLatest('GET_RESTAURANTS', fetchRestaurants);
   yield takeLatest('GET_RESTAURANT_BY_ID', fetchRestaurantById);
@@ -59,4 +75,6 @@ export function* restaurantsSaga() {
   yield takeLatest('GET_RESTAURANT_ITEMS', fetchRestaurantItems);
   yield takeLatest('SET_RESTAURANT', setRestaurant);
   yield takeLatest('SET_RESTAURANT_ITEM', setRestaurantItem);
+  yield takeLatest('ADD_RESTAURANT_ITEM', addRestaurantItemSaga);
+  yield takeLatest('DELETE_RESTAURANT_ITEM', deleteRestaurantItemSaga);
 }
