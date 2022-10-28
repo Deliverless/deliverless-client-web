@@ -52,13 +52,16 @@ const FoodCardModal = ({
   const dispatch = useDispatch();
 
   const editSchema = Yup.object().shape({
+    restaurantId: Yup.string().required('Required'),
     name: Yup.string().required('Required'),
+    category: Yup.string().required('Required'),
     description: Yup.string().required('Required'),
-    price: Yup.number().required('Required'),
     discount: Yup.number().notRequired(),
+    price: Yup.number().required('Required'),
     isAvailable: Yup.boolean().required('Required'),
     isPickupOnly: Yup.boolean().required('Required'),
     size: Yup.string().notRequired(),
+    quantity: Yup.number(),
     images: Yup.array().of(
       Yup.object().shape({
         url: Yup.string().required('Required'),
@@ -86,17 +89,7 @@ const FoodCardModal = ({
   });
 
   const editFormik = useFormik({
-    initialValues: {
-      id: food.id,
-      name: food.name,
-      description: food.description,
-      price: food.price,
-      discount: food.discount,
-      isAvailable: food.isAvailable,
-      isPickupOnly: food.isPickupOnly,
-      options: food.options,
-      size: food.size,
-    },
+    initialValues: food,
     validationSchema: editSchema,
     enableReinitialize: true,
     onSubmit: (values) => {
@@ -184,18 +177,7 @@ const FoodCardModal = ({
     setTotalPrice(parseFloat(food.price));
     setCartItem({ ...food, restaurantId, selectedOptions: [], quantity: 1 });
     console.log("food", food);
-    editFormik.setValues({
-      id: food.id,
-      name: food.name,
-      description: food.description,
-      price: food.price,
-      discount: food.discount,
-      isAvailable: food.isAvailable,
-      isPickupOnly: food.isPickupOnly,
-      options: food.options,
-      size: food.size,
-      images: food.images && food.images.length > 0 ? food.images : [{ url: "https://via.placeholder.com/600", alt: "main" }],
-    });
+    editFormik.setValues(food);
   }, [food, restaurantId]);
 
   useEffect(() => {
@@ -209,17 +191,7 @@ const FoodCardModal = ({
   }, [editFormik.values]);
 
   useEffect(() => {
-    show && edit && editFormik.setValues({
-      name: food.name,
-      description: food.description,
-      price: food.price,
-      discount: food.discount,
-      isAvailable: food.isAvailable,
-      isPickupOnly: food.isPickupOnly,
-      options: food.options,
-      size: food.size,
-      images: food.images && food.images.length > 0 ? food.images : [{ url: "https://via.placeholder.com/600", alt: "main" }],
-    });
+    show && edit && editFormik.setValues(food);
   }, [show]);
 
   return (
@@ -290,7 +262,7 @@ const FoodCardModal = ({
             <Modal.Body style={{ maxHeight: "calc(100vh - 350px)", overflowY: "auto" }}>
               <div className="row">
                 <div className="col-12">
-                  <div className="image-container col-md-10 offset-md-1 d-flex flex-column justify-content-end mb-3">
+                  <div className="image-container col-10 offset-1 d-flex flex-column justify-content-center mb-3">
                     <img
                       className={"image" + (isLoading ? " image-disabled" : "")}
                       src={
@@ -300,14 +272,14 @@ const FoodCardModal = ({
                           ? editFormik.values.images.find((i) => i.alt === "main")["url"]
                           : "https://via.placeholder.com/150"
                       }
-                      alt="food"
+                      alt="Item Image"
                     />
                     <EditIcon className="image-edit-icon" />
                   </div>
-                  <div className="col-10 offset-1 mb-3">
+                  <div className="col-10 offset-1">
                     <TextField
                       id="outlined-required"
-                      className="col-12"
+                      className="col-12 mb-3"
                       label="Image URL"
                       value={editFormik.values.images && editFormik.values.images.length > 0 && editFormik.values.images.find((i) => i.alt === "main")["url"]}
                       variant="outlined"
@@ -317,11 +289,9 @@ const FoodCardModal = ({
                       name={`images[${editFormik.values.images.findIndex((i) => i.alt === "main")}].url`}
                       error={editFormik.touched.images && Boolean(editFormik.errors.images)}
                     />
-                  </div>
-                  <div className="col-10 offset-1 d-flex flex-column justify-content-end">
                     <TextField 
                       id="outlined-required"
-                      className={"col-12" + (isLoading ? " textarea-disabled" : "")}
+                      className={"col-12  mb-3 " + (isLoading ? " textarea-disabled" : "")}
                       label="Description"
                       value={editFormik.values.description}
                       variant="outlined"
@@ -332,6 +302,21 @@ const FoodCardModal = ({
                       name="description"
                       error={editFormik.touched.description && Boolean(editFormik.errors.description)}
                     />
+                    <TextField
+                      id="outlined-required"
+                      className="col-12 mb-3"
+                      label="Category"
+                      value={editFormik.values.category}
+                      variant="outlined"
+                      size="small"
+                      onChange={editFormik.handleChange}
+                      onBlur={editFormik.handleBlur}
+                      name="category"
+                      error={editFormik.touched.category && Boolean(editFormik.errors.category)}
+                    />
+                  </div>
+                  <div className="col-10 offset-1 d-flex flex-column justify-content-end">
+                    
                     {editFormik.values.options.length > 0 ? (
                       <div className="col-12 mt-3">
                         {editFormik.values.options.map((optionMain, indexMain) => {
@@ -610,7 +595,8 @@ const FoodCardModal = ({
                     <Button
                       variant="primary"
                       onClick={() => {
-                        console.log("editFormik", editFormik);
+                        console.log("before handle: editFormik errors", editFormik.errors);
+                        console.log("before handle: editFormik values", editFormik.values);
                         editFormik.handleSubmit();
                       }}
                       style={{ marginRight: "10px", width: "100px" }}

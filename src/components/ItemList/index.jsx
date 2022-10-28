@@ -10,20 +10,6 @@ import { Skeleton } from '@mui/material';
 import FoodCardModel from '../FoodCardModal';
 import Item from './components/Item';
 
-const DEFAULT_ITEM = {
-  id: "",
-  name: "",
-  description: "",
-  price: 0,
-  images: [],
-  discount: 0,
-  isAvailable: false,
-  isPickupOnly: false,
-  options: [],
-  restaurantId: "",
-  size: "",
-};
-
 export default function ItemList({ 
   history,
   restaurant,
@@ -31,12 +17,41 @@ export default function ItemList({
   inheritWidth = false,
   isLoading = false,
   }) {
-  const [item, setItem] = React.useState(DEFAULT_ITEM);
+  const [item, setItem] = React.useState();
   const [showFoodCard, setShowFoodCard] = React.useState(false);
+
+  const DEFAULT_ITEM = {
+    id: "",
+    restaurantId: restaurant.id,
+    category: "",
+    description: "",
+    discount: 0,
+    images: [{ url: "https://via.placeholder.com/600", alt: "main" }],
+    isAvailable: false,
+    isPickupOnly: false,
+    name: "",
+    options: [],
+    price: 0,
+    quantity: 1,
+    size: "",
+  };
   
-  const handleItemClick = (item) => {
-    setItem(item);
-    setShowFoodCard(true);
+  const addNewCategory = () => {
+    return (
+      <div className="col-md-11 offset-md-1">
+        <div className="add-row-container pt-5 pb-5">
+          <div 
+            className="add-row col-md-4 mt-4" 
+            onClick={() => {
+              setItem(DEFAULT_ITEM);
+              setShowFoodCard(true);
+            }}
+          >
+            <AddCircleOutlineIcon className="add-row-icon" style={{ fontSize: "3rem" }} />
+          </div>
+        </div>
+      </div>
+    );
   };
 
   const getMenuItems = () => {
@@ -104,22 +119,9 @@ export default function ItemList({
     return menuCategories;
   };
 
-  const addNewCategory = () => {
-    return (
-      <div className="col-md-11 offset-md-1">
-        <div className="add-row-container pt-5 pb-5">
-          <div 
-            className="add-row col-md-4 mt-4" 
-            onClick={() => {
-              setItem(DEFAULT_ITEM);
-              setShowFoodCard(true);
-            }}
-          >
-            <AddCircleOutlineIcon className="add-row-icon" style={{ fontSize: "3rem" }} />
-          </div>
-        </div>
-      </div>
-    );
+  const handleItemClick = (item) => {
+    setItem(item);
+    setShowFoodCard(true);
   };
 
   return (
@@ -206,7 +208,7 @@ export default function ItemList({
       <FoodCardModel
         show={showFoodCard}
         onHide={() => setShowFoodCard(false)}
-        food={item}
+        food={item || DEFAULT_ITEM}
         restaurantId={restaurant.id}
         edit={edit}
         isLoading={isLoading}

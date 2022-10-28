@@ -46,7 +46,6 @@ export default function RestaurantList({ history, restaurantList }) {
   const [isLoading, setIsLoading] = useState(true);
   const { rests, setRests} = useContext(RestContext);
 
-  const restaurantList = useSelector(state => state.restaurant.list);
   const dispatch = useDispatch();
 
   const filterRestaurants = (cuisine) => {
