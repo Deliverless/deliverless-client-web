@@ -8,6 +8,7 @@ import {
 import {
   Button,
   TextField,
+	Card
 } from '@mui/material';
 
 import { UserContext } from '../../lib/context/userContext';
@@ -60,15 +61,17 @@ const RestaurantLogin = () => {
 	// TODO: submission: pw encryption -> send to BigChain DB - need smart contract*
 	
 	return (
-			<div className="main-content center-container" style={{textAlign: 'center', flexDirection: 'column'}}>
+			<div className="restBackground main-content center-container" style={{textAlign: 'center', flexDirection: 'column'}}>
+				<Card style={{padding: "60px", borderRadius: "20px"}}>
 					<h1>Restaurant Log In</h1>
 					<p>Want to become a restaurant partner? <Link to="/restaurant/signup" >Sign Up</Link></p>
 					<form className="form-group">
 						<TextField onChange={(e) => handleChange(e, "email")} autoFocus required style={{marginBottom: '20px'}} id="outlined-basic" label="Email" variant="outlined" value={email} /><br/>	
-						<TextField onChange={(e) => handleChange(e, "password")} required style={{marginBottom: '20px'}} id="outlined-basic" label="Password" variant="outlined" value={password} /><br/>
+						<TextField onChange={(e) => handleChange(e, "password")} required style={{marginBottom: '20px'}} id="outlined-basic" type="password" label="Password" variant="outlined" value={password} /><br/>
 						{errors && <div className="alert alert-danger">{errors}</div>}
 						<Button onClick={handleSubmit} variant="contained" sx={{height:'56px', backgroundColor:'#2196f3'}}>Sign In</Button>
 					</form>
+					</Card>
 			</div>
 	);
 }
