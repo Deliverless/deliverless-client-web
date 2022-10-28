@@ -19,9 +19,10 @@ import Restaurant from '../../../models/restaurant';
 export default function RestaurantAccount() {
 	const [tabValue, setTabValue] = useState('home');
 	const [restaurant, setRestaurant] = useState(null);
-	const selectedRestaurantId = useSelector(state => state.selectedRestaurantId);
 	const restaurantList = useSelector(state => state.restaurant.list);
 	const restaurantIsLoading = useSelector(state => state.restaurant.isLoading);
+	const selectedRestaurantId = useSelector(state => state.restaurant.selectedRestaurantId);
+	// const selectedRestaurantId = "id:global:restaurant:25aaf9af-2c0b-4b17-9939-b222eaee89e5";
 	const dispatch = useDispatch();
 	
 	const handleChange = (event, newValue) => {
@@ -49,10 +50,8 @@ export default function RestaurantAccount() {
   };
 
 	useEffect(() => {
-		console.log('RestaurantAccount useEffect', restaurant, restaurantList);
-		if (restaurant === null || restaurant.items.length === 0) {
-			initializeRestaurant();
-		}
+		// console.log('restaurantList useEffect', restaurantList);
+		initializeRestaurant();
 	}, [restaurantList]);
 
   useEffect(() => {
