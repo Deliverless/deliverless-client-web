@@ -19,7 +19,7 @@ import Restaurant from '../../../models/restaurant';
 export default function RestaurantAccount() {
 	const [tabValue, setTabValue] = useState('home');
 	const [restaurant, setRestaurant] = useState(null);
-	
+	const selectedRestaurantId = useSelector(state => state.selectedRestaurantId);
 	const restaurantList = useSelector(state => state.restaurant.list);
 	const restaurantIsLoading = useSelector(state => state.restaurant.isLoading);
 	const dispatch = useDispatch();
