@@ -29,6 +29,7 @@ export default function ItemList({
   restaurant,
   edit = false,
   inheritWidth = false,
+  isLoading = false,
   }) {
   const [item, setItem] = React.useState(DEFAULT_ITEM);
   const [showFoodCard, setShowFoodCard] = React.useState(false);
@@ -127,7 +128,7 @@ export default function ItemList({
         {edit && (
           addNewCategory()
         )}
-        {restaurant.items && restaurant.menu ? (
+        {restaurant && restaurant.items && restaurant.menu ? (
           <div className="row">
             <div className="col-md-12">
               {getMenuItems()}
@@ -208,6 +209,7 @@ export default function ItemList({
         food={item}
         restaurantId={restaurant.id}
         edit={edit}
+        isLoading={isLoading}
       />
 
     </div>

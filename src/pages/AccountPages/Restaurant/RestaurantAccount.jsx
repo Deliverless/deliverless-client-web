@@ -21,8 +21,7 @@ export default function RestaurantAccount() {
 	const [restaurant, setRestaurant] = useState(null);
 	
 	const restaurantList = useSelector(state => state.restaurant.list);
-	const selectedRestaurantId = useSelector(state => state.restaurant.selectedRestaurantId);
-	// const selectedRestaurantId = "id:global:restaurant:25aaf9af-2c0b-4b17-9939-b222eaee89e5";
+	const restaurantIsLoading = useSelector(state => state.restaurant.isLoading);
 	const dispatch = useDispatch();
 	
 	const handleChange = (event, newValue) => {
@@ -95,9 +94,9 @@ export default function RestaurantAccount() {
 			</Tabs>
 
 			<Box>
-				{tabValue === 'home' && <RestaurantHome restaurant={restaurant} />}
+				{tabValue === 'home' && <RestaurantHome restaurant={restaurant} restaurantList={restaurantList} />}
 				{tabValue === 'menu' && (
-					<ItemList restaurant={restaurant} edit={true} />
+					<ItemList restaurant={restaurant} edit={true} isLoading={restaurantIsLoading} />
 				)}
 				{/* {tabValue === 'feedback' && <Feedback />}
 				{tabValue === 'payments' && <Payment />}
