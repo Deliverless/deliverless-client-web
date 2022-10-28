@@ -22,7 +22,7 @@ export default function ItemList({
 
   const DEFAULT_ITEM = {
     id: "",
-    restaurantId: restaurant.id,
+    restaurantId: restaurant ? restaurant.id : "",
     category: "",
     description: "",
     discount: 0,
@@ -209,7 +209,7 @@ export default function ItemList({
         show={showFoodCard}
         onHide={() => setShowFoodCard(false)}
         food={item || DEFAULT_ITEM}
-        restaurantId={restaurant.id}
+        restaurantId={restaurant ? restaurant.id : ""}
         edit={edit}
         isLoading={isLoading}
       />
