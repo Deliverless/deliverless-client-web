@@ -21,8 +21,7 @@ export default function ItemList({
   const [showFoodCard, setShowFoodCard] = React.useState(false);
 
   const DEFAULT_ITEM = {
-    id: "",
-    restaurantId: restaurant.id,
+    restaurantId: restaurant ? restaurant.id : "",
     category: "",
     description: "",
     discount: 0,
@@ -90,7 +89,7 @@ export default function ItemList({
                 </span>
               </div>
               <div className="restaurant.menu-restaurant.items col-md-12 d-flex flex-wrap">
-                {menuItems.map((item, index) => {
+                {menuItems.filter((item) => item.status === undefined || item.status !== "BURNED").map((item, index) => {
                   return <Item key={index} item={item} onClick={() => handleItemClick(item)} restaurantId={restaurant.id}/>;
                 })}
                 {restaurant.items && edit && (
@@ -209,7 +208,7 @@ export default function ItemList({
         show={showFoodCard}
         onHide={() => setShowFoodCard(false)}
         food={item || DEFAULT_ITEM}
-        restaurantId={restaurant.id}
+        restaurantId={restaurant ? restaurant.id : ""}
         edit={edit}
         isLoading={isLoading}
       />

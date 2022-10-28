@@ -1,5 +1,6 @@
 import {
   createNewObject,
+  deleteObject,
   findObjectsByMetadata,
   getObjectById,
   updateObject,
@@ -142,6 +143,16 @@ export const updateRestaurant = async (id, newData) => {
 
 export const updateRestaurantItem = async (id, newData) => {
     return (await updateObject("Item", id, newData)
+        .catch(err => console.log(err))).data;
+}
+
+export const createRestaurantItem = async (newData) => {
+    return (await createNewObject("Item", newData)
+        .catch(err => console.log(err))).data;
+}
+
+export const deleteRestaurantItem = async (id) => {
+    return (await deleteObject("Item", id)
         .catch(err => console.log(err))).data;
 }
 
