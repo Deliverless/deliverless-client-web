@@ -10,8 +10,8 @@ export default function Item({item, onClick}) {
   const [image, setImage] = useState(null);
 
   useEffect(() => {
-    if (item.images) {
-      const imageObj = item.images.length > 0 ? item.images.find((image) => image.alt === 'main') : null;
+    if (item && item.images && item.images.length > 0) {
+      const imageObj = item.images.find((image) => image.alt === 'main');
       setImage(imageObj)
     }
   }, [item]);

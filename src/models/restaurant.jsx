@@ -140,6 +140,11 @@ export const updateRestaurant = async (id, newData) => {
         .catch(err => console.log(err))).data;
 }
 
+export const updateRestaurantItem = async (id, newData) => {
+    return (await updateObject("Item", id, newData)
+        .catch(err => console.log(err))).data;
+}
+
 export const signUpRestaurant = async (restaurant) => {
     return (await createNewObject("restaurant", restaurant)
         .catch(err => console.log(err))).data;

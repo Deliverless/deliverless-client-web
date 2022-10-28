@@ -9,9 +9,11 @@ import {
   requestRestaurantByName,
   requestRestaurantItems,
   requestRestaurants,
+  updateRestaurantItem,
 } from '../../models/restaurant';
 import {
   addRestaurant,
+  setIsLoading,
   setRestaurantItems,
   setRestaurants,
   setSelectedRestaurantId,
@@ -43,10 +45,18 @@ function* setRestaurant(action) {
   yield put(setSelectedRestaurantId(action.payload.id));
 }
 
+function* setRestaurantItem(action) {
+  yield put(setIsLoading(true));
+  yield call(updateRestaurantItem, action.payload.id, action.payload.data);
+  yield call(fetchRestaurantItems, { payload: { id: action.payload.restaurantId } });
+  yield put(setIsLoading(false));
+}
+
 export function* restaurantsSaga() {
   yield takeLatest('GET_RESTAURANTS', fetchRestaurants);
   yield takeLatest('GET_RESTAURANT_BY_ID', fetchRestaurantById);
   yield takeLatest('GET_RESTAURANT_BY_NAME', fetchRestaurantByName);
   yield takeLatest('GET_RESTAURANT_ITEMS', fetchRestaurantItems);
   yield takeLatest('SET_RESTAURANT', setRestaurant);
+  yield takeLatest('SET_RESTAURANT_ITEM', setRestaurantItem);
 }

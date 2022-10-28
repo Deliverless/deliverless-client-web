@@ -7,6 +7,7 @@ export const restaurantsSlice = createSlice({
     list: [],
     selectedRestaurantId: null,
     isSyncing: false,
+    isLoading: false,
   },
   reducers: {
     addRestaurant: (state, action) => {
@@ -29,8 +30,14 @@ export const restaurantsSlice = createSlice({
         (restaurant) => restaurant.id === action.payload.id
       );
       restaurant.items = action.payload.items;
+    },
+    setIsSyncing: (state, action) => {
+      state.isSyncing = action.payload;
+    },
+    setIsLoading: (state, action) => {
+      state.isLoading = action.payload;
     }
   },
 });
 
-export const { addRestaurant, setRestaurants, setSelectedRestaurantId, setRestaurantItems } = restaurantsSlice.actions;
+export const { addRestaurant, setRestaurants, setSelectedRestaurantId, setRestaurantItems, setIsSyncing, setIsLoading } = restaurantsSlice.actions;

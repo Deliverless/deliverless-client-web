@@ -4,10 +4,7 @@ import React, {
   useState,
 } from 'react';
 
-import {
-  useDispatch,
-  useSelector,
-} from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import {
   Button,
@@ -42,7 +39,7 @@ const DEFAULT_CUISINES = [
   'Vietnamese',
 ];
 
-export default function RestaurantList({ history }) {
+export default function RestaurantList({ history, restaurantList }) {
   const [filteredRestaurantList, setFilteredRestaurantList] = useState([]);
   const [listView, setListView] = useState(true);
   const [cusinieList, setCusinieList] = useState([]);
