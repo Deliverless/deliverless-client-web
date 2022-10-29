@@ -39,16 +39,19 @@ const CartContextProvider = ({ children }) => {
         dispatch({ type: 'CLEAR' })
     }
 
-    const handleCheckout = async () => {
+    const handleCheckout = async (loadingUpdate) => {
         const newOrder = await createOrder(order, user.customer);
+        loadingUpdate('Creating Order...', "info");
         let prevOrderIds = user.customer.orderIds != null ? user.customer.orderIds : []
         let updatedUser = { ...user };
         updatedUser.customer.orderIds = [...prevOrderIds, newOrder.id]
         setUser(updatedUser)
+        loadingUpdate('Finding a driver near you', "info");
         let { status } = (await delegateOrder(newOrder));
         if (status) {
             clearOrder()
             dispatch({ type: 'CHECKOUT' })
+            loadingUpdate("Order was successfully saved in the blockchain", "success")
             return true;
         }
         return false;

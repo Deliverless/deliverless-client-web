@@ -21,17 +21,25 @@ import {
   getOrder,
   updateOrder,
 } from '../models/order';
+import { SnackbarProvider, useSnackbar } from 'notistack'
 
-export default function TrackOrder() {
+function TrackOrderPage() {
   const [order, setOrder] = useState();
   const { rests } = useContext(RestContext);
   const [searchParams, setSearchParams] = useSearchParams();
   const [status, setStatus] = useState('...loading');
   const [loading, setLoading] = useState(false);
+  const { enqueueSnackbar: loadSnackbar } = useSnackbar();
+
+  const loadingUpdate = (update, variant)=>{
+    loadSnackbar(update, {variant})
+  }
+
   mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_APIKEY;
   let map;
   async function getRoute(source, destination) {
     const json = await getDirections(source, destination);
+    loadingUpdate("Route calculated", "success")
     console.log("json", json);
     const data = json.routes[0];
     const route = data.geometry.coordinates;
@@ -72,10 +80,14 @@ export default function TrackOrder() {
   }
 
   useEffect(async () => {
+    setLoading(true);
+    loadingUpdate("Fetching Order", "info")
+    loadingUpdate("Calculating Route", "info")
     let trackOrder = await getOrder(searchParams.get("orderId")).then(
       (_order) => {
+        loadingUpdate("Fetched order successfully", "success")
         setOrder(_order);
-        setStatus(_order.status)
+        setStatus(_order.status);
         return _order;
       }
     );
@@ -94,11 +106,14 @@ export default function TrackOrder() {
       getRoute(trackOrder.restaurant.address, trackOrder.address);
       map.setFog({}); // Set the default atmosphere style
     });
+    setLoading(false);
   }, []);
 
   const setStatusHandler = (_status) => {
     setLoading(true);
+    loadingUpdate("Setting status to " + _status, "info");
     updateOrder(order.id, { status: _status }).then((o) => {
+      loadingUpdate("Status set successfully", "success");
       setStatus(_status);
       setLoading(false);
       console.log("order updated status", o);
@@ -124,5 +139,14 @@ export default function TrackOrder() {
         id="map"
       ></div>
     </>
+  );
+}
+
+
+export default function TrackOrder() {
+  return (
+    <SnackbarProvider maxSnack={3}>
+      <TrackOrderPage />
+    </SnackbarProvider>
   );
 }

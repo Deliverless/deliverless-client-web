@@ -8,9 +8,9 @@ const abi = abiIndex.default;
 
 // intialize the bigchaindb orm just for keypair
 // TODO: remove this and use web3 to generate keypair (requires testing)
-const bigchaindb = new BigchainDb("http://24.150.93.243");
-const seed = mnemonicToSeedSync('candy maple cake sugar pudding cream honey rich smooth crumble sweet treat').slice(0, 32);
-const keypair = new bigchaindb.driver.Ed25519Keypair(seed);
+// const bigchaindb = new BigchainDb("http://24.150.93.243");
+// const seed = mnemonicToSeedSync('candy maple cake sugar pudding cream honey rich smooth crumble sweet treat').slice(0, 32);
+// const keypair = new bigchaindb.driver.Ed25519Keypair(seed);
 
 // *** REFERENCE objects dir: deliverless-chainlink/adapters/bigchaindb-utils/models ***
 

@@ -68,7 +68,7 @@ const LandingAddressSet = () => {
 
 
         <FormControl className='form-inline' sx={{ maxWidth:'100%' }}>
-          <Box  className="form-group mr-4" sx={{ alignItems: 'flex-end' }}>
+          <Box  className="form-group mr-4 d-flex" sx={{ alignItems: 'flex-end' }}>
             <Autocomplete
               id="google-map-demo"
               sx={{ width: 300 }}

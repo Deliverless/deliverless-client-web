@@ -1,62 +1,118 @@
-import React, {
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import React, { useContext, useEffect, useState } from "react";
 
-import Box from '@mui/material/Box';
-import Tab from '@mui/material/Tab';
-import Tabs from '@mui/material/Tabs';
+import Box from "@mui/material/Box";
+import Tab from "@mui/material/Tab";
+import Tabs from "@mui/material/Tabs";
 
-import { RestContext } from '../../../lib/context/restContext';
-import { UserContext } from '../../../lib/context/userContext';
-import { findObjectsByMetadata } from '../../../lib/web3-helper';
-import DataCard from './components/DataCard';
-import OnlineStatusToggle from './components/OnlineStatusToggle';
-import OrderTable from './components/OrderTable';
-import RevenueChart from './components/RevenueChart';
-import { requestRestaurants } from '../../../models/restaurant';
+import { RestContext } from "../../../lib/context/restContext";
+import { UserContext } from "../../../lib/context/userContext";
+import { findObjectsByMetadata } from "../../../lib/web3-helper";
+import DataCard from "./components/DataCard";
+import OnlineStatusToggle from "./components/OnlineStatusToggle";
+import OrderTable from "./components/OrderTable";
+import RevenueChart from "./components/RevenueChart";
+import { requestRestaurants } from "../../../models/restaurant";
+import { SnackbarProvider, useSnackbar } from "notistack";
+import { Backdrop, Button, CircularProgress } from "@mui/material";
 
-export default function DriverDashboard() {
+function DriverDashboardPage() {
   const { user, setUser } = useContext(UserContext);
-  const [ orders, setOrders ] = useState([]);
-	const { rests, setRests } = useContext(RestContext);
-  const [tabValue, setValue] = React.useState('foodready');
+  const [orders, setOrders] = useState([]);
+  const { rests, setRests } = useContext(RestContext);
+  const [tabValue, setValue] = React.useState("foodready");
   const [orderNum, setOrderNum] = useState(0);
   const [totalRev, setTotalRev] = useState(0);
+  const { enqueueSnackbar: loadSnackbar } = useSnackbar();
+  const [loading, setLoading] = useState(false);
 
   const handleTabChange = (event, newValue) => {
     setValue(newValue);
   };
 
-  useEffect(async ()=>{
-    if(rests?.length == 0){
+  const loadingUpdate = (update, variant) => {
+    loadSnackbar(update, { variant });
+  };
+
+  useEffect(async () => {
+    if (rests?.length == 0) {
       setRests(await requestRestaurants());
     }
     console.log("rests", rests);
     getOrders();
-  },[])
-
-  
+  }, []);
 
   const getOrders = async () => {
-    
-    let availOrders = (await findObjectsByMetadata("order", {driverId: user.driver.id}, 0)).data;
+    loadingUpdate("Fetching orders from the blockchain...", "info");
+    setLoading(true);
+    let availOrders = (
+      await findObjectsByMetadata("order", { driverId: user.driver.id }, 30)
+    ).data;
     console.log("ords", availOrders);
 
-    setOrderNum((availOrders.filter(o=>o.status == "Delivered")).length);
+    setOrderNum(availOrders.filter((o) => o.status == "Delivered").length);
 
     let rev = 0;
-    for(let i = 0; i < availOrders.length; i++){
-      if(availOrders[i].status == "Delivered") rev += (availOrders[i].tip * availOrders[i].subtotal) + availOrders[i].driverFee
-      availOrders[i].restaurant = rests.find(r=> r.id == availOrders[i].restaurantId)
+    for (let i = 0; i < availOrders.length; i++) {
+      if (availOrders[i].status == "Delivered")
+        rev +=
+          availOrders[i].tip * availOrders[i].subtotal +
+          availOrders[i].driverFee;
+      availOrders[i].restaurant = rests.find(
+        (r) => r.id == availOrders[i].restaurantId
+      );
     }
     setTotalRev(Math.round(rev * 100) / 100);
     setOrders(availOrders);
-  }
+    setLoading(false);
+  };
+
+  const parseGraphData = () => {
+    let sortedOrders = [...orders].sort(function(x, y){
+      return new Date(x.timestamp).getTime() -  new Date(y.timestamp).getTime()
+  })
+  console.log("sorted", sortedOrders)
+    const groupByCategory = sortedOrders.reduce((group, order) => {
+      const { timestamp } = order;
+      const category =
+        new Date(timestamp).toLocaleString("default", {
+          month: "long",
+        }) +
+        " " +
+        new Date(timestamp).getDate();
+
+      group[category] = group[category] ?? [];
+      group[category].push(order);
+      return group;
+    }, {});
+
+    return Object.values(groupByCategory).map((g) => {
+      var total = 0;
+      for (let i = 0; i < g.length; i++) {
+        let o = g[i];
+        total += o.tip * o.subtotal + o.driverFee;
+      }
+      return {
+        name:
+          new Date(g[0].timestamp).toLocaleString("default", {
+            month: "long",
+          }) +
+          " " +
+          new Date(g[0].timestamp).getDate(),
+        Total: total,
+      };
+    });
+    
+    return groupByCategory;
+  };
 
   return (
     <div className="main-content container">
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={loading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <h1 className="row m-0">Hi {user.firstName} </h1>
       <div className="row">
         <div
@@ -88,14 +144,8 @@ export default function DriverDashboard() {
           <div style={{ maxWidth: "500px" }}>
             <h4>Revenue (all time)</h4>
             <RevenueChart
-              data={orders.map((o) => {
-                return {
-                  name: new Date(o.timestamp).toLocaleString("default", {
-                    month: "long",
-                  }),
-                  Total: o.tip * o.subtotal + o.driverFee,
-                };
-              })}
+              data={parseGraphData()}
+
               orders={orders.filter((o) => o.status == "Delivered")}
             />
           </div>
@@ -141,5 +191,13 @@ export default function DriverDashboard() {
         </Box>
       </div>
     </div>
+  );
+}
+
+export default function DriverDashboard() {
+  return (
+    <SnackbarProvider maxSnack={3}>
+      <DriverDashboardPage />
+    </SnackbarProvider>
   );
 }
