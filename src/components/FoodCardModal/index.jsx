@@ -51,6 +51,29 @@ const FoodCardModal = ({
 
   const dispatch = useDispatch();
 
+  const updateFoodItem = (values) => {
+    let itemChanges = getDifference(food, values);
+      itemChanges = Object.keys(itemChanges).reduce((acc, key) => {
+        if (Array.isArray(itemChanges[key])) {
+          acc[key] = editFormik.values[key];
+        } else if (itemChanges[key] !== undefined) {
+          acc[key] = itemChanges[key];
+        }
+        return acc;
+      }, {});
+      dispatch({ type: 'SET_RESTAURANT_ITEM', payload: { restaurantId, id: food.id, data: itemChanges } });
+  };
+
+  const addFoodItem = (values) => {
+    console.log('addFoodItem', values);
+    dispatch({ type: 'ADD_RESTAURANT_ITEM', payload: { restaurantId, data: values } });
+  };
+
+  const deleteFoodItem = () => {
+    setIsUpdated(true);
+    dispatch({ type: 'DELETE_RESTAURANT_ITEM', payload: { restaurantId, id: food.id } });
+  };
+
   const editSchema = Yup.object().shape({
     restaurantId: Yup.string().required('Required'),
     name: Yup.string().required('Required'),
@@ -94,19 +117,12 @@ const FoodCardModal = ({
     enableReinitialize: true,
     onSubmit: (values) => {
       console.log("values", values);
-      // let itemChanges = getDifference(food, values);
-      // console.log("itemChanges", itemChanges);
-      // itemChanges = Object.keys(itemChanges).reduce((acc, key) => {
-      //   if (Array.isArray(itemChanges[key])) {
-      //     acc[key] = editFormik.values[key];
-      //   } else if (itemChanges[key] !== undefined) {
-      //     acc[key] = itemChanges[key];
-      //   }
-      //   return acc;
-      // }, {});
-      // console.log("itemChanges v2", itemChanges);
-      // setIsUpdated(true);
-      // dispatch({ type: 'SET_RESTAURANT_ITEM', payload: { restaurantId, id: food.id, data: itemChanges } });
+      if (values.id) {
+        updateFoodItem(values);
+      } else {
+        addFoodItem(values);
+      }
+      setIsUpdated(true);
     },
   });
 
@@ -543,12 +559,13 @@ const FoodCardModal = ({
                                 position: "absolute",
                                 left: "45%",
                                 top: "5px",
-                                cursor: "pointer",
-                                color: "#767676",
+                                cursor: isLoading ? "not-allowed" : "pointer",
+                                color: isLoading ? '#c2c2c2' : '#767676',
                                 backgroundColor: "#fff",
                             }}
                             onClick={() => {
                               console.log("add");
+                              if (isLoading) return;
                               editFormik.setFieldValue(`options`, [
                                 {
                                   name: "",
@@ -585,7 +602,8 @@ const FoodCardModal = ({
                       <Button
                         variant="danger"
                         onClick={() => {
-                          onHide();
+                          if (isLoading) return;
+                          deleteFoodItem();
                         }}
                         style={{ marginLeft: "10px", width: "100px" }}
                       >
