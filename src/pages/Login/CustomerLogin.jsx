@@ -38,13 +38,13 @@ const CustomerLoginPage = () => {
         loadingUpdate("Login Successful", "success");
         setUser(user);
         setErrors(null);
+        navigate("/");
       })
       .catch((error) => {
         setErrors(error.message);
       })
       .finally(() => {
         setLoading(false);
-        navigate("/");
       });
   };
 

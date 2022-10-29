@@ -46,13 +46,13 @@ const RestaurantLoginPage = () => {
         loadingUpdate("Login Successful", "success");
         setUser(user);
         setErrors(null);
+        navigate("/restaurant/dashboard");
       })
       .catch((error) => {
         setErrors(error.message);
       })
       .finally(() => {
         setLoading(false);
-        navigate("/restaurant/dashboard");
       });
   };
 

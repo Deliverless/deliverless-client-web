@@ -2,17 +2,13 @@ import React, { useContext, useState } from "react";
 
 import { Link, useNavigate } from "react-router-dom";
 
-import {
-  Button,
-  TextField,
-	Card
-} from '@mui/material';
+import { Button, TextField, Card } from "@mui/material";
 
 import { UserContext } from "../../lib/context/userContext";
 import { findDriverByUserId } from "../../models/driver";
 import { login } from "../../models/user";
-import { SnackbarProvider, useSnackbar } from 'notistack';
-import { Backdrop, CircularProgress } from '@mui/material';
+import { SnackbarProvider, useSnackbar } from "notistack";
+import { Backdrop, CircularProgress } from "@mui/material";
 
 const DriverLogin = () => {
   const [email, setUsername] = React.useState("");
@@ -30,28 +26,30 @@ const DriverLogin = () => {
     else completeLogin();
   };
 
-  const loadingUpdate = (update, variant)=>{
-    loadSnackbar(update, {variant})
-  }
+  const loadingUpdate = (update, variant) => {
+    loadSnackbar(update, { variant });
+  };
 
   const completeLogin = async () => {
-	setLoading(true);
-	loadingUpdate("Authenticating user", "info")
-    login(email, password).then(async (user) => {
-		loadingUpdate("Authentication complete!", "success")
+    setLoading(true);
+    loadingUpdate("Authenticating user", "info");
+    login(email, password)
+      .then(async (user) => {
+        loadingUpdate("Authentication complete!", "success");
         setUser(user);
-		loadingUpdate("Fetching user metadata", "info")
+        loadingUpdate("Fetching user metadata", "info");
         user.driver = await findDriverByUserId(user.id);
-		loadingUpdate("Login Successful", "success")
+        loadingUpdate("Login Successful", "success");
         setUser(user);
         setErrors(null);
+        navigate("/driver/dashboard");
       })
       .catch((error) => {
         setErrors(error.message);
-      }).finally(()=>{
-		setLoading(false);
-		navigate("/driver/dashboard");
-	})
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   const validate = () => {
@@ -68,26 +66,57 @@ const DriverLogin = () => {
   };
 
   // TODO: submission: pw encryption -> send to BigChain DB - need smart contract*
-	return (
-    <div className="driverBackground main-content center-container" style={{textAlign: 'center', flexDirection: 'column'}}>
+  return (
+    <div
+      className="driverBackground main-content center-container"
+      style={{ textAlign: "center", flexDirection: "column" }}
+    >
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={loading}
-        >
+      >
         <CircularProgress color="inherit" />
       </Backdrop>
-      <Card style={{padding: "60px", borderRadius: "20px"}}>
+      <Card style={{ padding: "60px", borderRadius: "20px" }}>
         <h1>Driver Log In</h1>
-        <p>Want to become a driver? <Link to="/driver/signup" >Sign Up</Link></p>
+        <p>
+          Want to become a driver? <Link to="/driver/signup">Sign Up</Link>
+        </p>
         <form className="form-group">
-          <TextField onChange={(e) => handleChange(e, "email")} autoFocus required style={{marginBottom: '20px'}} id="outlined-basic" label="Email" variant="outlined" value={email} /><br/>	
-          <TextField onChange={(e) => handleChange(e, "password")} required style={{marginBottom: '20px'}} id="outlined-basic" type="password" label="Password" variant="outlined" value={password} /><br/>
+          <TextField
+            onChange={(e) => handleChange(e, "email")}
+            autoFocus
+            required
+            style={{ marginBottom: "20px" }}
+            id="outlined-basic"
+            label="Email"
+            variant="outlined"
+            value={email}
+          />
+          <br />
+          <TextField
+            onChange={(e) => handleChange(e, "password")}
+            required
+            style={{ marginBottom: "20px" }}
+            id="outlined-basic"
+            type="password"
+            label="Password"
+            variant="outlined"
+            value={password}
+          />
+          <br />
           {errors && <div className="alert alert-danger">{errors}</div>}
-          <Button onClick={handleSubmit} variant="contained" sx={{height:'56px', backgroundColor:'#2196f3'}}>Sign In</Button>
+          <Button
+            onClick={handleSubmit}
+            variant="contained"
+            sx={{ height: "56px", backgroundColor: "#2196f3" }}
+          >
+            Sign In
+          </Button>
         </form>
-        </Card>
+      </Card>
     </div>
-);
+  );
 };
 
 export default function Login() {
