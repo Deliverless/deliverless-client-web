@@ -99,8 +99,8 @@ const CheckoutPage = () => {
       setAddress({ ...address, street: e.currentTarget.value });
     else if (input === "city")
       setAddress({ ...address, city: e.currentTarget.value });
-    else if (input === "postcode")
-      setAddress({ ...address, postcode: e.currentTarget.value });
+    // else if (input === "postcode")
+    //   setAddress({ ...address, postcode: e.currentTarget.value });
     else if (input === "state_code")
       setAddress({ ...address, state_code: e.currentTarget.value });
     else if (input === "country_code")
@@ -110,7 +110,7 @@ const CheckoutPage = () => {
   useEffect( async ()  => {
     if (activeStep === 1) {
       getAutoComplete(`${address.housenumber} ${address.street}, 
-    ${address.city}, ${address.state_code} ${address.postcode}, ${address.country_code} `).then(
+    ${address.city}, ${address.state_code}, ${address.country_code} `).then(
         (response) => {
           if (response.results.length > 0) {
             cookies.set("Address", response.results[0]);
@@ -273,7 +273,7 @@ const CheckoutPage = () => {
                       variant="outlined"
                       value={address.city}
                     />
-                    <br />
+                    {/* <br />
                     <TextField
                       onChange={(e) => handleChange(e, "postcode")}
                       required
@@ -282,7 +282,7 @@ const CheckoutPage = () => {
                       label="Postal Code"
                       variant="outlined"
                       value={address.postcode}
-                    />
+                    /> */}
                     <br />
                     <TextField
                       onChange={(e) => handleChange(e, "state_code")}
