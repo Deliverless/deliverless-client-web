@@ -1,5 +1,5 @@
 import React from 'react'
-import {Button, TextField}  from '@mui/material';
+import {Button, TextField, Card}  from '@mui/material';
 // import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import sha256 from 'sha256'
 
@@ -63,8 +63,9 @@ const CustomerSignUp = () => {
 	// TODO: submission: pw encryption -> send to BigChain DB - need smart contract*
 	
 	return ( 
-		<div className="main-content center-container" style={{textAlign: 'center', flexDirection: 'column'}}>
-			<h1>Sign Up for Deliverless</h1>
+		<div className="custSignupBackground main-content center-container" style={{textAlign: 'center', flexDirection: 'column'}}>
+			<Card style={{padding: "60px", borderRadius: "20px"}}>
+			<h1>Sign Up for The Food Chain</h1>
 			{msg && <div className="alert alert-success">{msg}</div>}
 			<form className="form-group">
 		
@@ -85,6 +86,7 @@ const CustomerSignUp = () => {
 				<Button onClick={handleSubmit} variant="contained" sx={{height:'56px', backgroundColor:'#2196f3'}}>Sign Up</Button>
 
 			</form>
+			</Card>
 		</div>
 	 );
 }

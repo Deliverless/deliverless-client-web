@@ -54,7 +54,7 @@ const CustomerLogin = () => {
 			<div className="custBackground main-content center-container" style={{textAlign: 'center', flexDirection: 'column'}}>
 				<Card style={{padding: "60px", borderRadius: "20px"}}>
 					<h1>Log In</h1>
-					<p>New to deliverless? <Link to="/signup" >Sign Up</Link></p>
+					<p>New to The Food Chain? <Link to="/signup" >Sign Up</Link></p>
 					<form className="form-group">
 						<TextField onChange={(e) => handleChange(e, "email")} autoFocus required style={{marginBottom: '20px'}} id="outlined-basic" label="Email" variant="outlined" value={email} /><br/>	
 						<TextField onChange={(e) => handleChange(e, "password")} required style={{marginBottom: '20px'}} id="outlined-basic" label="Password" type="password" variant="outlined" value={password} /><br/>

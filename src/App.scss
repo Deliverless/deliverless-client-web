@@ -90,6 +90,16 @@ $green: #f0f8ec;
 	align-items: center;
 }
 
+.custSignupBackground {
+	background-image: url('../public/img/beigefoodclipart.jpg');
+	background-position: right bottom;
+	background-repeat: no-repeat;
+	background-size: cover;
+	position: absolute;
+	display: flex;
+	align-items: center;
+}
+
 
 .main-content {
 	height: calc(100vh - 70px);
