@@ -29,7 +29,6 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import Typography from '@mui/material/Typography';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
-
 import CheckoutForm from '../components/CheckoutForm';
 import { getAutoComplete } from '../lib/api/addressapi';
 import { CartContext } from '../lib/context/cartContext';
@@ -37,12 +36,14 @@ import { OrderContext } from '../lib/context/orderContext';
 import { UserContext } from '../lib/context/userContext';
 import Order from '../models/order';
 import { getStripeSecret } from '../lib/web3-helper';
+import { SnackbarProvider, useSnackbar } from "notistack";
+import { Backdrop, CircularProgress } from "@mui/material";
 
 const stripePromise = loadStripe(
   "pk_test_51LiTBOHlhPKJMrfBUI52YU8nihPcSYlBkCHy46irESS7ev1J7vBI1rHNId6wM0kpZ5OybUNUwPvnT0GdyZo9xQG500i6jQAWVw"
 );
 
-const Checkout = () => {
+const CheckoutPage = () => {
   const {
     total,
     cartItems,
@@ -54,25 +55,18 @@ const Checkout = () => {
   } = useContext(CartContext);
 
   const [clientSecret, setClientSecret] = useState("");
-
   const { order, setOrder, clearOrder } = useContext(OrderContext)
   const { user, setUser } = useContext(UserContext);
-
   const steps = ["Verify Address", "Subtotal + Tip", "Details & Payment"];
-
   const [activeStep, setActiveStep] = useState(0);
   const [errors, setErrors] = useState(null);
-
   const [paymentTotal, setPaymentTotal] = useState(0);
-
   const [tip, setTip] = useState(0.15);
-
-
+  const { enqueueSnackbar: loadSnackbar } = useSnackbar();
+  const [loading, setLoading] = useState(false);
   const [orderTotal, setOrderTotal] = useState(0);
-
   const cookies = new Cookies();
   const cookieAddress = cookies.get("Address");
-
   const [address, setAddress] = useState(cookieAddress);
 
   const handleNext = () => {
@@ -82,6 +76,10 @@ const Checkout = () => {
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
     setErrors(null);
+  };
+
+  const loadingUpdate = (update, variant) => {
+    loadSnackbar(update, { variant });
   };
 
   const handleReset = () => {
@@ -163,9 +161,10 @@ const Checkout = () => {
       
       let testVar = Math.round((totalAmt + Number.EPSILON) * 100).toString()
       console.log("hello", testVar)
-
-      setClientSecret( (await getStripeSecret(testVar)).data.secret)
-
+        loadingUpdate("Preparing payment","info")
+        setLoading(true)
+        setClientSecret( (await getStripeSecret(testVar)).data.secret)
+        setLoading(false)
       }
   }, [activeStep]);
 
@@ -185,6 +184,12 @@ const Checkout = () => {
         <div className="text-center mt-5">
           <h1>Checkout</h1>
         </div>
+        <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={loading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
 
         <Box sx={{ width: "100%" }}>
           <Stepper activeStep={activeStep}>
@@ -221,10 +226,11 @@ const Checkout = () => {
                   Back
                 </Button>
                 <Box sx={{ flex: "1 1 auto" }} />
-
-                <Button onClick={handleNext}>
-                  {activeStep === steps.length - 1 ? "Finish" : "Next"}
-                </Button>
+                {activeStep != 2 && 
+                  <Button onClick={handleNext}>
+                    {activeStep === 2 ? "Finish" : "Next"}
+                  </Button>
+                }
               </Box>
 
               {activeStep === 0 && (
@@ -644,4 +650,11 @@ const Checkout = () => {
     </div>
   );
 };
-export default Checkout;
+
+export default function Checkout() {
+  return (
+    <SnackbarProvider maxSnack={3}>
+      <CheckoutPage />
+    </SnackbarProvider>
+  );
+}

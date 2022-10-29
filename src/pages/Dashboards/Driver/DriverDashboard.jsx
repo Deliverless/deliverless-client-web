@@ -34,14 +34,17 @@ function DriverDashboardPage() {
   };
 
   useEffect(async () => {
+    let rests2;
     if (rests?.length == 0) {
-      setRests(await requestRestaurants());
+      rests2 = await requestRestaurants()
+      setRests(rests2);
+      return getOrders(rests2);
     }
+    getOrders(rests);
     console.log("rests", rests);
-    getOrders();
   }, []);
 
-  const getOrders = async () => {
+  const getOrders = async (_rests) => {
     loadingUpdate("Fetching orders from the blockchain...", "info");
     setLoading(true);
     let availOrders = (
@@ -57,7 +60,7 @@ function DriverDashboardPage() {
         rev +=
           availOrders[i].tip * availOrders[i].subtotal +
           availOrders[i].driverFee;
-      availOrders[i].restaurant = rests.find(
+      availOrders[i].restaurant = _rests.find(
         (r) => r.id == availOrders[i].restaurantId
       );
     }

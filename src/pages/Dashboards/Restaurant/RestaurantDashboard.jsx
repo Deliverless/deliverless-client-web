@@ -38,16 +38,20 @@ function RestaurantDashboardPage() {
   }
 
   useEffect(async ()=>{
+    let rests2;
     if(rests?.length == 0){
-      setRests(await requestRestaurants());
+      rests2 = await requestRestaurants()
+      setRests(rests2);
+      return getOrders(rests2);
     }
+    getOrders(rests);
     console.log("rests", rests);
-    getOrders();
+   
   },[])
 
   
 
-  const getOrders = async () => {
+  const getOrders = async (_rests) => {
     loadingUpdate("Fetching orders from the blockchain...", "info")
     setLoading(true)
     let availOrders = (await findObjectsByMetadata("order", {restaurantId: user.restaurant.id}, 21)).data;
@@ -58,7 +62,7 @@ function RestaurantDashboardPage() {
     let rev = 0;
     for(let i = 0; i < availOrders.length; i++){
       if(availOrders[i].status !== "Pending" && availOrders[i].status !== "Cancelled") rev += (availOrders[i].tax + availOrders[i].subtotal)
-      availOrders[i].restaurant = rests.find(r=> r.id == availOrders[i].restaurantId)
+      availOrders[i].restaurant = _rests.find(r=> r.id == availOrders[i].restaurantId)
     }
     setTotalRev(Math.round(rev * 100) / 100);
     setOrders(availOrders);
