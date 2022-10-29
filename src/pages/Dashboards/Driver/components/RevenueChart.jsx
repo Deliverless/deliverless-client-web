@@ -2,6 +2,7 @@ import React from "react";
 import { AreaChart, Area, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 export default function RevenueChart({data}) {
+  console.log("data", data)
   
   return (
     <>

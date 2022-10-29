@@ -142,10 +142,11 @@ const ResponsiveAppBar = () => {
             variant="h6"
             noWrap
             component="div"
-            sx={{marginLeft:'30px'}}
+            sx={{marginLeft:'30px', marginRight:'10px'}}
           >
-            Deliver Less
+            The Food Chain
           </Typography>
+          <img src={process.env.PUBLIC_URL + '/img/FOODCHAINlogowhite.png'} width='90px'></img>
           {location.pathname != "/landing" && <AddressPickupSelector/> }
         </Toolbar>
       </AppBar>

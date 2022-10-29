@@ -73,25 +73,37 @@ export const delegateOrder = async (order) => {
     let isValidDriver = false, randomDriver;
 
     if (!drivers || !allPendingOrders || drivers.length === 0) {
-        console.log("returning false", drivers)
-        return false;
+        console.log("returning false", drivers);
+        return {
+            status: false
+        };
     }
     console.log("Drivers to pick from", drivers);
     console.log("Orders to check", allPendingOrders);
-    let tries = 10;
+    let tries = drivers.length;
+    let alreadyPicked = [];
     do {
         tries--;
         //pick random driver from drivers
         randomDriver = drivers[Math.floor((Math.random() * drivers.length))]
+        if (alreadyPicked.includes(randomDriver)) {
+            tries++;
+            continue;
+        }
         //fetch all pending orders, if any contain the selected randomDriver id, the driver already has an order pending and it thereby invalid, loop, try again.
         isValidDriver = !allPendingOrders.some((o) => {
             return o.driverId == randomDriver.id;
         });
+        if (!isValidDriver) alreadyPicked.push(randomDriver)
     } while (!isValidDriver && tries > 0);
     //assign order to driver
-    if (isValidDriver) updateObject("order", order.id, { driverId: randomDriver.id });
+    if (!isValidDriver) {
+        randomDriver = drivers[Math.floor((Math.random() * drivers.length))]
+    }
+
+    updateObject("order", order.id, { driverId: randomDriver.id });
     return {
-        status: tries != 0,
+        status: true,
         driverId: randomDriver.id
     };
 }
