@@ -88,14 +88,14 @@ function Row(props) {
                     <TableCell component="th" scope="row">
                      tax
                     </TableCell>
-                    <TableCell align="right">{row.tax}</TableCell>
+                    <TableCell align="right">{Math.round((row.tax + Number.EPSILON) * 100) / 100}</TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell colSpan={2} />
                     <TableCell component="th" scope="row">
                      Total
                     </TableCell>
-                    <TableCell align="right">{row.total}</TableCell>
+                    <TableCell align="right">{Math.round((row.total + Number.EPSILON) * 100) / 100}</TableCell>
                   </TableRow>
               </TableBody>
             </Table>

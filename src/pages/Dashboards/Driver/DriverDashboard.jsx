@@ -72,8 +72,7 @@ function DriverDashboardPage() {
   const parseGraphData = () => {
     let sortedOrders = [...orders].sort(function(x, y){
       return new Date(x.timestamp).getTime() -  new Date(y.timestamp).getTime()
-  })
-  console.log("sorted", sortedOrders)
+    })
     const groupByCategory = sortedOrders.reduce((group, order) => {
       const { timestamp } = order;
       const category =
@@ -104,8 +103,6 @@ function DriverDashboardPage() {
         Total: total,
       };
     });
-    
-    return groupByCategory;
   };
 
   return (
@@ -148,7 +145,6 @@ function DriverDashboardPage() {
             <h4>Revenue (all time)</h4>
             <RevenueChart
               data={parseGraphData()}
-
               orders={orders.filter((o) => o.status == "Delivered")}
             />
           </div>

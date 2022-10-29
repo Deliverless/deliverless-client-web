@@ -12,7 +12,7 @@ var url = 'https://api.mapbox.com/directions/v5/mapbox/driving-traffic'
  */
 export const getDirections = async ({ lat: lat1, lon: lon1 }, { lat: lat2, lon: lon2 }) => {
 
-    return (await axios.get(`${url}/${lon1},${lat1};${lon2},${lat2}/?geometries=geojson&access_token=${process.env.REACT_APP_MAPBOX_APIKEY}`)
+    return (await axios.get(`${url}/${lon1},${lat1};${lon2},${lat2}/?geometries=geojson&overview=full&access_token=${process.env.REACT_APP_MAPBOX_APIKEY}`)
         .catch(function (error) {
             console.log(error);
         })

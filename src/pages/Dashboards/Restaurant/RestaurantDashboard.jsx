@@ -49,16 +49,14 @@ function RestaurantDashboardPage() {
    
   },[])
 
-  
-
   const getOrders = async (_rests) => {
     loadingUpdate("Fetching orders from the blockchain...", "info")
     setLoading(true)
     let availOrders = (await findObjectsByMetadata("order", {restaurantId: user.restaurant.id}, 21)).data;
     console.log("ords", availOrders);
-
-    setOrderNum((availOrders.filter(o=>o.status != "Pending" && o.status == "Cancelled")).length);
-
+    let temp = (availOrders.filter(o=> (o.status != "Pending" && o.status != "Cancelled"))).length
+    setOrderNum(temp);
+    console.log("ordernum", temp)
     let rev = 0;
     for(let i = 0; i < availOrders.length; i++){
       if(availOrders[i].status !== "Pending" && availOrders[i].status !== "Cancelled") rev += (availOrders[i].tax + availOrders[i].subtotal)
@@ -68,6 +66,42 @@ function RestaurantDashboardPage() {
     setOrders(availOrders);
     setLoading(false)
   }
+
+  const parseGraphData = () => {
+    let sortedOrders = [...orders].sort(function(x, y){
+      return new Date(x.timestamp).getTime() -  new Date(y.timestamp).getTime()
+    })
+    const groupByCategory = sortedOrders.reduce((group, order) => {
+      const { timestamp } = order;
+      const category =
+        new Date(timestamp).toLocaleString("default", {
+          month: "long",
+        }) +
+        " " +
+        new Date(timestamp).getDate();
+
+      group[category] = group[category] ?? [];
+      group[category].push(order);
+      return group;
+    }, {});
+
+    return Object.values(groupByCategory).map((g) => {
+      var total = 0;
+      for (let i = 0; i < g.length; i++) {
+        let o = g[i];
+        total += o.tip * o.subtotal + o.driverFee;
+      }
+      return {
+        name:
+          new Date(g[0].timestamp).toLocaleString("default", {
+            month: "long",
+          }) +
+          " " +
+          new Date(g[0].timestamp).getDate(),
+        Total: total,
+      };
+    });
+  };
 
   return (
     <div className="main-content container">
@@ -93,14 +127,9 @@ function RestaurantDashboardPage() {
         <div className="col">
             <div style={{maxWidth:'500px'}}>
               <h4>Revenue (all time)</h4>
-              <RevenueChart data={orders.filter((o) => o.status !== "Pending" && o.status !== "Cancelled").map((o) => {
-                return {
-                  name: new Date(o.timestamp).toLocaleString("default", {
-                    month: "long",
-                  }),
-                  Total: o.tax + o.subtotal
-                };
-              })}/>
+              <RevenueChart 
+                data={parseGraphData()} 
+                orders={orders.filter((o) => o.status == "Delivered")}/>
             </div>
         </div>
         <div className="col">
