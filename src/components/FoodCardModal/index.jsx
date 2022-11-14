@@ -39,7 +39,7 @@ import OptionControls from './components/OptionControls';
 const FoodCardModal = ({ 
   show, 
   onHide, 
-  restaurantId, 
+  restaurant, 
   food, 
   edit, 
   isLoading,
@@ -52,26 +52,25 @@ const FoodCardModal = ({
   const dispatch = useDispatch();
 
   const updateFoodItem = (values) => {
+    // console.log("values", values);
+    // console.log("food", food);
     let itemChanges = getDifference(food, values);
-      itemChanges = Object.keys(itemChanges).reduce((acc, key) => {
-        if (Array.isArray(itemChanges[key])) {
-          acc[key] = editFormik.values[key];
-        } else if (itemChanges[key] !== undefined) {
-          acc[key] = itemChanges[key];
-        }
-        return acc;
-      }, {});
-      dispatch({ type: 'SET_RESTAURANT_ITEM', payload: { restaurantId, id: food.id, data: itemChanges } });
+    // console.log("itemChanges", itemChanges);
+
+    dispatch({
+      type: "SET_RESTAURANT_ITEM",
+      payload: { restaurant, id: food.id, data: itemChanges },
+    });
   };
 
   const addFoodItem = (values) => {
     console.log('addFoodItem', values);
-    dispatch({ type: 'ADD_RESTAURANT_ITEM', payload: { restaurantId, data: values } });
+    dispatch({ type: 'ADD_RESTAURANT_ITEM', payload: { restaurant, data: values } });
   };
 
   const deleteFoodItem = () => {
     setIsUpdated(true);
-    dispatch({ type: 'DELETE_RESTAURANT_ITEM', payload: { restaurantId, id: food.id } });
+    dispatch({ type: 'DELETE_RESTAURANT_ITEM', payload: { restaurant, id: food.id } });
   };
 
   const editSchema = Yup.object().shape({
@@ -116,7 +115,7 @@ const FoodCardModal = ({
     validationSchema: editSchema,
     enableReinitialize: true,
     onSubmit: (values) => {
-      console.log("values", values);
+      // console.log("values", values);
       if (values.id) {
         updateFoodItem(values);
       } else {
@@ -142,15 +141,12 @@ const FoodCardModal = ({
     if (JSON.stringify(o1) === JSON.stringify(o2)) return;
   
     for (var k in o1) {
+      // console.log("o1[k]", o1[k]);
+      // console.log("o2[k]", o2[k]);
       if (Array.isArray(o1[k]) && Array.isArray(o2[k])) {
-        tmp = o1[k].reduce(function(p, c, i) {
-          var _t = getDifference(c, o2[k][i]);
-          if (_t)
-            p.push(_t);
-          return p;
-        }, []);
-        if (Object.keys(tmp).length > 0)
-          diff[k] = tmp;
+        if (JSON.stringify(o1[k]) !== JSON.stringify(o2[k])) {
+          diff[k] = o2[k];
+        }
       } else if (typeof(o1[k]) === "object" && typeof(o2[k]) === "object") {
         tmp = getDifference(o1[k], o2[k]);
         if (tmp && Object.keys(tmp) > 0)
@@ -187,24 +183,24 @@ const FoodCardModal = ({
   };
 
   useEffect(() => {
-    cartItem.restaurantId = restaurantId;
+    cartItem.restaurantId = restaurant ? restaurant.restaurantId : '';
     cartItem.selectedOptions = [];
     cartItem.quantity = 1;
     setTotalPrice(parseFloat(food.price));
-    setCartItem({ ...food, restaurantId, selectedOptions: [], quantity: 1 });
-    console.log("food", food);
+    setCartItem({ ...food, restaurantId: restaurant ? restaurant.restaurantId : '', selectedOptions: [], quantity: 1 });
+    // console.log("food", food);
     editFormik.setValues(food);
-  }, [food, restaurantId]);
+  }, [food, restaurant]);
 
   useEffect(() => {
-    console.log("isLoading", isLoading);
-    console.log("isUpdated", isUpdated);
+    // console.log("isLoading", isLoading);
+    // console.log("isUpdated", isUpdated);
     isLoading === false && isUpdated && onHide();
   }, [isLoading]);
 
-  useEffect(() => {
-    console.log("editFormik", editFormik.values);
-  }, [editFormik.values]);
+  // useEffect(() => {
+  //   console.log("editFormik", editFormik.values);
+  // }, [editFormik.values]);
 
   useEffect(() => {
     show && edit && editFormik.setValues(food);

@@ -22,13 +22,23 @@ export const restaurantsSlice = createSlice({
         }
       });
     },
+    setRestaurant: (state, action) => {
+      const index = state.list.findIndex((r) => r.id === action.payload.id);
+      if (index !== -1) {
+        state.list[index] = action.payload;
+      } else {
+        state.list.push(action.payload);
+      }
+    },
     setSelectedRestaurantId: (state, action) => {
       state.selectedRestaurantId = action.payload;
     },
     setRestaurantItems: (state, action) => {
       const restaurant = state.list.find(
-        (restaurant) => restaurant.id === action.payload.id
+        (restaurant) => restaurant.id === action.payload.restaurantId
       );
+      // console.log("restaurant", restaurant);
+      // console.log("action.payload", action.payload);
       restaurant.items = action.payload.items;
     },
     setIsSyncing: (state, action) => {
@@ -40,4 +50,4 @@ export const restaurantsSlice = createSlice({
   },
 });
 
-export const { addRestaurant, setRestaurants, setSelectedRestaurantId, setRestaurantItems, setIsSyncing, setIsLoading } = restaurantsSlice.actions;
+export const { addRestaurant, setRestaurants, setRestaurant, setSelectedRestaurantId, setRestaurantItems, setIsSyncing, setIsLoading } = restaurantsSlice.actions;

@@ -13,7 +13,6 @@ import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import { Divider } from '@mui/material';
 
 const OptionControls = ({addLabel, removeLabel, useFormik, indexMain, indexSub, indexOption, depth=0}) => {
-  const [isAddDisabled, setIsAddDisabled] = React.useState(false);
   const [isRemoveDisabled, setIsRemoveDisabled] = React.useState(false);
   const [isMoveUpDisabled, setIsMoveUpDisabled] = React.useState(false);
   const [isMoveDownDisabled, setIsMoveDownDisabled] = React.useState(false);

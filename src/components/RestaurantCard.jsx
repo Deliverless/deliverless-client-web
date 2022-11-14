@@ -18,7 +18,7 @@ const RestaurantCard = ({ restauId, name, image, address}) => {
 	const getRestaurantMenu = async () =>{
 		navigate(`/restaurants/${name}`);
 		dispatch({
-			type: "SET_RESTAURANT",
+			type: "SET_SELECTED_RESTAURANT_ID",
 			payload: { id: restauId },
 		});
 	}
