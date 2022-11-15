@@ -1,24 +1,36 @@
 import './styles.scss';
 
-import React from 'react';
+import React, {
+  useEffect,
+  useState,
+} from 'react';
 
+import { useDispatch } from 'react-redux';
+
+import { capitalize } from '@material-ui/core/utils';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown';
 import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
-import { Skeleton } from '@mui/material';
+import {
+  Button,
+  Skeleton,
+} from '@mui/material';
 
 import FoodCardModel from '../FoodCardModal';
 import Item from './components/Item';
 
 export default function ItemList({ 
-  history,
   restaurant,
   edit = false,
   inheritWidth = false,
   isLoading = false,
   }) {
-  const [item, setItem] = React.useState();
-  const [showFoodCard, setShowFoodCard] = React.useState(false);
+  const [item, setItem] = useState();
+  const [showFoodCard, setShowFoodCard] = useState(false);
+  const [isMenuOrderChanged, setIsMenuOrderChanged] = useState(false);
+  const [tempRestaurant, setTempRestaurant] = useState({ ...restaurant });
+
+  const dispatch = useDispatch();
 
   const DEFAULT_ITEM = {
     restaurantId: restaurant ? restaurant.id : "",
@@ -33,6 +45,21 @@ export default function ItemList({
     price: 0,
     quantity: 1,
     size: "",
+  };
+
+  const moveMenuCategory = (index, direction) => {
+    const menu = { ...tempRestaurant.menu };
+    const tempMenucategory = { ...menu[index] };
+    const tempMenucategory2 = { ...menu[index + direction] };
+    menu[index] = tempMenucategory2;
+    menu[index + direction] = tempMenucategory;
+    tempRestaurant.menu = menu;
+    if (JSON.stringify(tempRestaurant.menu) !== JSON.stringify(restaurant.menu)) {
+      setIsMenuOrderChanged(true);
+    } else {
+      setIsMenuOrderChanged(false);
+    }
+    setTempRestaurant({ ...tempRestaurant });
   };
   
   const addNewCategory = () => {
@@ -53,7 +80,7 @@ export default function ItemList({
     );
   };
 
-  const getMenuItems = () => {
+  const getMenuItems = (restaurant) => {
     const menuCategories = Object.values(restaurant.menu).map((categoryObj, index) => {
       const categoryName =
         categoryObj.name.charAt(0).toUpperCase() + categoryObj.name.slice(1);
@@ -74,8 +101,22 @@ export default function ItemList({
         <div className='col-md-12 d-flex flex-row' key={index}>
           {edit && (
             <div className='move-cat col-md-1'>
-              <ArrowCircleUpIcon className='move-cat-icon-up' />
-              <ArrowCircleDownIcon className='move-cat-icon-down' />
+              <ArrowCircleUpIcon 
+                className={'move-cat-icon-up' + (index === 0 ? ' disabled' : '')}
+                onClick={() => {
+                  if (index > 0) {
+                    moveMenuCategory(index, -1);
+                  }
+                }}
+              />
+              <ArrowCircleDownIcon 
+                className={'move-cat-icon-down' + (index === Object.keys(restaurant.menu).length - 1 ? ' disabled' : '')}
+                onClick={() => {
+                  if (index < Object.keys(restaurant.menu).length - 1) {
+                    moveMenuCategory(index, 1);
+                  }
+                }}
+              />
             </div>
           )}
           <div className={edit ? 'col-md-11' : 'col-md-12'}>
@@ -88,7 +129,7 @@ export default function ItemList({
                   {categoryName}
                 </span>
               </div>
-              <div className="restaurant.menu-restaurant.items col-md-12 d-flex flex-wrap">
+              <div className="col-md-12 d-flex flex-wrap">
                 {menuItems.filter((item) => item.status === undefined || item.status !== "BURNED").map((item, index) => {
                   return <Item key={index} item={item} onClick={() => handleItemClick(item)} restaurantId={restaurant.id}/>;
                 })}
@@ -104,7 +145,7 @@ export default function ItemList({
                     }}
                     restaurantId={restaurant.id}
                     onClick={() => {
-                      setItem(DEFAULT_ITEM);
+                      setItem({...DEFAULT_ITEM, category: capitalize(categoryObj.name)});
                       setShowFoodCard(true);
                     }}
                   />
@@ -118,89 +159,129 @@ export default function ItemList({
     return menuCategories;
   };
 
+  const updateRestaurantMenu = () => {
+    dispatch({
+      type: "UPDATE_RESTAURANT",
+      payload: {
+        id: restaurant.id,
+        data: {
+          menu: tempRestaurant.menu,
+        },
+      },
+    });
+  };
+
   const handleItemClick = (item) => {
     setItem(item);
     setShowFoodCard(true);
   };
 
+  useEffect(() => {
+    setTempRestaurant({ ...restaurant });
+  }, [restaurant]);
+    
   return (
     <div className="col-12">
+      {isMenuOrderChanged && (
+        <div className="apply-changes-container">
+          <Button
+            className="cancel-changes-button"
+            onClick={() => {
+              setTempRestaurant({ ...restaurant });
+              setIsMenuOrderChanged(false);
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            className="apply-changes-button"
+            onClick={() => {
+              updateRestaurantMenu();
+              setIsMenuOrderChanged(false);
+            }}
+          >
+            Apply Changes
+          </Button>
+        </div>
+      )}
       <div className={inheritWidth ? "col-12" : "col-10 offset-1"}>
-        {edit && (
-          addNewCategory()
-        )}
-        {restaurant && restaurant.items && restaurant.menu ? (
-          <div className="row">
-            <div className="col-md-12">
-              {getMenuItems()}
+          {!isLoading && tempRestaurant && tempRestaurant.items && tempRestaurant.items.length > 0 && tempRestaurant.menu ? (
+          <div>
+            {edit && addNewCategory()}
+            <div className="row">
+              <div className="col-md-12">
+                {getMenuItems(tempRestaurant)}
+              </div>
             </div>
+            {edit && addNewCategory()}
           </div>
         ) : (
-          <div className="row">
-            <div className="col-md-12 pt-5">
-              <Skeleton variant="text" sx={{ fontSize: "1.5rem", width: "25%", marginBottom: "10px" }} />
-              <div className="row">
-                <div className="col-md-4 pt-3">
+          <div>
+            {edit && (<Skeleton variant="rectangular" width="100%" height="100px" className="mt-3" />)}
+            <div className="row">
+              <div className="col-md-12 pt-5">
+                <Skeleton variant="text" sx={{ fontSize: "1.5rem", width: "25%", marginBottom: "10px" }} />
+                <div className="row">
+                  <div className="col-md-4 pt-3">
+                    <Skeleton variant="rectangular" width="100%" height="150px" />
+                    <Skeleton variant="text" sx={{ fontSize: "1rem", width: "40%", marginTop: "5px" }} />
+                    <Skeleton variant="text" sx={{ fontSize: "1rem", width: "30%", marginTop: "5px" }} />
+                  </div>
+                  <div className="col-md-4 pt-3">
                   <Skeleton variant="rectangular" width="100%" height="150px" />
-                  <Skeleton variant="text" sx={{ fontSize: "1rem", width: "40%", marginTop: "5px" }} />
-                  <Skeleton variant="text" sx={{ fontSize: "1rem", width: "30%", marginTop: "5px" }} />
+                    <Skeleton variant="text" sx={{ fontSize: "1rem", width: "40%", marginTop: "5px" }} />
+                    <Skeleton variant="text" sx={{ fontSize: "1rem", width: "30%", marginTop: "5px" }} />
+                  </div>
+                  <div className="col-md-4 pt-3">
+                  <Skeleton variant="rectangular" width="100%" height="150px" />
+                    <Skeleton variant="text" sx={{ fontSize: "1rem", width: "40%", marginTop: "5px" }} />
+                    <Skeleton variant="text" sx={{ fontSize: "1rem", width: "30%", marginTop: "5px" }} />
+                  </div>
                 </div>
-                <div className="col-md-4 pt-3">
-                <Skeleton variant="rectangular" width="100%" height="150px" />
-                  <Skeleton variant="text" sx={{ fontSize: "1rem", width: "40%", marginTop: "5px" }} />
-                  <Skeleton variant="text" sx={{ fontSize: "1rem", width: "30%", marginTop: "5px" }} />
+              </div>
+              <div className="col-md-12 pt-5">
+                <Skeleton variant="text" sx={{ fontSize: "1.5rem", width: "25%", marginBottom: "10px" }} />
+                <div className="row">
+                  <div className="col-md-4 pt-3">
+                    <Skeleton variant="rectangular" width="100%" height="150px" />
+                    <Skeleton variant="text" sx={{ fontSize: "1rem", width: "40%", marginTop: "5px" }} />
+                    <Skeleton variant="text" sx={{ fontSize: "1rem", width: "30%", marginTop: "5px" }} />
+                  </div>
+                  <div className="col-md-4 pt-3">
+                  <Skeleton variant="rectangular" width="100%" height="150px" />
+                    <Skeleton variant="text" sx={{ fontSize: "1rem", width: "40%", marginTop: "5px" }} />
+                    <Skeleton variant="text" sx={{ fontSize: "1rem", width: "30%", marginTop: "5px" }} />
+                  </div>
+                  <div className="col-md-4 pt-3">
+                  <Skeleton variant="rectangular" width="100%" height="150px" />
+                    <Skeleton variant="text" sx={{ fontSize: "1rem", width: "40%", marginTop: "5px" }} />
+                    <Skeleton variant="text" sx={{ fontSize: "1rem", width: "30%", marginTop: "5px" }} />
+                  </div>
                 </div>
-                <div className="col-md-4 pt-3">
-                <Skeleton variant="rectangular" width="100%" height="150px" />
-                  <Skeleton variant="text" sx={{ fontSize: "1rem", width: "40%", marginTop: "5px" }} />
-                  <Skeleton variant="text" sx={{ fontSize: "1rem", width: "30%", marginTop: "5px" }} />
+              </div>
+              <div className="col-md-12 pt-5">
+                <Skeleton variant="text" sx={{ fontSize: "1.5rem", width: "25%", marginBottom: "10px" }} />
+                <div className="row">
+                  <div className="col-md-4 pt-3">
+                    <Skeleton variant="rectangular" width="100%" height="150px" />
+                    <Skeleton variant="text" sx={{ fontSize: "1rem", width: "40%", marginTop: "5px" }} />
+                    <Skeleton variant="text" sx={{ fontSize: "1rem", width: "30%", marginTop: "5px" }} />
+                  </div>
+                  <div className="col-md-4 pt-3">
+                  <Skeleton variant="rectangular" width="100%" height="150px" />
+                    <Skeleton variant="text" sx={{ fontSize: "1rem", width: "40%", marginTop: "5px" }} />
+                    <Skeleton variant="text" sx={{ fontSize: "1rem", width: "30%", marginTop: "5px" }} />
+                  </div>
+                  <div className="col-md-4 pt-3">
+                  <Skeleton variant="rectangular" width="100%" height="150px" />
+                    <Skeleton variant="text" sx={{ fontSize: "1rem", width: "40%", marginTop: "5px" }} />
+                    <Skeleton variant="text" sx={{ fontSize: "1rem", width: "30%", marginTop: "5px" }} />
+                  </div>
                 </div>
               </div>
             </div>
-            <div className="col-md-12 pt-5">
-              <Skeleton variant="text" sx={{ fontSize: "1.5rem", width: "25%", marginBottom: "10px" }} />
-              <div className="row">
-                <div className="col-md-4 pt-3">
-                  <Skeleton variant="rectangular" width="100%" height="150px" />
-                  <Skeleton variant="text" sx={{ fontSize: "1rem", width: "40%", marginTop: "5px" }} />
-                  <Skeleton variant="text" sx={{ fontSize: "1rem", width: "30%", marginTop: "5px" }} />
-                </div>
-                <div className="col-md-4 pt-3">
-                <Skeleton variant="rectangular" width="100%" height="150px" />
-                  <Skeleton variant="text" sx={{ fontSize: "1rem", width: "40%", marginTop: "5px" }} />
-                  <Skeleton variant="text" sx={{ fontSize: "1rem", width: "30%", marginTop: "5px" }} />
-                </div>
-                <div className="col-md-4 pt-3">
-                <Skeleton variant="rectangular" width="100%" height="150px" />
-                  <Skeleton variant="text" sx={{ fontSize: "1rem", width: "40%", marginTop: "5px" }} />
-                  <Skeleton variant="text" sx={{ fontSize: "1rem", width: "30%", marginTop: "5px" }} />
-                </div>
-              </div>
-            </div>
-            <div className="col-md-12 pt-5">
-              <Skeleton variant="text" sx={{ fontSize: "1.5rem", width: "25%", marginBottom: "10px" }} />
-              <div className="row">
-                <div className="col-md-4 pt-3">
-                  <Skeleton variant="rectangular" width="100%" height="150px" />
-                  <Skeleton variant="text" sx={{ fontSize: "1rem", width: "40%", marginTop: "5px" }} />
-                  <Skeleton variant="text" sx={{ fontSize: "1rem", width: "30%", marginTop: "5px" }} />
-                </div>
-                <div className="col-md-4 pt-3">
-                <Skeleton variant="rectangular" width="100%" height="150px" />
-                  <Skeleton variant="text" sx={{ fontSize: "1rem", width: "40%", marginTop: "5px" }} />
-                  <Skeleton variant="text" sx={{ fontSize: "1rem", width: "30%", marginTop: "5px" }} />
-                </div>
-                <div className="col-md-4 pt-3">
-                <Skeleton variant="rectangular" width="100%" height="150px" />
-                  <Skeleton variant="text" sx={{ fontSize: "1rem", width: "40%", marginTop: "5px" }} />
-                  <Skeleton variant="text" sx={{ fontSize: "1rem", width: "30%", marginTop: "5px" }} />
-                </div>
-              </div>
-            </div>
+            {edit && (<Skeleton variant="rectangular" width="100%" height="100px" className="mt-5" />)}
           </div>
-        )}
-        {edit && (
-          addNewCategory()
         )}
       </div>
 
@@ -208,7 +289,7 @@ export default function ItemList({
         show={showFoodCard}
         onHide={() => setShowFoodCard(false)}
         food={item || DEFAULT_ITEM}
-        restaurantId={restaurant ? restaurant.id : ""}
+        restaurant={restaurant}
         edit={edit}
         isLoading={isLoading}
       />

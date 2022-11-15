@@ -31,7 +31,6 @@ export default function RestaurantAccount() {
 
 	const initializeRestaurant = () => {
 		if (selectedRestaurantId) {
-			// console.log('initializeRestaurant', selectedRestaurantId, restaurantList);
 			const res_restaurant = restaurantList.find(restaurant => restaurant.id === selectedRestaurantId);
 			if (res_restaurant) {
 				const new_restaurant = new Restaurant();
@@ -46,16 +45,14 @@ export default function RestaurantAccount() {
 	};
 
 	const fetchRestaurantItems = async () => {
-    dispatch({ type: 'GET_RESTAURANT_ITEMS', payload: { id: selectedRestaurantId } });
+    dispatch({ type: 'GET_RESTAURANT_ITEMS', payload: { restaurantId: selectedRestaurantId } });
   };
 
 	useEffect(() => {
-		// console.log('restaurantList useEffect', restaurantList);
 		initializeRestaurant();
 	}, [restaurantList]);
 
   useEffect(() => {
-    console.log("restaurantDetail useEffect", restaurant);
     restaurant && restaurant.id && restaurant.items.length === 0 && fetchRestaurantItems();
   }, [restaurant]);
 

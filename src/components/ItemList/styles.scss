@@ -81,10 +81,41 @@
       color: #000;
     }
 
+    &.disabled {
+      color: #ccc;
+      cursor: not-allowed;
+    }
+
   }
 
   .move-cat-icon-down {
     margin-top: 1rem;
+  }
+
+}
+
+.apply-changes-container {
+  position: fixed;
+  bottom: 5%;
+  right: 5%;
+  z-index: 1000;
+  
+  Button {
+    color: #fff;
+    background-color: #1976d2;
+  }
+
+  .cancel-changes-button {
+    margin-right: 1rem;
+    background-color: #424242;
+  }
+
+  Button:hover {
+    background-color: #2196f3;
+  }
+
+  .cancel-changes-button:hover {
+    background-color: #616161;
   }
 
 }

@@ -42,7 +42,7 @@ export default function RestaurantsHome({ history }) {
 	};
 
 	const fetchRestaurantItems = async () => {
-    dispatch({ type: 'GET_RESTAURANT_ITEMS', payload: { id: selectedRestaurantId } });
+    dispatch({ type: 'GET_RESTAURANT_ITEMS', payload: { restaurantId: selectedRestaurantId } });
   };
 
 	useEffect(() => {
