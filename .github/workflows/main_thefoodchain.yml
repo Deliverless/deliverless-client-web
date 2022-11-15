@@ -53,7 +53,7 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'deliverless'
+          app-name: 'thefoodchain'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_A8A8BFF8BC8F4920881A03B8AACAD978 }}
           package: .
