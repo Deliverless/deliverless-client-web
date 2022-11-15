@@ -104,6 +104,30 @@ export default class Restaurant {
 
 }
 
+export const getLocalRestaurants = () => {
+    const restaurants = JSON.parse(localStorage.getItem('restaurants'));
+    return restaurants;
+}
+
+export const setLocalRestaurants = (restaurants) => {
+    localStorage.setItem('restaurants', JSON.stringify(restaurants));
+}
+
+export const getLocalRestaurantItems = (restaurantId) => {
+    const restaurants = getLocalRestaurants();
+    const restaurant = restaurants.find(restaurant => restaurant.id === restaurantId);
+    return restaurant ? restaurant.items : [];
+}
+
+export const setLocalRestaurantItems = (restaurantId, items) => {
+    const restaurants = getLocalRestaurants();
+    const restaurant = restaurants.find(restaurant => restaurant.id === restaurantId);
+    if (restaurant) {
+        restaurant.items = items;
+        setLocalRestaurants(restaurants);
+    }
+}
+
 export const requestRestaurantItems = async (restaurantId) => {
     const items = findObjectsByMetadata('Item', { restaurantId: restaurantId }, 0);
     return items;

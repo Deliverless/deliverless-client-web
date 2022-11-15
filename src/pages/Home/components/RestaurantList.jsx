@@ -15,6 +15,7 @@ import RestaurantCards from '../../../components/RestaurantCards';
 import RestaurantExplorer from '../../../components/RestaurantExplorer';
 import Toggle from '../../../components/Toggle';
 import { RestContext } from '../../../lib/context/restContext';
+import SyncScreen from '../../../lib/layout/SyncScreen';
 
 const DEFAULT_CUISINES = [
   'All',
@@ -39,7 +40,7 @@ const DEFAULT_CUISINES = [
   'Vietnamese',
 ];
 
-export default function RestaurantList({ history, restaurantList }) {
+export default function RestaurantList({ history, restaurantList, isSyncing }) {
   const [filteredRestaurantList, setFilteredRestaurantList] = useState([]);
   const [listView, setListView] = useState(true);
   const [cusinieList, setCusinieList] = useState([]);
@@ -90,6 +91,7 @@ export default function RestaurantList({ history, restaurantList }) {
 
   return (
     <div className="main-content">
+      <SyncScreen isSyncing={isSyncing} />
       <div className="cusinie-list masked-overflow col-12">
         {cusinieList.length > 0 ? (
           cusinieList.map((cusinie) => (
