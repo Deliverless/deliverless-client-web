@@ -7,16 +7,19 @@ import {
 import {
   createRestaurantItem,
   deleteRestaurantItem,
+  getLocalRestaurants,
   requestRestaurantById,
   requestRestaurantByName,
   requestRestaurantItems,
   requestRestaurants,
+  setLocalRestaurants,
   updateRestaurant,
   updateRestaurantItem,
 } from '../../models/restaurant';
 import {
   addRestaurant,
   setIsLoading,
+  setIsSyncing,
   setRestaurant,
   setRestaurantItems,
   setRestaurants,
@@ -24,8 +27,13 @@ import {
 } from '../redux/restaurantRedux';
 
 function* fetchRestaurantsSaga() {
-  const restaurants = yield call(requestRestaurants);
-  yield put(setRestaurants(restaurants));
+  const local_restaurants = yield call(getLocalRestaurants);
+  yield put(setRestaurants(local_restaurants ? local_restaurants : []));
+  yield put(setIsSyncing(true));
+  const eth_restaurants = yield call(requestRestaurants);
+  yield call(setLocalRestaurants, eth_restaurants);
+  yield put(setRestaurants(eth_restaurants));
+  yield put(setIsSyncing(false));
 }
 
 function* fetchRestaurantByIdSaga(action) {
@@ -43,6 +51,17 @@ function* fetchRestaurantItemsSaga(action) {
   const items = yield call(requestRestaurantItems, action.payload.restaurantId);
   yield put(setRestaurantItems({ restaurantId: action.payload.restaurantId, items: items.data }));
 }
+
+// TODO: add error handling
+// function* fetchRestaurantItemsSaga(action) {
+//   const local_items = yield call(getLocalRestaurantItems, action.payload.restaurantId);
+//   yield put(setRestaurantItems({ restaurantId: action.payload.restaurantId, items: local_items ? local_items : [] }));
+//   yield put(setIsSyncing(true));
+//   const eth_items = yield call(requestRestaurantItems, action.payload.restaurantId);
+//   yield put(setRestaurantItems({ restaurantId: action.payload.restaurantId, items: eth_items.data }));
+//   yield call(setLocalRestaurantItems, action.payload.restaurantId, eth_items.data);
+//   yield put(setIsSyncing(false));
+// }
 
 function* setSelectedRestaurantIdSaga(action) {
   yield put(setSelectedRestaurantId(action.payload.id));

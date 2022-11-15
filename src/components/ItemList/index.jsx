@@ -16,6 +16,7 @@ import {
   Skeleton,
 } from '@mui/material';
 
+import SyncScreen from '../../lib/layout/SyncScreen';
 import FoodCardModel from '../FoodCardModal';
 import Item from './components/Item';
 
@@ -23,7 +24,8 @@ export default function ItemList({
   restaurant,
   edit = false,
   inheritWidth = false,
-  isLoading = false,
+  isLoading,
+  isSyncing,
   }) {
   const [item, setItem] = useState();
   const [showFoodCard, setShowFoodCard] = useState(false);
@@ -182,6 +184,7 @@ export default function ItemList({
     
   return (
     <div className="col-12">
+      <SyncScreen isSyncing={isSyncing} />
       {isMenuOrderChanged && (
         <div className="apply-changes-container">
           <Button
