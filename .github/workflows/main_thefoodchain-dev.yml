@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy Node.js app to Azure Web App - deliverless
+name: Build and deploy Node.js app to Azure Web App - thefoodchain-dev
 
 on:
   push:
@@ -26,7 +26,7 @@ jobs:
           npm install
           npm run build --if-present
           npm run test --if-present
-      
+
       - name: Zip artifact for deployment
         run: zip release.zip ./build/* -qr
 
@@ -53,7 +53,7 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'deliverless'
+          app-name: 'thefoodchain-dev'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_A8A8BFF8BC8F4920881A03B8AACAD978 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_9CD1934E7F8D4E00A8124187AB033AC5 }}
           package: .
