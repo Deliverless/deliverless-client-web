@@ -177,17 +177,19 @@ const FoodCardModal = ({
 
   const handleAddToCart = () => {
     if (cartItem.id) {
+      console.log(restaurant)
+      setCartItem({ ...cartItem, restaurantId: restaurant ? restaurant.id : ''});
       addProduct(cartItem);
     }
     onHide();
   };
 
   useEffect(() => {
-    cartItem.restaurantId = restaurant ? restaurant.restaurantId : '';
+    cartItem.restaurantId = restaurant ? restaurant.id : '';
     cartItem.selectedOptions = [];
     cartItem.quantity = 1;
     setTotalPrice(parseFloat(food.price));
-    setCartItem({ ...food, restaurantId: restaurant ? restaurant.restaurantId : '', selectedOptions: [], quantity: 1 });
+    setCartItem({ ...food, restaurantId: restaurant ? restaurant.id : '', selectedOptions: [], quantity: 1 });
     // console.log("food", food);
     editFormik.setValues(food);
   }, [food, restaurant]);
