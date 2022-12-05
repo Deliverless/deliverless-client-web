@@ -26,6 +26,8 @@ export default function RestaurantsHome({ history }) {
 	const restaurantList = useSelector(state => state.restaurant.list);
 	const selectedRestaurantId = useSelector(state => state.restaurant.selectedRestaurantId);
 	// const selectedRestaurantId = "id:global:restaurant:25aaf9af-2c0b-4b17-9939-b222eaee89e5";
+	const isSyncing = useSelector(state => state.restaurant.isSyncing);
+
 	const dispatch = useDispatch();
 	
 	const initializeRestaurant = () => {
@@ -62,7 +64,7 @@ export default function RestaurantsHome({ history }) {
 	return (
 		<Suspense fallback={<LayoutSplashScreen />}>
 				<Routes>
-					<Route path={"/"} element={<RestaurantList restaurantList={restaurantList} history={history} />} />
+					<Route path={"/"} element={<RestaurantList restaurantList={restaurantList} isSyncing={isSyncing} history={history} />} />
 					<Route path={"/:restaurantName"} element={<RestaurantHome restaurant={restaurant} restaurantList={restaurantList} history={history} />} />
 				</Routes>
 		</Suspense>
