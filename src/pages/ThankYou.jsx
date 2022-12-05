@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
+import Restaurant from '../models/restaurant';
 
 import { ReactComponent as Checkmark } from "../check.svg";
 import { CartContext } from "../lib/context/cartContext";
@@ -24,32 +25,44 @@ import { requestRestaurant, requestRestaurants } from "../models/restaurant";
 
 function ThankYouPage() {
   const { handleCheckout, cartItems } = useContext(CartContext);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const { enqueueSnackbar: loadSnackbar } = useSnackbar();
   const { user, setUser } = useContext(UserContext);
   const { order, setOrder, clearOrder } = useContext(OrderContext)
+  const [restaurant, setRestaurant] = useState(null);
+	const restaurantList = useSelector(state => state.restaurant.list);
+	const restaurantIsLoading = useSelector(state => state.restaurant.isLoading);
+  const dispatch = useDispatch();
+
+  const initializeRestaurant = () => {
+		if (cartItems[0]?.restaurantId) {
+      
+			const res_restaurant = restaurantList.find(restaurant => restaurant.id === cartItems[0].restaurantId);
+      
+			if (res_restaurant && restaurantList.length != 0) {
+				const new_restaurant = new Restaurant();
+				new_restaurant.initJson(res_restaurant);
+				setRestaurant(new_restaurant);
+			} else {
+				dispatch({ type: 'GET_RESTAURANT_BY_ID', payload: { id: cartItems[0].restaurantId } });
+			}
+		} else {
+			console.log('No restaurant selected');
+		}
+	};
+
+
+  useEffect(() => {
+  initializeRestaurant()
+  }, [restaurantList])
+
+  const initializeEmailCheckout = async () => {
+
+    let [handleCheckoutResult, restUser] = await Promise.all([
+      handleCheckout(loadingUpdate),
+      getUser(restaurant.id)
+  ]);
   
-
-  useEffect(async () => {
-    setLoading(true);
-
-  //   let [handleCheckoutResult, restUser] = await Promise.all([
-  //     handleCheckout(loadingUpdate),
-  //     getUser(rest.id)
-  // ]);
-
-  const rests = await requestRestaurants();
-
-  const rest = rests.find((r) => r.id == order.restaurantId)
-  console.log("order -----------", order)
-  console.log("hello this is the RESTs", rests)
-  await handleCheckout(loadingUpdate);
-  console.log("hello this is the REST", rest)
-  // let restUser = getUser(rest.id);
-  
-    console.log("hello i am before restPhone")
-    // let restPhone = (await restUser).data.phonenum;
-   
     let tableString = "" 
     
     
@@ -60,26 +73,27 @@ function ThankYouPage() {
       })
       
 
-      console.log("after for loop string")
 
     sendEmail("template_3f5aeoq", {
       from_name: "The Food Chain",
       to_email:user.email,
       to_name:user.firstName + " " + user.lastName,
-      rest_name:"Burger King",
-      rest_address:"240 Wyecroft Road, Oakville, ON L6K 2G7",
-      rest_number:"(905) 842-1681",
-      // rest_name:rest.name,
-      // rest_address:rest.address,
-      // rest_number:restPhone,
+      rest_name:restaurant.name,
+      rest_address:restaurant.address.street + ", " + restaurant.address.local + ", " + restaurant.address.region,
+      rest_number:restUser.phone,
       cust_address:order.address.formatted,
       cust_number:user.phone,
       order_table: tableString,
       total: order.total
     })
-    console.log("after send email")
     setLoading(false);
-  }, []);
+  }
+
+  useEffect( () => {
+
+    restaurant && initializeEmailCheckout()
+
+  }, [restaurant]);
 
   const loadingUpdate = (update, variant)=>{
     loadSnackbar(update, {variant})
@@ -121,7 +135,6 @@ function ThankYouPage() {
           </Typography>
 
           <Checkmark></Checkmark>
-
           <Typography
             variant="h6"
             gutterBottom
