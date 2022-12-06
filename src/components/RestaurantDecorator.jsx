@@ -37,7 +37,7 @@ export const RestaurantDecorator = (props, label)=> {
           </div>
 
           <Link
-            to={`/restaurant/home?id=${props.id}`}
+            to={`/restaurants/${props.nodeobj.savedLabel}`}
             >
             <div 
               className="fade-in"
@@ -56,7 +56,7 @@ export const RestaurantDecorator = (props, label)=> {
               }}>
                 <h4>{label}</h4>
           
-                {`${props.nodeobj.address.number} ${props.nodeobj.address.street}` }
+                {`${props.nodeobj.address.street}` }
                 <Typography variant="body2" color="text.secondary">
                   {Math.round(props.nodeobj.delivery_eta)} - {Math.round(((props.nodeobj.delivery_eta * 60) + (15 * 60)) / 60)} min • {props.nodeobj.distance} km
                 </Typography>

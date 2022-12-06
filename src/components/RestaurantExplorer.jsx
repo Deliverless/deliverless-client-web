@@ -35,7 +35,7 @@ export default function RestaurantExplorer({ restaurants }) {
           address: rest.address,
           id: rest.id,
           shape: "circularImage",
-          image: rest.image,
+          image: rest.images[0].url,
           label: rest.name,
           distance:
             Math.round((directions.routes[0].distance / 1000.0) * 10) / 10,
