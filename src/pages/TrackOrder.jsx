@@ -1,5 +1,3 @@
-import "mapbox-gl/dist/mapbox-gl.css";
-
 import React, { useContext, useEffect, useState } from "react";
 
 import mapboxgl from "mapbox-gl"; // or "const mapboxgl = require('mapbox-gl');"
@@ -12,6 +10,9 @@ import { RestContext } from "../lib/context/restContext";
 import { getOrder, updateOrder } from "../models/order";
 import { SnackbarProvider, useSnackbar } from "notistack";
 import { Typography } from "@material-ui/core";
+import "mapbox-gl/dist/mapbox-gl.css";
+mapboxgl.workerClass = require('worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker').default; // eslint-disable-line
+
 
 function TrackOrderPage() {
   const [order, setOrder] = useState();
